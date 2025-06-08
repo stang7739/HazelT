@@ -18,7 +18,7 @@ namespace Hazel
 
     void Applicaton::run()
     {
-
+    std::cout << "Hello World!\n";
         while (true);
     }
 

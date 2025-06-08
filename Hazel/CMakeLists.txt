@@ -2,28 +2,33 @@ set(TARGET_NAME "Hazel")
 
 
 file(GLOB_RECURSE HAZEL_SOURCES CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
         "src/*.cpp"
 
 )
 file(GLOB_RECURSE HAZEL_HEADERS CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
         "include/*.h"
         "src/*.h"
+
 )
+#Compile the files in these directories as if they were the source files
 add_library(${TARGET_NAME} SHARED
         ${HAZEL_SOURCES}
         ${HAZEL_HEADERS}
-
 )
 
-#设置路径
+#Set the path
 target_include_directories(Hazel PUBLIC
-       ${CMAKE_CURRENT_SOURCE_DIR}/include
-       ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+
 )
-# Set export symbols for the library  编译时 加上宏
+add_subdirectory(vendor)
+target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog)
+
+# Set export symbols for the library
 target_compile_definitions(${TARGET_NAME} PRIVATE HZ_BUILD_DLL)
+#target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
+
 
 # set platform symbol
 if (WIN32)
@@ -38,7 +43,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif ()
 
 # Set include directories
-target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 
 # Set output directories for the library
 set_target_properties(${TARGET_NAME} PROPERTIES

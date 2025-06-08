@@ -13,7 +13,7 @@ class SandBox : public Hazel::Applicaton
 
     }
 };
-//创建SanBox 工厂模式 应用程序入口点的抽象
+//Create a SanBox Factory Pattern Abstraction of the application entry point
 Hazel::Applicaton* Hazel::CreateApplication()
 {
     return new SandBox;

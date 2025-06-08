@@ -7,12 +7,14 @@
 #include <Hazel/Core.h>
 namespace Hazel
 {
- //到处符号宏
+ // Symbolic macros everywhere
     class HAZEL_API Applicaton
     {
         public:
         Applicaton();
-        //虚构造函数作用： 支持类多态 确保基指针创建的派生类对象调用对应的析构函数，正确释放内存
+        //Virtual constructor function:
+        //Support class polymorphism Ensure that the derived class object created by the base pointer
+        //calls the corresponding destructor to properly free up memory
         virtual ~Applicaton();
         void run();
     };

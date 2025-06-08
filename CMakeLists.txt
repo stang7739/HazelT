@@ -3,6 +3,9 @@ project(HaZelT)
 
 set(CMAKE_CXX_STANDARD 20)
 
-#加载字目录的cmake
+#add_compile_options(/utf8)
+
+add_compile_definitions(_UTF8)
+#Load the cmake of the word directory
 add_subdirectory(Hazel)
 add_subdirectory(SandBox)
