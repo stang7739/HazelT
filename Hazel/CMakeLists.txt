@@ -16,6 +16,12 @@ add_library(${TARGET_NAME} SHARED
         ${HAZEL_HEADERS}
 
 )
+add_custom_command(TARGET ${TARGET_NAME}
+        PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Cleaning previous Hazel.ilk and Hazel.pdb..."
+        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/bin/Hazel.ilk
+        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/bin/Hazel.pdb
+)
 
 #Set the path
 target_include_directories(Hazel PUBLIC

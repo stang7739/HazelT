@@ -62,10 +62,12 @@ namespace Hazel
         template<class T>
         bool Dispatch(std::function<bool(T&)> func)
         {
-            if(m_Event.GetEventType() == T::GetEventType())
+            if(m_Event.GetEventType() == T::GetStaticType())
             {
                 m_Event.m_Handled = func(*(T*)&m_Event);
+                return true;
             }
+            return false;
         }
         protected:
         Event& m_Event;
@@ -77,6 +79,11 @@ namespace Hazel
                                 virtual const char* GetName() const override {return #type;}
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override{return category;}
 
+    inline std::ostream& operator<<(std::ostream& os, const Event& e)
+    {
+        return os << e.ToString();
+    }
+   inline std::string format_as(const Event& e) { return e.ToString(); }
 }
 
 

@@ -21,7 +21,8 @@ namespace Hazel
         //calls the corresponding destructor to properly free up memory
         virtual ~Applicaton();
         void run();
-
+        void OnEvent(Event& e);
+        bool OnWindowClose(Event& e);
     private:
         std::unique_ptr<Window> m_Window;
         bool m_Running = true;
