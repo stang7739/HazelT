@@ -6,10 +6,11 @@
 #define HAZEL_H
 //For use by Hazel application
 
-#include<Hazel/Applicaton.h>
-#include <Hazel/Log.h>
+#include<Hazel/Core/Applicaton.h>
+#include <Hazel/Core/Log.h>
+
 //---------Entity Piont-----------
-#include<Hazel/EntityPoint.h>
+#include<Hazel/Core/EntityPoint.h>
 //--------------------------------
 
 #endif //HAZEL_H

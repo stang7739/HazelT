@@ -5,7 +5,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include<Hazel/Core.h>
+#include<Hazel/Core/Core.h>
 #include<spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 namespace Hazel
@@ -20,11 +20,14 @@ namespace Hazel
         inline static std::shared_ptr<spdlog::logger>& GetClientLogger() {return s_ClientLogger;}
 
 
-    private:
+    protected:
         static std::shared_ptr<spdlog::logger> s_CoreLogger;
         static std::shared_ptr<spdlog::logger> s_ClientLogger;
     };
 }
+
+
+
 
 
 #endif //LOG_H

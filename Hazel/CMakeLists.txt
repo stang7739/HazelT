@@ -14,6 +14,7 @@ file(GLOB_RECURSE HAZEL_HEADERS CONFIGURE_DEPENDS
 add_library(${TARGET_NAME} SHARED
         ${HAZEL_SOURCES}
         ${HAZEL_HEADERS}
+
 )
 
 #Set the path
@@ -22,13 +23,20 @@ target_include_directories(Hazel PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 
 )
+target_precompile_headers(${TARGET_NAME} PRIVATE src/hzpch.h)
 add_subdirectory(vendor)
-target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog)
+target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog) #spdLog requires a namespace, see the add_libary in the cmke of spdLog
+target_link_libraries(${TARGET_NAME} PUBLIC glfw)
+target_link_libraries(${TARGET_NAME} PUBLIC
+        glad
+        opengl32)
+target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)
 
 # Set export symbols for the library
 target_compile_definitions(${TARGET_NAME} PRIVATE HZ_BUILD_DLL)
 #target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
 
+target_compile_definitions(${TARGET_NAME} PUBLIC OPENGL)
 
 # set platform symbol
 if (WIN32)

@@ -1,0 +1,67 @@
+//
+// Created by stang on 25-6-9.
+//
+
+#ifndef MOUSEEVENT_H
+#define MOUSEEVENT_H
+
+
+#include "Event.h"
+namespace Hazel
+{
+    class HAZEL_API MouseMoveEvent : public Event {
+    public:
+        MouseMoveEvent(double x, double y) ;
+
+        inline float GetX() const;
+        inline float GetY() const;
+
+        std::string ToString() const override ;
+
+        EVENT_CLASS_TYPE(MouseMoved)
+
+        virtual int GetCategoryFlags() const override;
+
+        protected:
+        float m_MouseX, m_MouseY ;
+    };
+    class HAZEL_API MouseScrollEvent : public Event
+    {
+        public:
+        MouseScrollEvent(double offsetX, double offsetY) ;
+        inline float GetOffsetX() const;
+        inline float GetOffsetY() const;
+        std::string ToString() const override ;
+        EVENT_CLASS_TYPE(MouseScrolled)
+        virtual int GetCategoryFlags() const override;
+        protected:
+        float m_OffsetX, m_OffsetY ;
+    };
+    class HAZEL_API MouseButtonEvent : public Event
+    {
+        public:
+        MouseButtonEvent(HazelKey Mousebutton);
+        inline HazelKey GetMouseButton() const;
+        virtual int GetCategoryFlags() const override;
+    protected:
+        HazelKey m_MouseButton ;
+    };
+    class HAZEL_API MouseButtonPressedEvent : public MouseButtonEvent
+    {
+        public:
+        MouseButtonPressedEvent(HazelKey Mousebutton);
+        std::string ToString() const override ;
+        EVENT_CLASS_TYPE(MouseButtonPressed)
+    };
+    class HAZEL_API MouseButtonReleasedEvent : public MouseButtonEvent
+    {
+        public:
+        MouseButtonReleasedEvent(HazelKey Mousebutton);
+        std::string ToString() const override ;
+        EVENT_CLASS_TYPE(MouseButtonReleased)
+    };
+}
+
+
+
+#endif //MOUSEEVENT_H
