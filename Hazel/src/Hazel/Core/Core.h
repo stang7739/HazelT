@@ -65,5 +65,5 @@ IGE_INTERNAL_ASSERT_NO_MSG)(_CORE_, __VA_ARGS__))
 #endif
 
 #define BIT(x) (1 << x)
-
+#define HZ_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 #endif //CORE_H

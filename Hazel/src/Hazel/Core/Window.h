@@ -9,9 +9,8 @@
 #include <Hazel/Events/Event.h>
 
 
-
-namespace Hazel {
-
+namespace Hazel
+{
     struct WindowProps
     {
         std::string Title;
@@ -43,12 +42,11 @@ namespace Hazel {
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
-
+        //In order to isolate from other possible platforms (e.g. DirectX, Metal), the void* is returned uniformly.
         virtual void* GetNativeWindow() const = 0;
 
         static Scope<Window> Create(const WindowProps& props = WindowProps());
     };
-
 }
 
 #endif //WINDOW_H

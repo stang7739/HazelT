@@ -25,10 +25,10 @@ namespace Hazel
         protected:
         float m_MouseX, m_MouseY ;
     };
-    class HAZEL_API MouseScrollEvent : public Event
+    class HAZEL_API MouseScrolledEvent : public Event
     {
         public:
-        MouseScrollEvent(double offsetX, double offsetY) ;
+        MouseScrolledEvent(double offsetX, double offsetY) ;
         inline float GetOffsetX() const;
         inline float GetOffsetY() const;
         std::string ToString() const override ;

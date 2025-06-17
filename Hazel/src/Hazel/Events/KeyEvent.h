@@ -12,7 +12,9 @@ namespace Hazel
     class HAZEL_API KeyEvent : public Event
     {
     public:
-        HazelKey GetKeyCode() const;
+        //
+        inline HazelKey GetKeyCode() const;
+         HazelKey GetKeyCode(int a,int b) const;
         // EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyBoard)
 
         virtual int GetCategoryFlags() const override;

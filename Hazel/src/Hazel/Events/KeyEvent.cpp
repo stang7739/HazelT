@@ -11,6 +11,10 @@ namespace Hazel
     {
     }
 
+    HazelKey KeyEvent::GetKeyCode() const
+    {
+        return m_keyCode;
+    }
     int KeyEvent::GetCategoryFlags() const { return EventCategoryInput | EventCategoryKeyBoard; }
 
     //////////////////////////

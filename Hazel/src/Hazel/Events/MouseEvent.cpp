@@ -15,29 +15,30 @@ namespace Hazel
     {
         return std::format("MouseMoveEvent: {0}, {1}", m_MouseX, m_MouseY);
     }
-
+     float MouseMoveEvent::GetX() const{return m_MouseX;}
+     float MouseMoveEvent::GetY() const{return m_MouseY;}
     int MouseMoveEvent::GetCategoryFlags() const { return EventCategoryInput | EventCategoryMouse; }
     ///////////////MouseScrolled///////////////////////
-    MouseScrollEvent::MouseScrollEvent(double offsetX, double offsetY) : m_OffsetX(offsetX), m_OffsetY(offsetY)
+    MouseScrolledEvent::MouseScrolledEvent(double offsetX, double offsetY) : m_OffsetX(offsetX), m_OffsetY(offsetY)
     {
     }
 
-    inline float MouseScrollEvent::GetOffsetX() const
+    inline float MouseScrolledEvent::GetOffsetX() const
     {
         return m_OffsetX;
     }
 
-    inline float MouseScrollEvent::GetOffsetY() const
+    inline float MouseScrolledEvent::GetOffsetY() const
     {
         return m_OffsetY;
     }
 
-    std::string MouseScrollEvent::ToString() const
+    std::string MouseScrolledEvent::ToString() const
     {
-        return std::format("MouseScrollEvent: {0}, {1}", m_OffsetX, m_OffsetY);
+        return std::format("MouseScrolledEvent: {0}, {1}", m_OffsetX, m_OffsetY);
     }
 
-    int MouseScrollEvent::GetCategoryFlags() const { return EventCategoryInput | EventCategoryMouse; }
+    int MouseScrolledEvent::GetCategoryFlags() const { return EventCategoryInput | EventCategoryMouse; }
     ///////////////////////MouseButtonPressed/////////
     MouseButtonEvent::MouseButtonEvent(HazelKey Mousebutton) : m_MouseButton(Mousebutton)
     {

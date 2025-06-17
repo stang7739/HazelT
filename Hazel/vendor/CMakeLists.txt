@@ -27,8 +27,6 @@ if (NOT TARGET glm)
 #    option(GLM_BUILD_TESTS "" OFF)
 #    option(GLM_BUILD_DOCS "" OFF)#Document generation is prohibited
 #    option(GLM_INSTALL "" OFF)
-#    add_subdirectory(glm)
-#    include(glm.cmake)
 add_library(glm INTERFACE)
 #Add a header file search path to the GLM library target
 target_include_directories(glm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glm)
@@ -43,3 +41,20 @@ if(NOT TARGET glad)
     target_include_directories(glad PUBLIC $<BUILD_INTERFACE:${glad_SOURCE_DIR_}>/include)
 
 endif ()
+
+if(NOT TARGET imgui)
+    set(imgui_SOURCE_DIR_ ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+    file(GLOB IMGUI_SRC CONFIGURE_DEPENDS "${imgui_SOURCE_DIR_}/*.cpp")
+    file(GLOB IMGUI_HEADERS CONFIGURE_DEPENDS "${imgui_SOURCE_DIR_}/*.h")
+    file(GLOB imgui_impl CONFIGURE_DEPENDS
+            "${imgui_SOURCE_DIR_}/backends/imgui_impl_glfw.cpp"
+            "${imgui_SOURCE_DIR_}/backends/imgui_impl_glfw.h"
+            "${imgui_SOURCE_DIR_}/backends/imgui_impl_opengl3.cpp"
+            "${imgui_SOURCE_DIR_}/backends/imgui_impl_opengl3.h"
+    )
+
+    add_library(imgui STATIC ${IMGUI_SRC} ${imgui_impl} ${IMGUI_HEADERS})
+    #Lets you specify the header file path that a target (such as a library or executable) needs to include at compile time
+    target_include_directories(imgui PUBLIC $<BUILD_INTERFACE:${imgui_SOURCE_DIR_}>)
+    target_link_libraries(imgui PUBLIC glfw)
+endif()

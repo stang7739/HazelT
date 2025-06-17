@@ -37,6 +37,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC
         glad
         opengl32)
 target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)
+target_link_libraries(${TARGET_NAME} PUBLIC imgui)
 
 # Set export symbols for the library
 target_compile_definitions(${TARGET_NAME} PRIVATE HZ_BUILD_DLL)
