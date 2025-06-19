@@ -265,12 +265,12 @@ namespace Hazel
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos; //Support for ImGui to set mouse position via code
 
 
-        // Application& app = Application::Get();
-        // //Bind ImGui to GLFW's input event system, and tell ImGui which GLFW window to use to receive events
-        // //such as mouse, keyboard, window actions, etc.
-        // //Specifies the window object on which ImGui's rendering and input events are hung
-        // GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
-        // ImGui_ImplGlfw_InitForOpenGL(window, true);
+        Application& app = Application::Get();
+        //Bind ImGui to GLFW's input event system, and tell ImGui which GLFW window to use to receive events
+        //such as mouse, keyboard, window actions, etc.
+        //Specifies the window object on which ImGui's rendering and input events are hung
+        GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 410");;
     } //Executed when the layer is loaded into the stack
     void ImGuiLayer::OnDetach()
@@ -303,18 +303,18 @@ namespace Hazel
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); //OpenGL3 draw
     } //Update logic every frame
-    void ImGuiLayer::OnEvent(Event& event)
-    {
-        EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
-        dispatcher.Dispatch<MouseButtonReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
-        dispatcher.Dispatch<MouseMoveEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseMoveEvent));
-        dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
-        dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
-        dispatcher.Dispatch<KeyReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
-        dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnWindowResizedEvent));
-        dispatcher.Dispatch<KeyTypedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
-    } //Respond to events that are distributed by the event system
+    // void ImGuiLayer::OnEvent(Event& event)
+    // {
+    //     // EventDispatcher dispatcher(event);
+    //     // dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
+    //     // dispatcher.Dispatch<MouseButtonReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
+    //     // dispatcher.Dispatch<MouseMoveEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseMoveEvent));
+    //     // dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
+    //     // dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
+    //     // dispatcher.Dispatch<KeyReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
+    //     // dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnWindowResizedEvent));
+    //     // dispatcher.Dispatch<KeyTypedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
+    // } //Respond to events that are distributed by the event system
     bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
     {
         ImGuiIO& io = ImGui::GetIO();

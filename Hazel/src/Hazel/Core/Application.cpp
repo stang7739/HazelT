@@ -9,6 +9,7 @@
 #include <Hazel/Events/ApplicationEvent.h>
 #include<Hazel/Core/Log.h>
 
+#include "Input.h"
 #include "Hazel/Events/KeyEvent.h"
 
 
@@ -47,7 +48,7 @@ namespace Hazel
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(Application::OnKeyPressed));
         for(auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
         {
-            // (*--it)->OnEvent(e);
+            (*--it)->OnEvent(e);
             if(e.Handled)break;
         }
         HZ_CORE_TRACE("{0}", e);
@@ -67,6 +68,8 @@ namespace Hazel
             {
                 layer->OnUpdate();
             }
+            auto [x,y] = Input::GetMousePosition();
+            HZ_CORE_TRACE("{0}, {1}", x, y);
             m_Window->OnUpdate();
 
         }
