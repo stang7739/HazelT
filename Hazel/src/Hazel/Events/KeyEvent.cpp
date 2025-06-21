@@ -45,7 +45,7 @@ namespace Hazel
      unsigned int KeyTypedEvent::GetCodePoint() const{ return m_codePoint; }
     std::string KeyTypedEvent::ToString() const
     {
-        return std::format("{}",std::string(1,static_cast<char32_t>(m_codePoint)));
+        return std::format("type:{}",std::string(1,static_cast<char32_t>(m_codePoint)));
     }
 
 

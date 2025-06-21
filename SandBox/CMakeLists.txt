@@ -13,7 +13,7 @@ add_executable(${TARGET_NAME} ${SANDBOX_SOURCES})
 
 target_link_libraries(${TARGET_NAME} PRIVATE Hazel)
 #target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
-set_property(TARGET ${TARGET_NAME} PROPERTY CXX_SCAN_FOR_MODULES 1)
+#set_property(TARGET ${TARGET_NAME} PROPERTY CXX_SCAN_FOR_MODULES 1)
 
 
 # Set the output directory for the executable to ensure it can find the DLL

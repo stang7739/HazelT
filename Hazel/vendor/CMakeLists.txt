@@ -44,17 +44,29 @@ endif ()
 
 if(NOT TARGET imgui)
     set(imgui_SOURCE_DIR_ ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
-    file(GLOB IMGUI_SRC CONFIGURE_DEPENDS "${imgui_SOURCE_DIR_}/*.cpp")
-    file(GLOB IMGUI_HEADERS CONFIGURE_DEPENDS "${imgui_SOURCE_DIR_}/*.h")
-    file(GLOB imgui_impl CONFIGURE_DEPENDS
+
+
+
+    file(GLOB imgui_sources CONFIGURE_DEPENDS "${imgui_SOURCE_DIR_}/*.cpp")
+
+    set(IMGUI_IMPL_SRC
             "${imgui_SOURCE_DIR_}/backends/imgui_impl_glfw.cpp"
             "${imgui_SOURCE_DIR_}/backends/imgui_impl_glfw.h"
             "${imgui_SOURCE_DIR_}/backends/imgui_impl_opengl3.cpp"
             "${imgui_SOURCE_DIR_}/backends/imgui_impl_opengl3.h"
     )
 
-    add_library(imgui STATIC ${IMGUI_SRC} ${imgui_impl} ${IMGUI_HEADERS})
-    #Lets you specify the header file path that a target (such as a library or executable) needs to include at compile time
+
+    add_library(imgui STATIC ${imgui_sources}  ${IMGUI_IMPL_SRC})
+
+#
+#    target_include_directories(imgui PUBLIC
+#            $<BUILD_INTERFACE:${imgui_SOURCE_DIR_}>
+#            $<BUILD_INTERFACE:${imgui_SOURCE_DIR_}/backends>
+#    )
+
     target_include_directories(imgui PUBLIC $<BUILD_INTERFACE:${imgui_SOURCE_DIR_}>)
     target_link_libraries(imgui PUBLIC glfw)
+
 endif()
+

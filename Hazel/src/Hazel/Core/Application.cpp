@@ -9,6 +9,7 @@
 #include <Hazel/Events/ApplicationEvent.h>
 #include<Hazel/Core/Log.h>
 
+#include "imgui_internal.h"
 #include "Input.h"
 #include "Hazel/Events/KeyEvent.h"
 
@@ -25,6 +26,8 @@ namespace Hazel
         s_Instance = this;
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
+        m_ImGuiLayer = new ImGuiLayer{};
+        PushOverlayer(m_ImGuiLayer);
     }
     Application::~Application()
     {
@@ -64,12 +67,21 @@ namespace Hazel
         {
             glClearColor(1,0,1,1);
             glClear(GL_COLOR_BUFFER_BIT);
-            for(auto layer : m_LayerStack)
+            for(Layer* layer : m_LayerStack)
             {
                 layer->OnUpdate();
             }
-            auto [x,y] = Input::GetMousePosition();
-            HZ_CORE_TRACE("{0}, {1}", x, y);
+            m_ImGuiLayer->Begin();
+            for(Layer* layer:m_LayerStack)
+            {
+                HZ_CORE_ASSERT(layer, "Layer is nullptr!");
+                ImGuiContext* ctx = ImGui::GetCurrentContext();
+                HZ_CORE_TRACE("Application ImGui Context: {0}", (void*)ctx);
+                layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
+            // auto [x,y] = Input::GetMousePosition();
+            // HZ_CORE_TRACE("{0}, {1}", x, y);
             m_Window->OnUpdate();
 
         }

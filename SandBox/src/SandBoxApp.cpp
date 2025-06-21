@@ -1,23 +1,36 @@
 
 #include <Hazel.h>
 
-#include "Hazel/imGui/ImGuiLayer.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "Hazel/Core/Input.h"
+
 
 class ExampleLayer :public Hazel::Layer
 {
-    public:
-    ExampleLayer() : Layer("Example Layer")
+public:
+    ExampleLayer()
+         : Layer("Example")
     {
-
     }
+
     void OnUpdate() override
     {
-        // HZ_TRACE("Example Layer::OnUpdate({0})",m_DebugName);
+        HZ_INFO("123");
     }
-    void OnEvent(Hazel::Event& e) override
+
+
+     void OnImGuiRender() override
     {
-        HZ_TRACE("Example Layer::OnEvent()");
+//https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
+        ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
+        ImGuiContext* ctx = ImGui::GetCurrentContext();
+        HZ_CORE_TRACE("ExampleLayer ImGui Context: {0}", (void*)ctx);
+        ImGui::Begin("Test");
+        ImGui::Text("Hello World");
+        ImGui::End();
     }
+
 
 
 };
@@ -25,10 +38,10 @@ class ExampleLayer :public Hazel::Layer
 class SandBox : public Hazel::Application
 {
     public:
-    SandBox()
+    SandBox() : Hazel::Application()
     {
-        // PushLayer(new ExampleLayer());
-        PushOverlayer(new Hazel::ImGuiLayer());
+        PushLayer(new ExampleLayer());
+
     }
     ~SandBox()
     {

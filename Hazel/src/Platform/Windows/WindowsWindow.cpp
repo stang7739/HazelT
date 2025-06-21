@@ -146,6 +146,8 @@ namespace Hazel
 
     void WindowsWindow::OnUpdate()
     {
+
+
         glfwPollEvents();
         glfwSwapBuffers(m_window);
     }

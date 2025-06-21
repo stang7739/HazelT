@@ -33,11 +33,10 @@ target_precompile_headers(${TARGET_NAME} PRIVATE src/hzpch.h)
 add_subdirectory(vendor)
 target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog) #spdLog requires a namespace, see the add_libary in the cmke of spdLog
 target_link_libraries(${TARGET_NAME} PUBLIC glfw)
-target_link_libraries(${TARGET_NAME} PUBLIC
-        glad
-        opengl32)
 target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)
 target_link_libraries(${TARGET_NAME} PUBLIC imgui)
+target_link_libraries(${TARGET_NAME} PUBLIC glad)
+
 
 # Set export symbols for the library
 target_compile_definitions(${TARGET_NAME} PRIVATE HZ_BUILD_DLL)

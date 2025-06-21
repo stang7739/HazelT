@@ -7,14 +7,15 @@
 namespace Hazel
 {
     LayerStack::LayerStack(){
-        m_LayerInsert = m_Layers.begin();
+
     }
     LayerStack::~LayerStack(){
         for(Layer* layer : m_Layers){delete layer;}
     }
     void LayerStack::PushLayer(Layer* layer){
-        m_LayerInsert = m_Layers.emplace(m_LayerInsert,layer);
-
+        // m_LayerInsert = m_Layers.emplace(m_LayerInsert,layer);
+        m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+        m_LayerInsertIndex++;
     }
     //overLayer always in the back end
     void LayerStack::PushOverLayer(Layer* layer){
@@ -25,7 +26,7 @@ namespace Hazel
         if(it != m_Layers.end())
         {
             m_Layers.erase(it);
-            m_LayerInsert--;
+            m_LayerInsertIndex--;
         }
     }
     void LayerStack::PopOverLayer(Layer* layer)
@@ -34,6 +35,7 @@ namespace Hazel
         if(it != m_Layers.end())
         {
             m_Layers.erase(it);
+
         }
 
     }

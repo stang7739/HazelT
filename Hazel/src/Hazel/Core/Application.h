@@ -10,6 +10,7 @@
 #include "Layer.h"
 #include "LayerStack.h"
 #include "Window.h"
+#include "Hazel/imGui/ImGuiLayer.h"
 
 namespace Hazel
 {
@@ -38,6 +39,7 @@ namespace Hazel
         std::unique_ptr<Window> m_Window;
         bool m_Running = true;
         LayerStack m_LayerStack;
+        ImGuiLayer* m_ImGuiLayer;
 
     };
 
