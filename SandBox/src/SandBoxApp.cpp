@@ -16,7 +16,7 @@ public:
 
     void OnUpdate() override
     {
-        HZ_INFO("123");
+
     }
 
 
@@ -25,7 +25,7 @@ public:
 //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
         ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
         ImGuiContext* ctx = ImGui::GetCurrentContext();
-        HZ_CORE_TRACE("ExampleLayer ImGui Context: {0}", (void*)ctx);
+        // HZ_CORE_TRACE("ExampleLayer ImGui Context: {0}", (void*)ctx);
         ImGui::Begin("Test");
         ImGui::Text("Hello World");
         ImGui::End();

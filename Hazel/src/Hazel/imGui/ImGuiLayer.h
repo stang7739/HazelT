@@ -6,14 +6,14 @@
 #define ImGuiLayer_H
 
 
-#include <imgui_internal.h>
+
 
 #include "Hazel/Core/Layer.h"
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 
-
+struct ImGuiContext;
 namespace Hazel{
 class HAZEL_API ImGuiLayer : public Layer{
 public:

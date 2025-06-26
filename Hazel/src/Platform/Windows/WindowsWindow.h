@@ -6,10 +6,14 @@
 #define WINDOWSWINDOW_H
 #include <Hazel/Core/Window.h>
 
-#include "GLFW/glfw3.h"
+
+struct GLFWwindow;
+
 
 namespace Hazel
 {
+    class GraphicsContext;
+
     class WindowsWindow : public Window
     {
         public:
@@ -31,6 +35,7 @@ namespace Hazel
         void Shutdown() ;
 
         GLFWwindow* m_window;
+        GraphicsContext* m_Context;
         struct WindowData
         {
             std::string Title;

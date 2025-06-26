@@ -314,9 +314,9 @@ namespace Hazel
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        HZ_CORE_TRACE("BackendFlags: {0:x}", ImGui::GetIO().BackendFlags);
-        ImGuiContext* ctx = ImGui::GetCurrentContext();
-        HZ_CORE_TRACE("ImGuiLayer Context: {0}", (void*)ctx);
+        // HZ_CORE_TRACE("BackendFlags: {0:x}", ImGui::GetIO().BackendFlags);
+        // ImGuiContext* ctx = ImGui::GetCurrentContext();
+        // HZ_CORE_TRACE("ImGuiLayer Context: {0}", (void*)ctx);
 
 
     }

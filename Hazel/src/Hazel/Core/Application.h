@@ -14,9 +14,23 @@
 
 namespace Hazel
 {
+    class VertexArray;
+    class IndexBuffer;
+}
+
+namespace Hazel
+{
+    class VertexBuffer;
+}
+
+namespace Hazel
+{
+    class Shader;
+
     // Symbolic macros everywhere
     class HAZEL_API Application
     {
+
     public:
         Application();
         //Virtual constructor function:
@@ -31,6 +45,7 @@ namespace Hazel
         bool OnKeyPressed(Event& e);
         inline Window& GetWindow( ){return *m_Window;}
         inline static Application& Get(){return *s_Instance;}
+        std::unique_ptr<Shader>m_Shader;
     private:
         //s_Instance is a static pointer member variable of the Application class
         //It is declared within the class, defined outside the class, and globally unique
@@ -40,7 +55,9 @@ namespace Hazel
         bool m_Running = true;
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;
-
+        std::unique_ptr<VertexArray> m_VertexArray;
+        std::shared_ptr<Shader>m_BlueShader;
+        std::shared_ptr<VertexArray> m_SquareVA;
     };
 
     Application* CreateApplication();

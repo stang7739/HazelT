@@ -5,11 +5,15 @@
 #include <glad/glad.h>
 #include "WindowsWindow.h"
 #include<Hazel/Core/Log.h>
-#include<Rendrer/Renderer.h>
 
+
+#include "GLFW/glfw3.h"
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
+#include "Hazel/Renderer/Renderer.h"
+#include "Hazel/Renderer/RendererAPI.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Hazel
 {
@@ -49,9 +53,11 @@ namespace Hazel
                 glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
             m_window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-            glfwMakeContextCurrent(m_window);
-            int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            HZ_CORE_ASSERT(status, "Could not initialize GLAD");
+            // glfwMakeContextCurrent(m_window);
+            // int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            // HZ_CORE_ASSERT(status, "Could not initialize GLAD");
+            m_Context = new OpenGLContext(m_window);
+            m_Context->Init();
             glfwSetWindowUserPointer(m_window, &m_Data);
             SetVSync(true);
         }
@@ -149,7 +155,7 @@ namespace Hazel
 
 
         glfwPollEvents();
-        glfwSwapBuffers(m_window);
+       m_Context->SwapBuffers();
     }
 
     uint32_t WindowsWindow::GetHeight() const { return m_Data.Height; }
