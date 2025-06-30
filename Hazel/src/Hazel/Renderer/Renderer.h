@@ -4,16 +4,33 @@
 
 #ifndef RENDERER_H
 #define RENDERER_H
-#include"RendererAPI.h"
+#include "RendererAPI.h"
+
 
 namespace Hazel
 {
-    class Renderer {
-        public:
-        static RendererAPI::API GetAPI(){return RendererAPI::GetAPI();}
-    };
+    class Shader;
+    class OrthographicCamera;
 }
 
+namespace Hazel
+{
+    class HAZEL_API Renderer
+    {
+    public:
+        inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+        static void BegeinScene(OrthographicCamera& camera);
+        static void Submit(const std::shared_ptr<Shader>& shader,const std::shared_ptr<VertexArray>& vertexArray);
+        static void EndScene();
+
+    private:
+        struct SceneData
+        {
+            glm::mat4 ViewProjectionMatrix;
+        };
+        static SceneData* s_SceneData;
+    };
+}
 
 
 #endif //RENDERER_H

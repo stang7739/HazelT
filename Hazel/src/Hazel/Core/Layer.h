@@ -7,6 +7,10 @@
 #include "Hazel/Events/Event.h"
 
 
+namespace Hazel
+{
+    class Timestep;
+}
 
 namespace Hazel
 {
@@ -19,7 +23,7 @@ namespace Hazel
         virtual ~Layer();
         virtual void OnAttach(); //Executed when the layer is loaded into the stack
         virtual void OnDetach();//Executed when the layer is removed from the stack
-        virtual void OnUpdate();//Update logic every frame
+        virtual void OnUpdate(Timestep timestep);//Update logic every frame
         virtual void OnEvent(Event& event);//Respond to events that are distributed by the event system
         virtual void OnImGuiRender();//Draw the ImGui interface
         protected:

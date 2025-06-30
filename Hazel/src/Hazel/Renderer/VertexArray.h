@@ -11,7 +11,7 @@ namespace Hazel
     class IndexBuffer;
     class VertexBuffer;
 
-    class VertexArray {
+    class HAZEL_API VertexArray {
     public:
         virtual ~VertexArray() = default;
         virtual void Bind() const = 0;

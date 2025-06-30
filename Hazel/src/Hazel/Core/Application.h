@@ -11,6 +11,7 @@
 #include "LayerStack.h"
 #include "Window.h"
 #include "Hazel/imGui/ImGuiLayer.h"
+#include "Hazel/Renderer/OrthographicCamera.h"
 
 namespace Hazel
 {
@@ -45,7 +46,7 @@ namespace Hazel
         bool OnKeyPressed(Event& e);
         inline Window& GetWindow( ){return *m_Window;}
         inline static Application& Get(){return *s_Instance;}
-        std::unique_ptr<Shader>m_Shader;
+
     private:
         //s_Instance is a static pointer member variable of the Application class
         //It is declared within the class, defined outside the class, and globally unique
@@ -55,9 +56,7 @@ namespace Hazel
         bool m_Running = true;
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;
-        std::unique_ptr<VertexArray> m_VertexArray;
-        std::shared_ptr<Shader>m_BlueShader;
-        std::shared_ptr<VertexArray> m_SquareVA;
+        float m_LastFrameTime = 0.0f;
     };
 
     Application* CreateApplication();

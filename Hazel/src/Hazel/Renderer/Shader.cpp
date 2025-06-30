@@ -4,6 +4,9 @@
 #include <hzpch.h>
 #include "Shader.h"
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+
+
 namespace Hazel
 {
 Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
@@ -122,4 +125,9 @@ Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
         glUseProgram(0);
         // HZ_CORE_INFO("Shader unbound");
     }
+	void Shader::UploadUniformMat4(const std::string& name,glm::mat4& ViewProjectionMatrix)
+{
+	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+	glUniformMatrix4fv(location,1,GL_FALSE, glm::value_ptr(ViewProjectionMatrix));
+}
 }

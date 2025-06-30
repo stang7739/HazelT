@@ -40,9 +40,12 @@ namespace Hazel
 
         // Window attributes
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+        //VSync is turned on, anti-tearing, and the rendering frame rate is limited by the screen refresh rate
+
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
         //In order to isolate from other possible platforms (e.g. DirectX, Metal), the void* is returned uniformly.
+        //Render frame rate up to ≈ screen refresh rate
         virtual void* GetNativeWindow() const = 0;
 
         static Scope<Window> Create(const WindowProps& props = WindowProps());
