@@ -1,10 +1,17 @@
 #include <Hazel.h>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "Hazel/Core/Input.h"
 #include "Hazel/Renderer/Buffer.h"
+#include "Platform/OpenGL/OpenGLShader.h"
 
+
+namespace Hazel
+{
+    class OpenGLShader;
+}
 
 class ExampleLayer : public Hazel::Layer
 {
@@ -15,12 +22,14 @@ public:
         // glGenVertexArrays(1, &m_VertexArray);
         // glBindVertexArray(m_VertexArray);
         m_VertexArray.reset(Hazel::VertexArray::Create());
+        m_SquareVA.reset(Hazel::VertexArray::Create());
 
         float vertices[] = {
-            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f, // Bottom Left
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
             0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f, // Bottom Right
             0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f // Top
         };
+
         std::shared_ptr<Hazel::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
         Hazel::BufferLayout layout = {
@@ -29,15 +38,40 @@ public:
         };
         vertexBuffer->SetLayout(layout);
         m_VertexArray->AddVertexBuffer(vertexBuffer);
-
+        //In what order to take the vertices and draw the shape
         unsigned int indices[3] = {
             0, 1, 2 // Triangle
         };
         std::shared_ptr<Hazel::IndexBuffer> indexBuffer;
         indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
-        HZ_CORE_TRACE("SetIndexBuffer called, ptr = {0}", (void*)indexBuffer.get());
-
         m_VertexArray->SetIndexBuffer(indexBuffer);
+
+        float squareVertices[3 * 4] = {
+
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f
+        };
+        std::shared_ptr<Hazel::VertexBuffer> squarevertexBuffer;
+        squarevertexBuffer.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        // HZ_CORE_TRACE("squarevertexBuffer called, ptr = {0}", (void*)squarevertexBuffer.get());
+
+
+        squarevertexBuffer->SetLayout({
+            {Hazel::ShaderDataType::Float3, "a_Position"}
+        });
+        m_SquareVA->AddVertexBuffer(squarevertexBuffer);
+
+        unsigned int squareIndices[6] = {
+            0, 1, 2, // Triangle 1
+            2, 3, 0 // Triangle 2
+        };
+        std::shared_ptr<Hazel::IndexBuffer> squareIndexBuffer;
+        squareIndexBuffer.reset(Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(unsigned int)));
+        m_SquareVA->SetIndexBuffer(squareIndexBuffer);
+        // HZ_CORE_TRACE("squareIndexBuffer called, ptr = {0}", (void*)squareIndexBuffer.get());
+
         std::string vertexSrc = R"(
             #version 330 core
             layout(location = 0) in vec3 a_Position;
@@ -63,12 +97,39 @@ public:
                 color = v_Color;
             }
         )";
-        m_Shader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
+        m_Shader.reset( Hazel::Shader::Create(vertexSrc, fragmentSrc));
+
+        std::string squarevertexSrc = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_Position;
+
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_tranform;
+            out vec3 v_Position;
+
+            void main()
+            {
+                v_Position = a_Position;
+              
+                gl_Position = u_tranform*u_ViewProjection*vec4(a_Position, 1.0);
+            }
+        )";
+        std::string squarefragmentSrc = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+            in vec3 v_Position;
+          
+            void main()
+            {
+                color = vec4( 0.2,0.3,0.8,1.0); // Set the color to white
+                
+            }
+        )";
+        m_BlueShader.reset( Hazel::Shader::Create(squarevertexSrc, squarefragmentSrc));
     }
 
     void OnUpdate(Hazel::Timestep timestep) override
     {
-
         if (Hazel::Input::IsKeyPressed(HazelKey::LeftArrow))
         {
             m_CameraPosition.x -= c_CameraMoveSpeed * timestep; // Move left
@@ -89,11 +150,40 @@ public:
         if (Hazel::Input::IsKeyPressed(HazelKey::A))
         {
             m_CameraRotation += c_CameraRotationSpeed * timestep; // Move up
-            HZ_INFO((float)m_CameraRotation);
+
         }
         else if (Hazel::Input::IsKeyPressed(HazelKey::D))
         {
-            m_CameraRotation -= c_CameraRotationSpeed * timestep; // Move down
+            m_CameraRotation -= c_CameraRotationSpeed * timestep ; // Move down
+        }
+        if (Hazel::Input::IsKeyPressed(HazelKey::J))
+        {
+            m_squarePosition.x  -= c_CameraMoveSpeed * timestep;
+
+        }
+        else if (Hazel::Input::IsKeyPressed(HazelKey::L))
+        {
+            m_squarePosition.x  += c_CameraMoveSpeed * timestep;
+        }
+
+        if (Hazel::Input::IsKeyPressed(HazelKey::I))
+        {
+            m_squareRotation -= c_CameraRotationSpeed * timestep ;
+
+        }
+        else if (Hazel::Input::IsKeyPressed(HazelKey::K))
+        {
+            m_squareRotation += c_CameraRotationSpeed * timestep ;
+        }
+
+        if (Hazel::Input::IsKeyPressed(HazelKey::I))
+        {
+            m_squareRotation -= c_CameraRotationSpeed * timestep ;
+
+        }
+        else if (Hazel::Input::IsKeyPressed(HazelKey::K))
+        {
+            m_squareRotation += c_CameraRotationSpeed * timestep ;
         }
 
         Hazel::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
@@ -101,7 +191,15 @@ public:
         Hazel::Renderer::BegeinScene(m_Camera);
         m_Camera.SetPosition(m_CameraPosition);
         m_Camera.SetRotation(m_CameraRotation); // Reset rotation to 0
+        // std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_BlueShader)->Bind();
+        Hazel::Renderer::Submit(m_BlueShader, m_SquareVA);
+        m_Tranform = glm::translate(glm::mat4(1.0f), m_squarePosition)
+                    * glm::rotate(glm::mat4(1.0f), glm::radians(m_squareRotation), glm::vec3(0, 0, 1))
+                    * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+
+        Hazel::Renderer::SetTranform(m_Tranform);
         Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+
         Hazel::Renderer::EndScene();
     }
 
@@ -124,9 +222,14 @@ private:
     std::shared_ptr<Hazel::VertexArray> m_SquareVA;
     std::shared_ptr<Hazel::Shader> m_Shader;
     glm::vec3 m_CameraPosition = {0.0f, 0.0f, 0.0f};
+    glm::mat4 m_Tranform = glm::mat4(1.0f); // Identity matrix
+    glm::vec3 m_squarePosition = {0.0f, 0.0f, 0.0f};
+
     float m_CameraRotation = 0.0f; // in degrees, clockwise
+    float m_squareRotation = 0.0f;
     float c_CameraMoveSpeed = 1.f;
     float c_CameraRotationSpeed = 90.f;
+    float c_TranformnSpeed = 90.f;
 };
 
 class SandBox : public Hazel::Application

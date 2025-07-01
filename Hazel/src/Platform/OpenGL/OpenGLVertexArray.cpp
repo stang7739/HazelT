@@ -71,7 +71,7 @@ namespace Hazel
 
     void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
     {
-        HZ_CORE_TRACE("VertexArray::SetIndexBuffer called, ptr = {0}", (void*)indexBuffer.get());
+        // HZ_CORE_TRACE("VertexArray::SetIndexBuffer called, ptr = {0}", (void*)indexBuffer.get());
 
         glBindVertexArray(m_RendererID);
         indexBuffer->Bind();
