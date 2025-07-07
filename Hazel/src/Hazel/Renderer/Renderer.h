@@ -18,9 +18,10 @@ namespace Hazel
     class HAZEL_API Renderer
     {
     public:
+        static void init();
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
         static void BegeinScene(OrthographicCamera& camera);
-        static void Submit(const std::shared_ptr<Shader>& shader,const std::shared_ptr<VertexArray>& vertexArray);
+        static void Submit(const Ref<Shader>& shader,const Ref<VertexArray>& vertexArray);
         static void EndScene();
         static void SetTranform(glm::mat4 transform);
 

@@ -10,7 +10,7 @@ if (NOT TARGET spdlog)
 
 #    Put the glm target in the project view of the IDE
 #(e.g. Visual Studio / Xcode) into the "virtual folder" of ${third_party_folder}/glm.
-#    set_target_properties(spdlog PROPERTIES FOLDER ${third_party_folder}/spdlog)
+    set_target_properties(spdlog PROPERTIES FOLDER ${third_party_folder}/spdlog)
 endif ()
 
 if (NOT TARGET glfw)
@@ -69,4 +69,11 @@ if(NOT TARGET imgui)
     target_link_libraries(imgui PUBLIC glfw)
 
 endif()
+
+if(NOT TARGET stb_iamge)
+    add_subdirectory(stb_image)
+    target_link_libraries(Hazel PRIVATE stb_image)
+
+
+endif ()
 

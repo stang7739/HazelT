@@ -36,6 +36,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC glfw)
 target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)
 target_link_libraries(${TARGET_NAME} PUBLIC imgui)
 target_link_libraries(${TARGET_NAME} PUBLIC glad)
+target_link_libraries(${TARGET_NAME} PUBLIC stb_image)
 
 
 # Set export symbols for the library
