@@ -73,7 +73,8 @@ public:
         m_SquareVA->SetIndexBuffer(squareIndexBuffer);
         // HZ_CORE_TRACE("squareIndexBuffer called, ptr = {0}", (void*)squareIndexBuffer.get());
 
-        m_Shader.reset(Hazel::Shader::Create("assets/shaders/triangleshader.glsl"));
+        // m_Shader = (Hazel::Shader::Create("assets/shaders/triangleshader.glsl"));
+        auto textureshader = m_ShaderLibrary.Load("assets/shaders/triangleshader.glsl");
         // m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
 
         std::string squarevertexSrc = R"(
@@ -91,7 +92,7 @@ public:
             {
                 v_Position = a_Position;
                 v_TexCoord = a_TexCoord;
-              
+
                 gl_Position = u_tranform*u_ViewProjection*vec4(a_Position, 1.0);
             }
         )";
@@ -106,7 +107,8 @@ public:
                 color = texture(u_Texture,v_TexCoord); // Set the color to white
             }
         )";
-        m_BlueShader.reset(Hazel::Shader::Create(squarevertexSrc, squarefragmentSrc));
+        // m_BlueShader.reset(Hazel::Shader::Create("assets/shaders/squareshader.glsl"));
+        m_BlueShader=Hazel::Shader::Create("FloatColor",squarevertexSrc, squarefragmentSrc);
         m_Texture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
         m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
         std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_BlueShader)->Bind();
@@ -189,9 +191,9 @@ public:
             * glm::rotate(glm::mat4(1.0f), glm::radians(m_squareRotation), glm::vec3(0, 0, 1))
             * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
         Hazel::Renderer::SetTranform(m_Tranform);
-
-        m_Shader->Bind();
-        Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+        auto shader = m_ShaderLibrary.Get("triangleshader");
+        shader->Bind();
+        Hazel::Renderer::Submit(shader, m_VertexArray);
 
         Hazel::Renderer::EndScene();
     }
@@ -209,6 +211,7 @@ public:
     }
 
 private:
+    Hazel::ShaderLibrary m_ShaderLibrary;
     Hazel::OrthographicCamera m_Camera;
     Hazel::Ref<Hazel::VertexArray> m_VertexArray;
     Hazel::Ref<Hazel::Shader> m_BlueShader;

@@ -37,9 +37,17 @@ namespace Hazel
         std::string source = ReadFile(filePath);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
+
+        //Extract name from filepath
+        auto lastSlash = filePath.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = filePath.rfind('.');
+        auto count = lastDot == std::string::npos ? filePath.size() - lastSlash : lastDot - lastSlash;
+        m_Name = filePath.substr(lastSlash,count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+    OpenGLShader::OpenGLShader(const std::string& name,const std::string& vertexSrc, const std::string& fragmentSrc):
+        m_Name(name)
     {
         std::unordered_map<GLenum, std::string> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -50,7 +58,7 @@ namespace Hazel
     std::string OpenGLShader::ReadFile(const std::string& filePath)
     {
         std::string result;
-        std::ifstream in(filePath, std::ios::in, std::ios::binary);
+        std::ifstream in(filePath, std::ios::in| std::ios::binary);
         if (in)
         {
             in.seekg(0, std::ios::end);
@@ -96,7 +104,8 @@ namespace Hazel
     {
         // Create an empty vertex shader handle
         GLuint program = glCreateProgram();
-        std::vector<GLenum> glShaderIDs(shaderSources.size());
+        std::vector<GLenum> glShaderIDs;
+        glShaderIDs.reserve(shaderSources.size());
         for (auto& kv : shaderSources)
         {
             GLenum type = kv.first;
