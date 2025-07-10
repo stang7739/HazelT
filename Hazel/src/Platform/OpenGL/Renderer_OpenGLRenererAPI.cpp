@@ -7,12 +7,17 @@
 #include <glad/glad.h>
 
 
+#include "GLFW/glfw3.h"
 #include "Hazel/Renderer/Buffer.h"
 
 namespace Hazel
 {
     void OpenGLRenererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     {
+
+        glViewport(x,y,width,height);
+        HZ_INFO("""Viewport set to x: {0}, y: {1}, width: {2}, height: {3}", x, y, width, height);
+
     }
 
     void OpenGLRenererAPI::Init()

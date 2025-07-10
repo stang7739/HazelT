@@ -42,8 +42,9 @@ namespace Hazel
         void PushLayer(Layer* layer);
         void PushOverlayer(Layer* layer);
         void OnEvent(Event& e);
-        bool OnWindowClose(Event& e);
-        bool OnKeyPressed(Event& e);
+        bool OnWindowClose(WindowCloseEvent& e);
+        bool OnKeyPressed(KeyPressedEvent& e);
+        bool OnWindowResize(WindowResizeEvent& e);
         inline Window& GetWindow( ){return *m_Window;}
         inline static Application& Get(){return *s_Instance;}
 
@@ -57,6 +58,7 @@ namespace Hazel
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;
         float m_LastFrameTime = 0.0f;
+        bool m_Minimized = false;
     };
 
     Application* CreateApplication();

@@ -40,13 +40,10 @@ namespace Hazel
         Renderer::init();
         m_ImGuiLayer = new ImGuiLayer{};
         PushOverlayer(m_ImGuiLayer);
-
-
     }
 
     Application::~Application()
     {
-
     }
 
     void Application::PushLayer(Layer* layer)
@@ -66,6 +63,7 @@ namespace Hazel
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(HZ_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(Application::OnKeyPressed));
+        dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(Application::OnWindowResize));
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
             (*--it)->OnEvent(e);
@@ -84,13 +82,16 @@ namespace Hazel
         {
             //The number of seconds from the start of GLFW initialization to the current moment
             float time = (float)glfwGetTime();
-            Timestep timestep =  time - m_LastFrameTime;
+            Timestep timestep = time - m_LastFrameTime;
             m_LastFrameTime = time;
-
-            for (Layer* layer : m_LayerStack)
+            if (!m_Minimized)
             {
-                layer->OnUpdate(timestep);
+                for (Layer* layer : m_LayerStack)
+                {
+                    layer->OnUpdate(timestep);
+                }
             }
+
             m_ImGuiLayer->Begin();
             for (Layer* layer : m_LayerStack)
             {
@@ -106,20 +107,38 @@ namespace Hazel
         }
     }
 
-    bool Application::OnWindowClose(Event& e)
+    bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;
         return true;
     }
 
-    bool Application::OnKeyPressed(Event& e)
+    bool Application::OnKeyPressed(KeyPressedEvent& e)
     {
-        KeyPressedEvent& event = (KeyPressedEvent&)e;
-        if (event.GetKeyCode() == HazelKey::Escape)
+        if (e.GetKeyCode() == HazelKey::Escape)
         {
             m_Running = false;
             return true;
         }
+        return false;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent& e)
+    {
+        if (static_cast<WindowResizeEvent&>(e).GetHeight() == 0 ||
+            static_cast<WindowResizeEvent&>(e).GetWidth() == 0)
+        {
+            m_Minimized = true;
+            return false;
+        }
+        m_Minimized = false;
+        // int fbWidth, fbHeight;
+        // glfwGetFramebufferSize((GLFWwindow*)m_Window->GetNativeWindow(), &fbWidth, &fbHeight);
+        // glViewport(0, 0, fbWidth, fbHeight);
+        // HZ_INFO("""Viewport set to x: {0}, y: {1}, width: {2}, height: {3}", 0, 0, fbWidth, fbHeight);
+
+        Renderer::OnWindowResize(static_cast<WindowResizeEvent&>(e).GetWidth(),
+                                 static_cast<WindowResizeEvent&>(e).GetHeight());
         return false;
     }
 }

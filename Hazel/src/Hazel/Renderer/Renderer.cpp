@@ -4,6 +4,8 @@
 
 #include "Renderer.h"
 
+#include <glm/ext/matrix_transform.hpp>
+
 #include "OrthographicCamera.h"
 #include "RenderCommand.h"
 #include "Shader.h"
@@ -39,9 +41,16 @@ namespace Hazel
     void Renderer::EndScene()
     {
     }
-     void Renderer::SetTranform(glm::mat4 transform)
+     void Renderer::SetTranform(glm::vec3 squarePosition,float squareRotation)
     {
-        s_SceneData->transform = transform;
+        auto c_Tranform = glm::translate(glm::mat4(1.0f), squarePosition)
+           * glm::rotate(glm::mat4(1.0f), glm::radians(squareRotation), glm::vec3(0, 0, 1))
+           * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
+        s_SceneData->transform = c_Tranform;
+    }
+    void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+    {
+        RenderCommand::SetViewport(0,0,width,height);
     }
 
 };

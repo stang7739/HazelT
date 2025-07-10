@@ -14,7 +14,7 @@ void main()
 v_Position = a_Position;
 v_TexCoord = a_TexCoord;
 
-gl_Position = u_tranform*u_ViewProjection*vec4(a_Position, 1.0);
+gl_Position = u_ViewProjection * u_tranform * vec4(a_Position, 1.0);
 }
 #type fragment
 #version 330 core

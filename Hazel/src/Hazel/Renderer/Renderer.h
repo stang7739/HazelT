@@ -23,7 +23,8 @@ namespace Hazel
         static void BegeinScene(OrthographicCamera& camera);
         static void Submit(const Ref<Shader>& shader,const Ref<VertexArray>& vertexArray);
         static void EndScene();
-        static void SetTranform(glm::mat4 transform);
+        static void SetTranform(glm::vec3 squarePosition,float squareRotation);
+        static void OnWindowResize(uint32_t width, uint32_t height);
 
     private:
         struct SceneData
