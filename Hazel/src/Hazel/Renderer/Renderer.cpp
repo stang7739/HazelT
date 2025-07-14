@@ -20,7 +20,7 @@ namespace Hazel
 
 
     Renderer::SceneData* Renderer::s_SceneData = new SceneData;
-    void Renderer::BegeinScene(OrthographicCamera& camera)
+    void Renderer::BeginScene(OrthographicCamera& camera)
     {
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
     }

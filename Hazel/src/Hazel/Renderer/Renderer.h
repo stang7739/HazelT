@@ -20,7 +20,7 @@ namespace Hazel
     public:
         static void init();
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
-        static void BegeinScene(OrthographicCamera& camera);
+        static void BeginScene(OrthographicCamera& camera);
         static void Submit(const Ref<Shader>& shader,const Ref<VertexArray>& vertexArray);
         static void EndScene();
         static void SetTranform(glm::vec3 squarePosition,float squareRotation);
