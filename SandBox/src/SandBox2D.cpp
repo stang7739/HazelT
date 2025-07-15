@@ -19,8 +19,8 @@ SandBox2D::SandBox2D():Layer("Sandbox2D"),m_CameraController(1260.f / 720.f, tru
 }
 void SandBox2D::OnAttach()
 {
-    m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
-    m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+    m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+    m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 } //Executed when the layer is loaded into the stack
 void SandBox2D::OnDetach()
 {
@@ -28,17 +28,20 @@ void SandBox2D::OnDetach()
 void SandBox2D::OnUpdate(Hazel::Timestep timestep)
 {
     m_CameraController.OnUpdate(timestep);
+    Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
     Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-    Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-    // Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-    // Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-    Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f, 0.0f }, { 0.8f, 0.8f}, m_ChernoLogoTexture);
+
+    Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+    Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+    Hazel::Renderer2D::DrawQuad({ 0.f, 0.f, -0.1f }, { 10.0f, 10.0f}, m_CheckerboardTexture);
     Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f, 0.0f }, { 0.8f, 0.8f}, m_CheckerboardTexture);
     Hazel::Renderer2D::EndScene();
+    Hazel::Renderer::EndScene();
 
 } //Update logic every frame
 void SandBox2D::OnEvent(Hazel::Event& event)
 {
+    m_CameraController.OnEvent(event);
 } //Respond to events that are distributed by the event system
 void SandBox2D::OnImGuiRender()
 {
