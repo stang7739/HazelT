@@ -11,7 +11,7 @@
 
 #include "Hazel/Renderer/Renderer2D.h"
 #include <chrono>
-#include <Hazel/Debug/Instrumentor.h>
+
 
 template<typename Fn>
 class Timer
@@ -50,12 +50,14 @@ private:
 #define PROFILE_SCOPE(name) Timer timer##__LINE__(name,[&](ProfileResult profileResult ){m_ProfileResults.push_back(profileResult);})
 SandBox2D::SandBox2D():Layer("Sandbox2D"),m_CameraController(1260.f / 720.f, true) // Initialize the camera with orthographic projection
 {
+    HZ_PROFILE_FUNCTION();
     Hazel::Renderer2D::Init();
 
 
 }
 void SandBox2D::OnAttach()
 {
+    HZ_PROFILE_FUNCTION();
     m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
     m_CheckerboardTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 } //Executed when the layer is loaded into the stack
@@ -91,6 +93,7 @@ void SandBox2D::OnUpdate(Hazel::Timestep timestep)
 } //Update logic every frame
 void SandBox2D::OnEvent(Hazel::Event& event)
 {
+    HZ_PROFILE_FUNCTION();
     m_CameraController.OnEvent(event);
 } //Respond to events that are distributed by the event system
 void SandBox2D::OnImGuiRender()

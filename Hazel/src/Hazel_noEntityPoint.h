@@ -23,4 +23,5 @@
 #include<Hazel/Renderer/OrthographicCamera.h>
 #include "Hazel/Events/OrthographicCameraController.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include <Hazel/Debug/Instrumentor.h>
 #endif //HAZEL_NOENTITYPOINT_H
