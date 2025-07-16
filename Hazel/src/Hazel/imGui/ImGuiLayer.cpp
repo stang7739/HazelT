@@ -303,8 +303,8 @@ namespace Hazel
     } //Executed when the layer is removed from the stack
     void ImGuiLayer::OnImGuiRender()
     {
-        static bool show = true;
-        ImGui::ShowDemoWindow(&show); //The ImGui Demo window is displayed
+        // static bool show = true;
+        // ImGui::ShowDemoWindow(&show); //The ImGui Demo window is displayed
     }
 
     void ImGuiLayer::Begin()

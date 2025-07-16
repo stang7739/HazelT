@@ -87,12 +87,12 @@ public:
     {
         //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
         ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
-        ImGuiContext* ctx = ImGui::GetCurrentContext();
+        // ImGuiContext* ctx = ImGui::GetCurrentContext();
         // HZ_CORE_TRACE("ExampleLayer ImGui Context: {0}", (void*)ctx);
-        ImGui::Begin("SandBox2D");
-        glm::vec4 color = {0.2f, 0.3f, 0.8f, 1.0f};
-        ImGui::ColorEdit4("squre Color", glm::value_ptr(color));
-        ImGui::End();
+        // ImGui::Begin("SandBox");
+        // glm::vec4 color = {0.2f, 0.3f, 0.8f, 1.0f};
+        // ImGui::ColorEdit4("squre Color", glm::value_ptr(color));
+        // ImGui::End();
     }
     void OnEvent(Hazel::Event& event) override
     {

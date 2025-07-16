@@ -20,6 +20,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <Hazel/Core/Log.h>
+#include <Hazel/Debug/Instrumentor.h>
 
 #ifdef HZ_PLATFORM_WINDOWS
 
