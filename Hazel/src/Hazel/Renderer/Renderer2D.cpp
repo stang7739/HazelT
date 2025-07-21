@@ -21,7 +21,7 @@ namespace Hazel
         Ref<VertexArray> QuadVertexArray;
 
         Ref<Shader> TextureShader;
-        Ref<Texture2D>WhiteTexture;
+        Ref<Texture2D> WhiteTexture;
     };
 
     static Renderer2DStorage* s_Data = new Renderer2DStorage();
@@ -56,10 +56,10 @@ namespace Hazel
         s_Data->QuadVertexArray->SetIndexBuffer(squareIndexBuffer);
         // HZ_CORE_TRACE("squareIndexBuffer called, ptr = {0}", (void*)squareIndexBuffer.get());
 
-        s_Data->WhiteTexture = Texture2D::Create(1,1);
+        s_Data->WhiteTexture = Texture2D::Create(1, 1);
         uint32_t whiteTextureData = 0xffffffff; // White color in RGBA format
 
-        s_Data->WhiteTexture->setData(&whiteTextureData,sizeof(uint32_t));
+        s_Data->WhiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
 
 
         s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
@@ -79,7 +79,6 @@ namespace Hazel
     {
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
     }
 
     void Renderer2D::EndScene()
@@ -98,26 +97,74 @@ namespace Hazel
             glm::mat4(1.0f), glm::vec3(size, 1.0f));
         s_Data->TextureShader->SetMat4("u_Transform", transform);
         s_Data->TextureShader->SetFloat4("u_Color", color);
+        s_Data->TextureShader->SetFloat("u_TillingFactor", 1.0f); // Set default tilling factor
         s_Data->WhiteTexture->Bind(0); // Bind the white texture
 
         s_Data->QuadVertexArray->Bind();
         RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> texture)
+    void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> texture,
+                              float tillingFactor, const glm::vec4& tintColor)
     {
-        DrawQuad({position.x, position.y, 0.0f}, size, texture);
+        DrawQuad({position.x, position.y, 0.0f}, size, texture, tillingFactor, tintColor);
     }
 
-    void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture)
+    void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D> texture,
+                              float tillingFactor, const glm::vec4& tintColor)
     {
         s_Data->TextureShader->Bind();
-        s_Data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)); // Set color to white
+        s_Data->TextureShader->SetFloat4("u_Color", tintColor); // Set color to white
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(
             glm::mat4(1.0f), glm::vec3(size, 1.0f));
         s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->TextureShader->SetFloat("u_TillingFactor", tillingFactor); // Set the tilling factor
         texture->Bind(0);
 
+        s_Data->QuadVertexArray->Bind();
+        RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
+                                     const glm::vec4& color)
+    {
+        DrawRotatedQuad({position.x, position.y, 0.0f}, size, rotation, color);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
+                                     const glm::vec4& color)
+    {
+        s_Data->TextureShader->Bind();
+        s_Data->TextureShader->SetFloat4("u_Color", color);
+        s_Data->TextureShader->SetFloat("u_TillingFactor", 1.0f); // Set default tilling factor
+        glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
+            glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
+            glm::mat4(1.f), glm::vec3(size, 1.f));
+        s_Data->TextureShader->SetMat4("u_Transform", transform);
+        s_Data->WhiteTexture->Bind(0); // Bind the white texture
+        s_Data->QuadVertexArray->Bind();
+        RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
+                                     const Ref<Texture2D> texture,
+                                     float tillingFactor, const glm::vec4& tintColor)
+    {
+        DrawRotatedQuad({position.x, position.y, 0.0f}, size, rotation, texture, tillingFactor, tintColor);
+    }
+
+    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
+                                     const Ref<Texture2D> texture,
+                                     float tillingFactor, const glm::vec4& tintColor)
+    {
+        s_Data->TextureShader->Bind();
+        s_Data->TextureShader->SetFloat4("u_Color", tintColor);
+        s_Data->TextureShader->SetFloat("u_TillingFactor", tillingFactor); // Set default tilling factor
+        glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
+            glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
+            glm::mat4(1.f), glm::vec3(size, 1.f));
+        s_Data->TextureShader->SetMat4("u_Transform", transform);
+        texture->Bind(0); // Bind the white texture
         s_Data->QuadVertexArray->Bind();
         RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
     }

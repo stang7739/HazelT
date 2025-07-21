@@ -2,7 +2,7 @@
 // Created by stang on 25-6-12.
 //
 
-#include "Renderer_OpenGLRenererAPI.h"
+#include "OpenGLRenererAPI.h"
 
 #include <glad/glad.h>
 
@@ -16,7 +16,7 @@ namespace Hazel
     {
 
         glViewport(x,y,width,height);
-        HZ_INFO("""Viewport set to x: {0}, y: {1}, width: {2}, height: {3}", x, y, width, height);
+        HZ_INFO("Viewport set to x: {}, y: {}, width: {}, height: {}", x, y, width, height);
 
     }
 

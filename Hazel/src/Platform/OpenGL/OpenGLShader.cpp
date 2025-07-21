@@ -69,7 +69,7 @@ namespace Hazel
         }
         else
         {
-            HZ_CORE_ERROR("Could not open file {0}", filePath);
+            HZ_CORE_ERROR("Could not open file {}", filePath);
         }
         return result;
     }
@@ -134,7 +134,7 @@ namespace Hazel
                 // We don't need the shader anymore.
                 glDeleteShader(Shader);
 
-                HZ_CORE_ERROR("{0}", infoLog.data());
+                HZ_CORE_ERROR("{}", infoLog.data());
                 HZ_CORE_ASSERT(false, "Vertex shader compilation failure!");
                 break;
             }
@@ -164,7 +164,7 @@ namespace Hazel
             for (auto id : glShaderIDs)
                 glDeleteShader(id);
 
-            HZ_CORE_ERROR("{0}", infoLog.data());
+            HZ_CORE_ERROR("{}", infoLog.data());
             HZ_CORE_ASSERT(false, "Shader link failure!");
             return;
         }

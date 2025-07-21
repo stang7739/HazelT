@@ -76,7 +76,7 @@ namespace Hazel
     {
         WindowResizeEvent e(1260, 720);
 
-        HZ_TRACE(e);
+        HZ_TRACE("{}",e);
 
         while (m_Running)
         {

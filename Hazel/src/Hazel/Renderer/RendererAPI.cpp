@@ -5,7 +5,7 @@
 #include "RendererAPI.h"
 
 #include "Hazel/Core/Core.h"
-#include "Platform/OpenGL/Renderer_OpenGLRenererAPI.h"
+#include "Platform/OpenGL/OpenGLRenererAPI.h"
 
 namespace Hazel
 {

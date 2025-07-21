@@ -4,11 +4,15 @@ set(TARGET_NAME "sandBox")
 add_executable(${TARGET_NAME} src/SandBoxApp.cpp)
 ## Set source files (all .cpp files in the src directory)
 file(GLOB_RECURSE SANDBOX_SOURCES
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/SandBox2D.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+file(GLOB_RECURSE SANDBOX_HANDLES
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 )
 
 target_sources(${TARGET_NAME} PRIVATE
         ${SANDBOX_SOURCES}
+        ${SANDBOX_HANDLES}
 
 )
 

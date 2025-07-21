@@ -21,7 +21,7 @@ namespace Hazel
     HazelKey GlfwKeyToHazelKey(int key);
     static void GLFWErrorCallback(int error, const char* description)
     {
-        HZ_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+        HZ_CORE_ERROR("GLFW Error ({}): {}", error, description);
     }
 
     WindowsWindow::WindowsWindow(const WindowProps& props) { Init(props); }
@@ -37,7 +37,7 @@ namespace Hazel
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
 
-        HZ_CORE_INFO("Create Window {0} ({1}, {2}) ", props.Title, props.Width, props.Height);
+        HZ_CORE_INFO("Create Window {} ({}, {}) ", props.Title, props.Width, props.Height);
 
         if (!s_GLFWInitialized)
         {
