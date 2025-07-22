@@ -30,7 +30,7 @@ private:
     float m_Time = 0.0f;
     float m_EnginPower = 0.1f; // Engine power
     float m_Gravity = 0.4f;
-    float m_SmokeEmitInterval = 0.4f; // Time interval for emitting smoke
+    float m_SmokeEmitInterval = 0.1f; // Time interval for emitting smoke
     float m_SmokeNextEmitTime = m_SmokeEmitInterval;
 
 

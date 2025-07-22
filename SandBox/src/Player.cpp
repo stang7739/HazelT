@@ -34,8 +34,9 @@ void Player::LoadAssets()
 
 void Player::OnUpdate(Hazel::Timestep timestep)
 {
-    HZ_INFO("Player::OnUpdate");
+    // HZ_INFO("Player::OnUpdate");
     m_Time += timestep;
+    m_Position += m_Velocity * (float)timestep;
     if(Hazel::Input::IsKeyPressed(HazelKey::Space))
     {
         m_Velocity.y += m_EnginPower;
@@ -54,7 +55,7 @@ void Player::OnUpdate(Hazel::Timestep timestep)
         m_Velocity.y -= m_Gravity;
     }
     m_Velocity.y = glm::clamp(m_Velocity.y, -20.f,20.f);
-    m_Position += m_Velocity * (float)timestep;
+
 
     if(m_Time > m_SmokeNextEmitTime)
     {
@@ -62,6 +63,9 @@ void Player::OnUpdate(Hazel::Timestep timestep)
         m_ParticleSystem.Emit(m_SmokeParticle) ;
         m_SmokeNextEmitTime += m_SmokeEmitInterval;
     }
+
+    // m_SmokeParticle.Position = m_Position;
+    // m_ParticleSystem.Emit(m_SmokeParticle);
     m_ParticleSystem.OnUpdate(timestep);
 }
 

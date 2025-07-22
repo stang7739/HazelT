@@ -36,7 +36,7 @@ private:
         bool Active = false;
     };
     std::vector<Particle> m_ParticlePool;
-    uint32_t m_PoolIndex = 999;
+    uint32_t m_PoolIndex = 1;
 };
 
 

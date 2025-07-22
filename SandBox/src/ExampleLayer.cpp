@@ -18,7 +18,7 @@
         };
 
         Hazel::Ref<Hazel::VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
+        vertexBuffer = (Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
         Hazel::BufferLayout layout = {
             {Hazel::ShaderDataType::Float3, "a_Position"},
             {Hazel::ShaderDataType::Float4, "a_Color"}
@@ -30,7 +30,7 @@
             0, 1, 2 // Triangle
         };
         Hazel::Ref<Hazel::IndexBuffer> indexBuffer;
-        indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
+        indexBuffer=(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(unsigned int)));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
 

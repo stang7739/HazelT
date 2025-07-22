@@ -93,8 +93,8 @@ void SandBox2D::OnUpdate(Hazel::Timestep timestep)
         HZ_PROFILE_SCOPE("Renderer Draw");
         Hazel::Renderer2D::DrawQuad({-10.0f, 0.0f}, {0.8f, 0.8f}, {0.8f, 0.2f, 0.3f, 1.0f});
         Hazel::Renderer2D::DrawQuad({0.5f, -0.5f}, {0.5f, 0.75f}, {0.2f, 0.3f, 0.8f, 1.0f});
-        Hazel::Renderer2D::DrawQuad({0.f, 0.f, -0.1f}, {10.0f, 10.0f}, m_CheckerboardTexture, 10.f);
-        Hazel::Renderer2D::DrawQuad({0.5f, -0.5f, 0.0f}, {0.8f, 0.8f}, m_CheckerboardTexture);
+        Hazel::Renderer2D::DrawQuad({0.f, 0.f, -0.1f}, {10.0f, 10.0f}, m_CheckerboardTexture, 10.f,{1,1,1,1});
+        Hazel::Renderer2D::DrawQuad({0.5f, -0.5f, 0.0f}, {0.8f, 0.8f}, m_CheckerboardTexture,1.f,{1,1,1,1});
         Hazel::Renderer2D::DrawQuad({0.6f, -0.6f, 0.0f}, {0.8f, 0.8f}, m_CheckerboardTexture);
         Hazel::Renderer2D::DrawRotatedQuad({0.5f, -0.5f, 0.0f}, {0.8f, 0.8f}, 30, m_CheckerboardTexture);
         Hazel::Renderer2D::EndScene();

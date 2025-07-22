@@ -36,14 +36,17 @@ void ParticleSystem::Emit(const ParticleProps& particleProps)
     //Life
     particle.LifeTime = particleProps.LifeTime;
     particle.LifeRemaining = particleProps.LifeTime;
-
+    float pool = --m_PoolIndex % m_ParticlePool.size();
+    // 4294967295 % 1000 = 295
     m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+    HZ_INFO("m_PoolIndex:{}", pool);
+    // m_PoolIndex = (m_PoolIndex - 1 + m_ParticlePool.size()) % m_ParticlePool.size();
 
 }
 
 void ParticleSystem::OnUpdate(Hazel::Timestep timestep)
 {
-    HZ_INFO("ParticleSystem::OnUpdate");
+    // HZ_INFO("ParticleSystem::OnUpdate");
     for(auto& particle :m_ParticlePool)
     {
         if(!particle.Active)
@@ -57,6 +60,7 @@ void ParticleSystem::OnUpdate(Hazel::Timestep timestep)
         particle.LifeRemaining -= timestep;
         particle.Position += particle.Velocity * (float)timestep;
         particle.Rotation += 0.01f * (float)timestep; // Rotate the particle slightly
+
     }
 }
 
