@@ -34,6 +34,7 @@ namespace Hazel
         case RendererAPI::API::OpenGL:
             return std::make_shared<OpenGLShader>(filePath);
         }
+        return nullptr; // Added return statement to avoid compiler warning
     }
 
     void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)

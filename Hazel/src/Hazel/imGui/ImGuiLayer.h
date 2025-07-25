@@ -24,7 +24,7 @@ public:
     virtual void OnImGuiRender() override;
     inline static ImGuiContext* GetContext(){return Context_;}
     // virtual void OnUpdate();//Update logic every frame
-    // virtual void OnEvent(Event& event);//Respond to events that are distributed by the event system
+    virtual void OnEvent(Event& event);//Respond to events that are distributed by the event system
     void Begin();
     void End();
     private:

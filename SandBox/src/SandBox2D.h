@@ -38,6 +38,10 @@ private:
     };
 
     std::vector<ProfileResult> m_ProfileResults;
+    float m_Rotation = 0.0f;
+    float m_Speed = 0.5f;
+    int m_Count = 1;
+    int m_speedsquare = 5.f;
 
 };
 
