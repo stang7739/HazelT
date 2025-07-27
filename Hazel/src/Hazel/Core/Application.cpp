@@ -112,7 +112,10 @@ namespace Hazel
         m_Running = false;
         return true;
     }
-
+    void Application::Close()
+    {
+        m_Running = false;
+    }
     bool Application::OnKeyPressed(KeyPressedEvent& e)
     {
         if (e.GetKeyCode() == HazelKey::Escape)

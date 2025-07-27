@@ -64,6 +64,10 @@ namespace Hazel
 
     }
 
+    void OrthographicCameraController::CalculateView()
+    {
+
+    }
 
 
     bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)

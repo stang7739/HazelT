@@ -7,6 +7,10 @@
 #include "Hazel_noEntityPoint.h"
 
 
+namespace Hazel
+{
+    class Framebuffer;
+}
 
 namespace Hazel
 {
@@ -30,6 +34,7 @@ private:
     Hazel::Ref<Hazel::Shader> m_BlueShader;
 
     Hazel::Ref<Hazel::Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture;
+    Hazel::Ref<Hazel::SubTexture2D> m_TextureStairs;
     glm::vec4 m_SquareColor = {0.2f, 0.3f, 0.8f, 1.0f};
     struct ProfileResult
     {
@@ -42,6 +47,7 @@ private:
     float m_Speed = 0.5f;
     int m_Count = 1;
     int m_speedsquare = 5.f;
+    Hazel::Ref<Hazel::Framebuffer> m_Framebuffer ;
 
 };
 

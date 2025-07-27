@@ -9,6 +9,7 @@
 namespace Hazel {
     template<typename T>
  using Scope = std::unique_ptr<T>;
+    //typename ... Args means that any number and type of arguments can be accepted
     template<typename T, typename ... Args>
     constexpr Scope<T> CreateScope(Args&& ... args)
     {
@@ -17,7 +18,7 @@ namespace Hazel {
         template<typename T>
  using Ref = std::shared_ptr<T>;
     template<typename T, typename ... Args>
-    constexpr Scope<T> CreateRef(Args&& ... args)
+    constexpr Ref<T> CreateRef(Args&& ... args)
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
