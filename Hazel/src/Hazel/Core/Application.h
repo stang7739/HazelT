@@ -33,7 +33,7 @@ namespace Hazel
     {
 
     public:
-        Application();
+        Application(const std::string& name = "Hazel Application");
         //Virtual constructor function:
         //Support class polymorphism Ensure that the derived class object created by the base pointer
         //calls the corresponding destructor to properly free up memory
@@ -48,6 +48,7 @@ namespace Hazel
         inline Window& GetWindow( ){return *m_Window;}
         void Close();
         inline static Application& Get(){return *s_Instance;}
+        ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
     private:
         //s_Instance is a static pointer member variable of the Application class

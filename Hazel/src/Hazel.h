@@ -14,7 +14,7 @@
 #include <Hazel/Events/MouseEvent.h>
 #include <Hazel/Core/Timestep.h>
 
-#include <Hazel/Events/OrthographicCameraController.h>
+#include <Hazel/Renderer/OrthographicCameraController.h>
 
 //---------Renderer-----------
 #include<Hazel/Renderer/RendererAPI.h>

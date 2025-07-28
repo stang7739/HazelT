@@ -12,6 +12,7 @@
      class WindowsInput : public Input
      {
      protected:
+
          virtual bool IsKeyPressedImpl(HazelKey Keycode) override;
          virtual bool IsMouseButtonPressedImpl(HazelKey Button) override;
          virtual std::pair<float,float>GetMousePositionImpl() override;

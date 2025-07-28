@@ -9,3 +9,4 @@ add_compile_definitions(_UTF8)
 #Load the cmake of the word directory
 add_subdirectory(Hazel)
 add_subdirectory(SandBox)
+add_subdirectory(Hazelnut)

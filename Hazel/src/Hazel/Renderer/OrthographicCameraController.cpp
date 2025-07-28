@@ -4,9 +4,9 @@
 
 #include "OrthographicCameraController.h"
 
-#include "ApplicationEvent.h"
-#include "Event.h"
-#include "MouseEvent.h"
+#include "Hazel/Core/Application.h"
+#include "Hazel/Events/Event.h"
+#include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Core/Input.h"
 #include "Hazel/Core/Timestep.h"
 
@@ -69,6 +69,11 @@ namespace Hazel
 
     }
 
+    void OrthographicCameraController::OnResize(float width,float height)
+    {
+        m_AspectRatio = width / height;
+        m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+    }
 
     bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
     {
@@ -84,8 +89,7 @@ namespace Hazel
 
             return false; // Return false to allow further processing of the event
         }
-        m_AspectRatio = static_cast<WindowResizeEvent&>(e).GetWidth() /  static_cast<WindowResizeEvent&>(e).GetHeight();
-        m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        OnResize(e.GetWidth(),e.GetHeight());
         return false; // Return false to allow further processing of the event
     }
 }

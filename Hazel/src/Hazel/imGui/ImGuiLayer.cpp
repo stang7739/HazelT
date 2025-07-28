@@ -339,12 +339,13 @@ namespace Hazel
     }
     void ImGuiLayer::OnEvent(Event& e)
     {
-        ImGuiIO& io = ImGui::GetIO();
-        e.Handled |= e.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse;
-        e.Handled |= e.IsInCategory(EventCategoryKeyBoard) && io.WantCaptureKeyboard;
+        if(m_BlockEvent)
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            e.Handled |= e.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse;
+            e.Handled |= e.IsInCategory(EventCategoryKeyBoard) && io.WantCaptureKeyboard;
+        }
     }
-
-
 
     // void ImGuiLayer::OnUpdate()
     // {

@@ -27,8 +27,9 @@ public:
     virtual void OnEvent(Event& event);//Respond to events that are distributed by the event system
     void Begin();
     void End();
+    void BlockEvents(bool block){m_BlockEvent = block;}
     private:
-
+    bool m_BlockEvent = true;
     // bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
     // bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
     // bool OnMouseMoveEvent(MouseMoveEvent& e);

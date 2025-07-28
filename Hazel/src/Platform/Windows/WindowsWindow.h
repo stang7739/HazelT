@@ -35,7 +35,7 @@ namespace Hazel
         void Shutdown() ;
 
         GLFWwindow* m_window;
-        GraphicsContext* m_Context;
+        Scope<GraphicsContext> m_Context;
         struct WindowData
         {
             std::string Title;

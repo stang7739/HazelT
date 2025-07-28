@@ -2,7 +2,7 @@
 // Created by stang on 25-7-11.
 //
 
-#include "SandBox2D.h"
+#include "EditorLayer.h"
 
 #include <imgui.h>
 #include <cstdint>
@@ -61,14 +61,14 @@ private:
 
 #define PROFILE_SCOPE(name) Timer timer##__LINE__(name,[&](ProfileResult profileResult ){m_ProfileResults.push_back(profileResult);})
 
-SandBox2D::SandBox2D(): Layer("Sandbox2D"), m_CameraController(1260.f / 720.f, true), m_SquareColor(1, 1, 1, 1.f)
+EditorLayer::EditorLayer(): Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true), m_SquareColor(1, 1, 1, 1.f)
 // Initialize the camera with orthographic projection
 {
     HZ_PROFILE_FUNCTION();
     Hazel::Renderer2D::Init();
 }
 
-void SandBox2D::OnAttach()
+void EditorLayer::OnAttach()
 {
     HZ_PROFILE_FUNCTION();
     m_ChernoLogoTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
@@ -79,14 +79,16 @@ void SandBox2D::OnAttach()
     fbspec.Height = 720;
     m_Framebuffer = Hazel::Framebuffer::Create(fbspec);
 } //Executed when the layer is loaded into the stack
-void SandBox2D::OnDetach()
+void EditorLayer::OnDetach()
 {
 } //Executed when the layer is removed from the stack
-void SandBox2D::OnUpdate(Hazel::Timestep timestep)
+void EditorLayer::OnUpdate(Hazel::Timestep timestep)
 {
     m_Rotation = m_Rotation <= 180 ? (m_Rotation += 1 * m_Speed) : 0;
     HZ_PROFILE_FUNCTION();
-    // PROFILE_SCOPE("SandBox2D::OnUpdate");
+    // PROFILE_SCOPE("EditorLayer::OnUpdate");
+    if(m_ViewportFocused)
+        m_CameraController.OnUpdate(timestep);
     Hazel::Renderer2D::ResetStats();
     m_Framebuffer->Bind();
     {
@@ -137,12 +139,12 @@ void SandBox2D::OnUpdate(Hazel::Timestep timestep)
         m_Framebuffer->Unbind();
     }
 } //Update logic every frame
-void SandBox2D::OnEvent(Hazel::Event& event)
+void EditorLayer::OnEvent(Hazel::Event& event)
 {
     HZ_PROFILE_FUNCTION();
     m_CameraController.OnEvent(event);
 } //Respond to events that are distributed by the event system
-void SandBox2D::OnImGuiRender()
+void EditorLayer::OnImGuiRender()
 {
     HZ_PROFILE_FUNCTION();
     // Note: Switch this to true to enable dockspace
@@ -219,19 +221,37 @@ void SandBox2D::OnImGuiRender()
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
         ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-
-        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image(TextureIDToImGuiHandle(textureID), ImVec2{1280.0f, 720.0f});
-
-        textureID = m_Framebuffer->GetDepthAttachmentRendererID();
-        ImGui::Image(TextureIDToImGuiHandle(textureID), ImVec2{1280.0f, 720.0f});
+        //
+        // uint32_t textureColorID = m_Framebuffer->GetColorAttachmentRendererID();
+        // ImGui::Image(TextureIDToImGuiHandle(textureColorID), ImVec2{1280.0f, 720.0f});
+        //
+        // textureID = m_Framebuffer->GetDepthAttachmentRendererID();
+        //
+        // ImGui::Image(TextureIDToImGuiHandle(textureID), ImVec2{1280.0f, 720.0f});
         ImGui::End();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("Viewport");
+        m_ViewportFocused = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        Hazel::Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        if(m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+        {
+            m_Framebuffer->Resize((uint32_t)viewportPanelSize.x,(uint32_t)viewportPanelSize.y);
+            m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+            m_CameraController.OnResize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+        }
+        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+        ImGui::Image((void*)textureID,ImVec2{m_ViewportSize.x,m_ViewportSize.y},ImVec2{0,1},ImVec2{1,0});
+        ImGui::End();
+        ImGui::PopStyleVar();
 
         ImGui::End();
     }
     else
     {
-        ImGui::Begin("SandBox2D");
+        ImGui::Begin("EditorLayer");
         ImGui::ColorEdit4("squre Color", glm::value_ptr(m_SquareColor));
         ImGui::SliderFloat("Rotation speed", &m_Speed, 0.0f, 10.0f);
         ImGui::InputInt("background squares", &m_speedsquare);

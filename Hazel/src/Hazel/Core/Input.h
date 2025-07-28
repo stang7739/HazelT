@@ -6,6 +6,7 @@
  #define INPUT_H
  #include <utility>
 
+#include "Base.h"
  #include "Hazel/Events/KeyCode.h"
 
  namespace Hazel
@@ -19,6 +20,10 @@
          static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
          static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
          static void SetInstance(Input* instance) { s_Instance = instance; }
+         Ref<Input> Create();
+
+
+
 
      protected:
          virtual bool IsKeyPressedImpl(HazelKey Keycode) = 0;
