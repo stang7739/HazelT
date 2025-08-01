@@ -10,31 +10,32 @@
 namespace Hazel
 {
     class OpenGLShader;
-}
 
 
-class Hazelnet : public Hazel::Application
-{
-public:
-    Hazelnet() : Hazel::Application("Hazelnut")
+
+    class Hazelnet : public Application
     {
-        //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
-        ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
+    public:
+        Hazelnet() : Application("Hazelnut")
+        {
+            //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
+            ImGui::SetCurrentContext(ImGuiLayer::GetContext());
 
-        // PushLayer(new ExampleLayer());
+            // PushLayer(new ExampleLayer());
 
 
-        PushLayer(new EditorLayer());
-        // PushLayer(new GameLayer());
-    }
+            PushLayer(new EditorLayer());
+            // PushLayer(new GameLayer());
+        }
 
-    ~Hazelnet()
+        ~Hazelnet()
+        {
+        }
+    };
+
+    //Create a SanBox Factory Pattern Abstraction of the application entry point
+    Application* CreateApplication()
     {
+        return new Hazelnet;
     }
-};
-
-//Create a SanBox Factory Pattern Abstraction of the application entry point
-Hazel::Application* Hazel::CreateApplication()
-{
-    return new Hazelnet;
 }

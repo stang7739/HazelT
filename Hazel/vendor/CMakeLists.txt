@@ -70,10 +70,22 @@ if(NOT TARGET imgui)
 
 endif()
 
-if(NOT TARGET stb_iamge)
+if(NOT TARGET stb_image)
     add_subdirectory(stb_image)
-    target_link_libraries(Hazel PRIVATE stb_image)
+endif ()
 
-
+if(NOT TARGET entt)
+    # EnTT is a header-only library
+    add_library(entt INTERFACE)
+    target_include_directories(entt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/entt/include)
+    
+    # Optional: Add C++ standard requirement for entt
+    target_compile_features(entt INTERFACE cxx_std_17)
+    
+    # Optional: Set folder for IDE organization
+    set_target_properties(entt PROPERTIES FOLDER ${third_party_folder}/entt)
+    
+    # Create alias for better namespace management
+    add_library(entt::entt ALIAS entt)
 endif ()
 

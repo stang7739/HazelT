@@ -31,7 +31,7 @@ namespace Hazel
 
     Application::Application(const std::string& name )
     {
-        HZ_CORE_ASSERT(!s_Instance, "Application already exit")
+        HZ_CORE_ASSERT(!s_Instance, "Application already exit");
         HZ_CORE_INFO("Application created");
 
         s_Instance = this;

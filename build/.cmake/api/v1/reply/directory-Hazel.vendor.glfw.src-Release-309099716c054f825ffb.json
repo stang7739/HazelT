@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "Hazel/vendor/glfw/src",
+		"source" : "Hazel/vendor/glfw/src"
+	}
+}

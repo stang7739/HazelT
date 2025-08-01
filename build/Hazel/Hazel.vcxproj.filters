@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\build\Hazel\CMakeFiles\Hazel.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\LayerStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\ApplicationEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\KeyEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\MouseEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\GraphicsContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\OrthographicCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\OrthographicCameraController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\RenderCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Renderer2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\RendererAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\SubTexture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\VertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\imGui\ImGuiLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLRenererAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\Windows\WindowsInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\hzpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\EntityPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\LayerStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Timestep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Core\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Debug\Instrumentor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\ApplicationEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\KeyCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\KeyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\MouseEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\GraphicsContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\OrthographicCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\OrthographicCameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\RenderCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Renderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\RendererAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\SubTexture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\VertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\imGui\ImGuiLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel_noEntityPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLFramebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLRenererAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLVertexArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\Windows\WindowsInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\Windows\WindowsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\hzpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\build\Hazel\CMakeFiles\Hazel.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\build\Hazel\CMakeFiles\Hazel.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\build\Hazel\CMakeFiles\Hazel.dir\MinSizeRel\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\build\Hazel\CMakeFiles\Hazel.dir\RelWithDebInfo\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C57B3D82-8EFB-368B-8359-0ED273C52C06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{97B849A9-020B-37A8-8E61-C63194A92485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4CCFFB40-F1D6-3BA0-90E0-4F7E50CC77AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

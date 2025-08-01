@@ -1,0 +1,1043 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "bin/RelWithDebInfo/Hazel.dll"
+		},
+		{
+			"path" : "lib/RelWithDebInfo/Hazel.lib"
+		},
+		{
+			"path" : "bin/RelWithDebInfo/Hazel.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"target_compile_definitions",
+			"add_compile_definitions",
+			"target_include_directories",
+			"target_precompile_headers"
+		],
+		"files" : 
+		[
+			"Hazel/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 14,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 42,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 43,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 45,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 46,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 47,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 52,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 66,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 67,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 55,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 8,
+				"parent" : 12
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 44,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 48,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /EHsc /O2 /Ob1 /DNDEBUG -std:c++latest -MD -Zi"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "/utf-8"
+				},
+				{
+					"fragment" : "/YcD:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx /FpD:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/Hazel.dir/RelWithDebInfo/cmake_pch.pch /FID:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 7,
+					"define" : "HZ_BUILD_DLL"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "HZ_DEBUG"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "HZ_ENABLE_ASSERTS"
+				},
+				{
+					"backtrace" : 10,
+					"define" : "HZ_PLATFORM_WINDOWS"
+				},
+				{
+					"define" : "Hazel_EXPORTS"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "OPENGL"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "_UTF8"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/spdlog/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glfw/include"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glm"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/imgui"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glad/include"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/stb_image"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/entt/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					16
+				],
+				"standard" : "23"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 17,
+					"header" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/src/hzpch.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /EHsc /O2 /Ob1 /DNDEBUG -std:c++latest -MD -Zi"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "/utf-8"
+				},
+				{
+					"fragment" : "/YuD:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx /FpD:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/Hazel.dir/RelWithDebInfo/cmake_pch.pch /FID:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 7,
+					"define" : "HZ_BUILD_DLL"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "HZ_DEBUG"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "HZ_ENABLE_ASSERTS"
+				},
+				{
+					"backtrace" : 10,
+					"define" : "HZ_PLATFORM_WINDOWS"
+				},
+				{
+					"define" : "Hazel_EXPORTS"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "OPENGL"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "_UTF8"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/spdlog/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glfw/include"
+				},
+				{
+					"backtrace" : 15,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glm"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/imgui"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/glad/include"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/stb_image"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/vendor/entt/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					16
+				],
+				"standard" : "23"
+			},
+			"precompileHeaders" : 
+			[
+				{
+					"backtrace" : 17,
+					"header" : "D:/Study/computer_g/HazelTEngine/HazelT/Hazel/src/hzpch.h"
+				}
+			],
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 5,
+			"id" : "glad::@8bcefc5342275444308a"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "imgui::@8bcefc5342275444308a"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "spdlog::@75c29fe305e6cf52d47e"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "stb_image::@8ba27f45d66edab06076"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "glfw::@fe15bf2f4de170168307"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "Hazel::@c312927d72e11e7b372f",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "vendor\\spdlog\\RelWithDebInfo\\spdlog.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "vendor\\glfw\\src\\RelWithDebInfo\\glfw3.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "vendor\\RelWithDebInfo\\imgui.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "vendor\\RelWithDebInfo\\glad.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "vendor\\stb_image\\RelWithDebInfo\\stb_image.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "Hazel",
+	"nameOnDisk" : "Hazel.dll",
+	"paths" : 
+	{
+		"build" : "Hazel",
+		"source" : "Hazel"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81
+			]
+		},
+		{
+			"name" : "Precompile Header File",
+			"sourceIndexes" : 
+			[
+				82,
+				83,
+				84,
+				85
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"path" : "build/Hazel/CMakeFiles/Hazel.dir/cmake_pch.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/Application.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/Input.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/Layer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/LayerStack.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/Log.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Core/Window.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Events/ApplicationEvent.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Events/Event.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Events/KeyEvent.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Events/MouseEvent.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Buffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Framebuffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/GraphicsContext.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/OrthographicCamera.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/OrthographicCameraController.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/RenderCommand.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Renderer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Renderer2D.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/RendererAPI.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Shader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/SubTexture2D.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Texture.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/VertexArray.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Scene/Entity.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/Scene/Scene.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Hazel/imGui/ImGuiLayer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLBuffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLContext.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLFramebuffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLRenererAPI.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLShader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLTexture.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLVertexArray.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/Windows/WindowsInput.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/Platform/Windows/WindowsWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "Hazel/src/hzpch.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Application.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Base.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Core.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/EntityPoint.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Input.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Layer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/LayerStack.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Log.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Timestep.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Core/Window.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Debug/Instrumentor.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Events/ApplicationEvent.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Events/Event.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Events/KeyCode.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Events/KeyEvent.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Events/MouseEvent.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Buffer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Framebuffer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/GraphicsContext.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/OrthographicCamera.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/OrthographicCameraController.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/RenderCommand.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Renderer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Renderer2D.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/RendererAPI.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Shader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/SubTexture2D.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/Texture.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Renderer/VertexArray.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Scene/Component.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Scene/Entity.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/Scene/Scene.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel/imGui/ImGuiLayer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Hazel_noEntityPoint.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLBuffer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLContext.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLFramebuffer.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLRenererAPI.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLShader.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLTexture.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/OpenGL/OpenGLVertexArray.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/Windows/WindowsInput.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/Platform/Windows/WindowsWindow.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Hazel/src/hzpch.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"path" : "build/Hazel/CMakeFiles/Hazel.dir/Debug/cmake_pch.hxx",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "build/Hazel/CMakeFiles/Hazel.dir/Release/cmake_pch.hxx",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "build/Hazel/CMakeFiles/Hazel.dir/MinSizeRel/cmake_pch.hxx",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"path" : "build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}

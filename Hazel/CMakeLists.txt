@@ -30,13 +30,22 @@ target_include_directories(Hazel PUBLIC
 
 )
 target_precompile_headers(${TARGET_NAME} PRIVATE src/hzpch.h)
+
+# Set C++ standard
+set_target_properties(${TARGET_NAME} PROPERTIES
+    CXX_STANDARD 23
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)
+
 add_subdirectory(vendor)
-target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog) #spdLog requires a namespace, see the add_libary in the cmke of spdLog
-target_link_libraries(${TARGET_NAME} PUBLIC glfw)
+target_link_libraries(${TARGET_NAME} PUBLIC spdlog::spdlog) # spdLog requires a namespace, see the add_library in the cmake of spdLog
+target_link_libraries(${TARGET_NAME} PRIVATE glfw)
 target_link_libraries(${TARGET_NAME} PUBLIC glm::glm)
 target_link_libraries(${TARGET_NAME} PUBLIC imgui)
-target_link_libraries(${TARGET_NAME} PUBLIC glad)
-target_link_libraries(${TARGET_NAME} PUBLIC stb_image)
+target_link_libraries(${TARGET_NAME} PRIVATE glad)
+target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
+target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 
 
 # Set export symbols for the library
@@ -53,12 +62,10 @@ else ()
 endif ()
 
 # Add HZ_DEBUG in Debug mode
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR NOT CMAKE_BUILD_TYPE)
     target_compile_definitions(${TARGET_NAME} PUBLIC HZ_DEBUG)
+    target_compile_definitions(${TARGET_NAME} PUBLIC HZ_ENABLE_ASSERTS)
 endif ()
-
-# Set include directories
-
 
 # Set output directories for the library
 set_target_properties(${TARGET_NAME} PROPERTIES

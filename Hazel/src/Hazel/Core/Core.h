@@ -58,35 +58,41 @@
     #ifdef HZ_PLATFORM_WINDOWS
         #define HZ_DEBUGBREAK() __debugbreak()
     #else
-        #ERROR "Platform don't support debugbreak yet!"
+        #error "Platform don't support debugbreak yet!"
     #endif
-    #define HZ_ENBLE_ASSERTS
+    #ifndef HZ_ENABLE_ASSERTS
+        #define HZ_ENABLE_ASSERTS
+    #endif
 #else
-    #define HZ_ENBLE_ASSERT
+    #define HZ_DEBUGBREAK()
 #endif
 
 #ifdef HZ_ENABLE_ASSERTS
-    #define HZ_INTERNAL_ASSERT_IMPL(type,check,msg, ...)
-    do
-    {
-        if(!(check))
-        {
-            HZ##type##ERROR(msg,__VA_ARGS__);
-            HZ_DEBUGBREAK();
-        }
-    }while(0)
-#define HZ_INTERNAL_ASSERT_WITH_MSG(type,check,...)
-        HZ_INTERNAL_ASSERT_IMPL(type,check,"Assertion failed:{0}",__VA_ARGS__)
-#define HZ_INTERNAL_ASSETR_NO_MSG(type,check)
-        HZ_INTERNAL_ASSERT_IMPL(type,check,"Assert '{0} failed at {1}:{2}',#check,std::filesystem::path(__FILE__),filename().string(),__LINE__)
-#define HZ_INTERNAL_ASSERT_GET_MACRO(_1,_2,_3,NAME,...) NAME
-#define HZ_ASSERT(...) HZ_EXPAND_MACRO(HZ_INTERAL_ASSERT_GET_MACRO(__VA_ARGS__,HZ_INTERNAL_WITH_MSG,HZ_INTERNAL_ASSERT_NO_MSG(_,__VA_ARGS__))
-#define HZ_CORE_ASSERT(...)                                                                                       \
-IGE_EXPAND_MACRO(IGE_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__, IGE_INTERNAL_ASSERT_WITH_MSG,                      \
-IGE_INTERNAL_ASSERT_NO_MSG)(_CORE_, __VA_ARGS__))
-        #else
-#define HZ_ASSERT(...)
-#define HZ_CORE_ASSERT(...)
+    #define HZ_EXPAND_MACRO(x) x
+    #define HZ_INTERNAL_ASSERT_IMPL(type, check, msg, ...) \
+        do { \
+            if(!(check)) { \
+                HZ##type##ERROR(msg, ##__VA_ARGS__); \
+                HZ_DEBUGBREAK(); \
+            } \
+        } while(0)
+
+    #define HZ_INTERNAL_ASSERT_WITH_MSG(type, check, ...) \
+        HZ_INTERNAL_ASSERT_IMPL(type, check, "Assertion failed: {}", __VA_ARGS__)
+    
+    #define HZ_INTERNAL_ASSERT_NO_MSG(type, check) \
+        HZ_INTERNAL_ASSERT_IMPL(type, check, "Assertion '{}' failed at {}:{}", #check, std::filesystem::path(__FILE__).filename().string(), __LINE__)
+
+    #define HZ_INTERNAL_ASSERT_GET_MACRO(_1, _2, NAME, ...) NAME
+    
+    #define HZ_ASSERT(...) \
+        HZ_EXPAND_MACRO(HZ_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__, HZ_INTERNAL_ASSERT_WITH_MSG, HZ_INTERNAL_ASSERT_NO_MSG)(_, __VA_ARGS__))
+    
+    #define HZ_CORE_ASSERT(...) \
+        HZ_EXPAND_MACRO(HZ_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__, HZ_INTERNAL_ASSERT_WITH_MSG, HZ_INTERNAL_ASSERT_NO_MSG)(_CORE_, __VA_ARGS__))
+#else
+    #define HZ_ASSERT(...)
+    #define HZ_CORE_ASSERT(...)
 #endif
 
 #define BIT(x) (1 << x)

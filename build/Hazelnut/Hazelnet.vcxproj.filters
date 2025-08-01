@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazelnut\src\HazelnutApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazelnut\src\EditorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazelnut\src\EditorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazelnut\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{C57B3D82-8EFB-368B-8359-0ED273C52C06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4CCFFB40-F1D6-3BA0-90E0-4F7E50CC77AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
