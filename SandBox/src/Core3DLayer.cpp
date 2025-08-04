@@ -55,6 +55,12 @@ void Core3DLayer::OnUpdate(Hazel::Timestep timestep)
     Hazel::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
     Hazel::RenderCommand::Clear();
     
+    // Create an orthographic camera for the renderer (required by Hazel's current architecture)
+    Hazel::OrthographicCamera camera(-1.0f, 1.0f, -1.0f, 1.0f);
+    
+    // Begin scene
+    Hazel::Renderer::BeginScene(camera);
+    
     // Bind shader and update uniforms from CPU
     m_Core3DShader->Bind();
     UpdateShaderUniforms();
@@ -62,8 +68,11 @@ void Core3DLayer::OnUpdate(Hazel::Timestep timestep)
     // Bind texture
     m_Texture->Bind();
     
-    // Render the cube
+    // Render the cube using proper Hazel renderer pattern
     Hazel::Renderer::Submit(m_Core3DShader, m_CubeVA);
+    
+    // End scene
+    Hazel::Renderer::EndScene();
 }
 
 void Core3DLayer::OnEvent(Hazel::Event& event)
