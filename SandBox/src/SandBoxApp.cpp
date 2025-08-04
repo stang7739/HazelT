@@ -6,6 +6,7 @@
 #include "SandBox2D.h"
 #include "ExampleLayer.h"
 #include "GameLayer.h"
+#include "Core3DLayer.h"
 #include "backends/imgui_impl_opengl3.h"
 
 namespace Hazel
@@ -23,10 +24,11 @@ public:
         ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
 
         // PushLayer(new ExampleLayer());
-
-
         // PushLayer(new SandBox2D());
-        PushLayer(new GameLayer());
+        // PushLayer(new GameLayer());
+        
+        // Use Core3DLayer to demonstrate CPU-side shader control
+        PushLayer(new Core3DLayer());
     }
 
     ~SandBox()
