@@ -6,6 +6,7 @@
 #include "SandBox2D.h"
 #include "ExampleLayer.h"
 #include "GameLayer.h"
+#include "GltfViewApp.h"
 #include "backends/imgui_impl_opengl3.h"
 
 namespace Hazel
@@ -24,9 +25,9 @@ public:
 
         // PushLayer(new ExampleLayer());
 
-
         // PushLayer(new SandBox2D());
-        PushLayer(new GameLayer());
+        // PushLayer(new GameLayer());
+        PushLayer(new GltfViewApp());
     }
 
     ~SandBox()

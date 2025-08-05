@@ -17,8 +17,10 @@ target_sources(${TARGET_NAME} PRIVATE
 )
 
 target_link_libraries(${TARGET_NAME} PRIVATE Hazel)
-target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
-set_property(TARGET ${TARGET_NAME} PROPERTY CXX_SCAN_FOR_MODULES 1)
+if(WIN32)
+    target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
+    set_property(TARGET ${TARGET_NAME} PROPERTY CXX_SCAN_FOR_MODULES 1)
+endif()
 
 
 # Set the output directory for the executable to ensure it can find the DLL

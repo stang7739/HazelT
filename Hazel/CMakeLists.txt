@@ -48,8 +48,10 @@ target_compile_definitions(${TARGET_NAME} PUBLIC OPENGL)
 # set platform symbol
 if (WIN32)
     target_compile_definitions(${TARGET_NAME} PUBLIC HZ_PLATFORM_WINDOWS)
+elseif(UNIX AND NOT APPLE)
+    target_compile_definitions(${TARGET_NAME} PUBLIC HZ_PLATFORM_LINUX)
 else ()
-    message(FATAL_ERROR "Unknown Platform: HZ only supports Windows!")
+    message(FATAL_ERROR "Unknown Platform: HZ only supports Windows and Linux!")
 endif ()
 
 # Add HZ_DEBUG in Debug mode

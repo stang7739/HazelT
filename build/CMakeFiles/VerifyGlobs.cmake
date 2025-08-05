@@ -15,6 +15,11 @@ endif()
 # imgui_sources at Hazel/vendor/CMakeLists.txt:50 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/*.cpp")
 set(OLD_GLOB
+  "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/imgui.cpp"
+  "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/imgui_demo.cpp"
+  "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/imgui_draw.cpp"
+  "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/imgui_tables.cpp"
+  "/home/runner/work/HazelT/HazelT/Hazel/vendor/imgui/imgui_widgets.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")

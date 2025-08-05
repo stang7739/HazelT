@@ -23,8 +23,9 @@
 #include <Hazel/Debug/Instrumentor.h>
 
 #ifdef HZ_PLATFORM_WINDOWS
-
 #include <Windows.h>
+#elif defined(HZ_PLATFORM_LINUX)
+// Linux-specific includes if needed
 #endif
 
 #endif //HZPCH_H
