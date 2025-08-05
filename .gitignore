@@ -2,6 +2,7 @@
 /cmake-build-debug/
 /cmake-build-release/
 /cmake-build-debug-event-trace/
+/build/
 /SandBox/HazelProfile-End.json
 /SandBox/HazelProfile-Startup.json
 /SandBox/HazelProfile-Runtime.json
