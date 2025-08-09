@@ -13,7 +13,7 @@ namespace Hazel
     {
     public:
         //
-        inline HazelKey GetKeyCode() const;
+        HazelKey GetKeyCode() const;
          HazelKey GetKeyCode(int a,int b) const;
         // EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyBoard)
 
@@ -28,7 +28,7 @@ namespace Hazel
     {
     public:
         KeyPressedEvent(HazelKey keycode, int repeatCount);
-        inline int GetRepeatCount() const;
+        int GetRepeatCount() const;
         std::string ToString() const override;
         EVENT_CLASS_TYPE(KeyPressed)
         protected:
@@ -47,7 +47,7 @@ namespace Hazel
     {
     public:
         KeyTypedEvent( unsigned int  codepoint);
-        inline unsigned int GetCodePoint() const;
+        unsigned int GetCodePoint() const;
         std::string ToString() const override;
         EVENT_CLASS_TYPE(KeyTyped)
         // EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryKeyBoard)

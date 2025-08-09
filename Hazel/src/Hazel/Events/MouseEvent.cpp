@@ -23,12 +23,12 @@ namespace Hazel
     {
     }
 
-    inline float MouseScrolledEvent::GetOffsetX() const
+    float MouseScrolledEvent::GetOffsetX() const
     {
         return m_OffsetX;
     }
 
-    inline float MouseScrolledEvent::GetOffsetY() const
+    float MouseScrolledEvent::GetOffsetY() const
     {
         return m_OffsetY;
     }
@@ -44,7 +44,7 @@ namespace Hazel
     {
     }
 
-    inline HazelKey MouseButtonEvent::GetMouseButton() const
+    HazelKey MouseButtonEvent::GetMouseButton() const
     {
         return m_MouseButton;
     }

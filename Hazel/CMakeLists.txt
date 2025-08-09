@@ -11,16 +11,14 @@ file(GLOB_RECURSE HAZEL_HEADERS CONFIGURE_DEPENDS
 
 )
 #Compile the files in these directories as if they were the source files
-add_library(${TARGET_NAME} SHARED
+add_library(${TARGET_NAME} STATIC
         ${HAZEL_SOURCES}
         ${HAZEL_HEADERS}
 
 )
 add_custom_command(TARGET ${TARGET_NAME}
         PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E echo "Cleaning previous Hazel.ilk and Hazel.pdb..."
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/bin/Hazel.ilk
-        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_BINARY_DIR}/bin/Hazel.pdb
+        COMMAND ${CMAKE_COMMAND} -E echo "Building static library..."
 )
 
 #Set the path
@@ -48,8 +46,8 @@ target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
 target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 
 
-# Set export symbols for the library
-target_compile_definitions(${TARGET_NAME} PRIVATE HZ_BUILD_DLL)
+# Set symbols for static library - no need for DLL export/import
+target_compile_definitions(${TARGET_NAME} PUBLIC HZ_STATIC_LIB)
 #target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
 
 target_compile_definitions(${TARGET_NAME} PUBLIC OPENGL)

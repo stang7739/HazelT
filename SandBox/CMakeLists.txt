@@ -21,7 +21,7 @@ target_compile_options(${TARGET_NAME} PRIVATE /utf-8)
 set_property(TARGET ${TARGET_NAME} PROPERTY CXX_SCAN_FOR_MODULES 1)
 
 
-# Set the output directory for the executable to ensure it can find the DLL
+# Set the output directory for the executable
 set_target_properties(${TARGET_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )

@@ -11,9 +11,11 @@
 #include "Hazel/Renderer/Renderer2D.h"
 #include <chrono>
 
+
 #include "Hazel/Renderer/Framebuffer.h"
 #include "Hazel/Scene/Component.h"
 #include "Hazel/Scene/Scene.h"
+#include "Hazel/Scene/SceneCameraController.h"
 
 namespace Hazel
 {
@@ -100,6 +102,7 @@ namespace Hazel
         m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
         auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
         cc.Primary = false;
+        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
     {
@@ -226,23 +229,8 @@ namespace Hazel
                 ImGui::Separator();
             }
 
-            // 先检查实体是否有效（存在于registry中）
-            auto entityHandle = m_CameraEntity.GetEntityHandle();
-            auto* scene = m_CameraEntity.GetScene();
-            auto& registry = scene->Reg();
-            // 直接从registry获取组件引用
-            auto* transformPtr = registry.try_get<TransformComponent>(entityHandle);
-
-            if (transformPtr)
-            {
-                // 检查Transform矩阵是否合理
-                glm::mat4& transform = transformPtr->Transform;
-                glm::vec3 translation = glm::vec3(transform[3]);
-            }
-            else
-            {
-                ImGui::Text("No Transform Component Found");
-            }
+            ImGui::DragFloat3("Camera Transform",
+                        glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
 
             if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
             {

@@ -8,6 +8,8 @@
 #ifdef HZ_PLATFORM_WINDOWS
 #ifdef HZ_BUILD_DLL
 #define HAZEL_API __declspec(dllexport)
+#elif defined(HZ_STATIC_LIB)
+#define HAZEL_API
 #else
 #define HAZEL_API __declspec(dllimport)
 #endif

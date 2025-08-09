@@ -7,10 +7,15 @@
 #include <glm/glm.hpp>
 
 #include "SceneCamera.h"
+#include "Hazel/Core/Timestep.h"
 #include "Hazel/Renderer/Camera.h"
+#include "ScriptableEntity.h"
+
 
 namespace Hazel
 {
+    class ScriptableEntity;
+
     struct TagComponent
     {
         std::string Tag;
@@ -61,6 +66,27 @@ namespace Hazel
 
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
+    };
+    struct NativeScriptComponent
+    {
+        ScriptableEntity* Instance = nullptr;
+        std::function<void()> InstantiateFunction;
+        std::function<void()> DestoryInstanceFunction;
+        std::function<void(ScriptableEntity*)> OnCreateFunction;
+        std::function<void(ScriptableEntity*,Timestep)> OnUpdateFunction;
+        std::function<void(ScriptableEntity*)> OnDestroyFunction;
+
+        template<typename T>
+        void Bind()
+        {
+            InstantiateFunction = [&]() { Instance = new T(); };
+            DestoryInstanceFunction = [&](){delete (T*)Instance;Instance=nullptr;};
+
+            OnCreateFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnCreate(); };
+            OnDestroyFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnDestory(); };
+            OnUpdateFunction = [](ScriptableEntity* instance,Timestep ts){ ((T*)instance)->OnUpdate(ts); };
+        }
+
     };
 }
 

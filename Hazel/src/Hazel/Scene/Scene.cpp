@@ -57,49 +57,31 @@ namespace Hazel
     Entity Scene::CreateEntity(const std::string& name)
     {
         Entity entity = {m_Registry.create(), this};
-        
-        // 关键测试：分别测试不同的调用
-        HZ_CORE_INFO("=== Critical Test ===");
-        HZ_CORE_INFO("Scene object address: {}", (void*)this);
-        HZ_CORE_INFO("Registry address: {}", (void*)&m_Registry);
-        HZ_CORE_INFO("Entity created with ID: {}", (uint32_t)entity.GetEntityHandle());
-        
-        // 测试1：直接使用 registry 检查
-        bool directCheck = m_Registry.has<SpriteRendererComponent>(entity.GetEntityHandle());
-        HZ_CORE_INFO("Direct registry check: {}", directCheck);
-        
-        // 测试2：通过 Entity wrapper 检查（这可能是问题的触发点）
-        bool wrapperCheck = entity.HasComponent<SpriteRendererComponent>();
-        HZ_CORE_INFO("Wrapper check: {}", wrapperCheck);
-        
-        // 测试3：再次检查，看看是否有变化
-        bool secondCheck = entity.HasComponent<SpriteRendererComponent>();
-        HZ_CORE_INFO("Second wrapper check: {}", secondCheck);
-        
         entity.AddComponent<TransformComponent>();
         entity.AddComponent<TagComponent>();
         auto& tag = entity.GetComponent<TagComponent>();
         tag.Tag = name.empty() ? "Entity" : name;
-        
-        // 验证添加的组件
-        bool hasTransform = entity.HasComponent<TransformComponent>();
-        bool hasTag = entity.HasComponent<TagComponent>();
-        HZ_CORE_INFO("After adding components - Transform: {}, Tag: {}", hasTransform, hasTag);
-        
-        // 最后检查：返回前再次验证
-        HZ_CORE_INFO("FINAL CHECK before return:");
-        HZ_CORE_INFO("  Transform: {}", entity.HasComponent<TransformComponent>());
-        HZ_CORE_INFO("  Tag: {}", entity.HasComponent<TagComponent>());
-        HZ_CORE_INFO("  Sprite: {}", entity.HasComponent<SpriteRendererComponent>());
-        HZ_CORE_INFO("  Entity ID: {}", (uint32_t)entity.GetEntityHandle());
-        HZ_CORE_INFO("  Scene ptr: {}", (void*)entity.GetScene());
-
-        HZ_CORE_INFO("=== End Critical Test ===");
         return entity;
     }
 
     void Scene::OnUpdate(Timestep ts)
     {
+        {
+            m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+            {
+                if (!nsc.Instance)
+                {
+                    nsc.InstantiateFunction();
+                    nsc.Instance->m_Entity = Entity{ entity, this };
+
+                    if (nsc.OnCreateFunction)
+                        nsc.OnCreateFunction(nsc.Instance);
+                }
+
+                if (nsc.OnUpdateFunction)
+                    nsc.OnUpdateFunction(nsc.Instance, ts);
+            });
+        }
         Camera* mainCamera = nullptr;
         glm::mat4* cameraTransform = nullptr;
         {
