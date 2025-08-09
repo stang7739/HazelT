@@ -573,6 +573,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
+    <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\SceneCamera.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
     <ClCompile Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\imGui\ImGuiLayer.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:/Study/computer_g/HazelTEngine/HazelT/build/Hazel/CMakeFiles/Hazel.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -657,6 +663,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\KeyEvent.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Events\MouseEvent.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Buffer.h" />
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Camera.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\Framebuffer.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\GraphicsContext.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Renderer\OrthographicCamera.h" />
@@ -672,6 +679,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Component.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Entity.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\Scene.h" />
+    <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\Scene\SceneCamera.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel\imGui\ImGuiLayer.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Hazel_noEntityPoint.h" />
     <ClInclude Include="D:\Study\computer_g\HazelTEngine\HazelT\Hazel\src\Platform\OpenGL\OpenGLBuffer.h" />

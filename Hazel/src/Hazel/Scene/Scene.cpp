@@ -93,20 +93,58 @@ namespace Hazel
         HZ_CORE_INFO("  Sprite: {}", entity.HasComponent<SpriteRendererComponent>());
         HZ_CORE_INFO("  Entity ID: {}", (uint32_t)entity.GetEntityHandle());
         HZ_CORE_INFO("  Scene ptr: {}", (void*)entity.GetScene());
-        
+
         HZ_CORE_INFO("=== End Critical Test ===");
         return entity;
     }
 
     void Scene::OnUpdate(Timestep ts)
     {
-        auto group = m_Registry.view<TransformComponent,SpriteRendererComponent>();
-        for (auto entity : group)
+        Camera* mainCamera = nullptr;
+        glm::mat4* cameraTransform = nullptr;
         {
-            auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+            auto group = m_Registry.view<TransformComponent,CameraComponent>();
+            for(auto entity : group)
+            {
+                auto& transform = group.get<TransformComponent>(entity);
+                auto& camera = group.get<CameraComponent>(entity);
+                if(camera.Primary)
+                {
+                    mainCamera = &camera.Camera;
+                    cameraTransform = &transform.Transform;
+                    break;
+                }
+            }
+        }
+        if(mainCamera)
+        {
+            Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
+            auto group = m_Registry.view<TransformComponent,SpriteRendererComponent>();
+            for (auto entity : group)
+            {
+                auto& transform = group.get<TransformComponent>(entity);
+                auto& sprite = group.get<SpriteRendererComponent>(entity);
+
+                Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+            }
+            Renderer2D::EndScene();
+        }
 
 
-            Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+    }
+    void Scene::OnViewportResize(uint32_t width, uint32_t height)
+    {
+        m_ViewportWidth = width;
+        m_ViewportHeight = height;
+        auto view = m_Registry.view<CameraComponent>();
+        for(auto entity : view)
+        {
+            auto& cameraComponent = view.get<CameraComponent>(entity);
+            if(!cameraComponent.FixedAspectRatio)
+            {
+                cameraComponent.Camera.SetViewportsize(width,height);
+            }
         }
     }
+
 }

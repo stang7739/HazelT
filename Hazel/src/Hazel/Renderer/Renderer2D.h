@@ -11,6 +11,7 @@
 
 namespace Hazel
 {
+    class Camera;
     class SubTexture2D;
     class Texture2D;
     class OrthographicCamera;
@@ -22,7 +23,10 @@ namespace Hazel
         static void Init();
         static void Shutdown();
 
-        static void BeginScene(const Hazel::OrthographicCamera& camera);
+        static void BeginScene(const OrthographicCamera& camera);
+        static void BeginScene(const Camera& camera,const glm::mat4& transform);
+        static void BeginScene(const  glm::mat4& cameraPro,const glm::mat4& transform);
+
         static void EndScene();
         static void Flush();
 

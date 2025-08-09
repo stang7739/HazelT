@@ -18,7 +18,8 @@
 namespace Hazel
 {
     // Helper function to safely convert texture ID to void pointer for ImGui
-    inline void* TextureIDToImGuiHandle(uint32_t textureID) {
+    inline void* TextureIDToImGuiHandle(uint32_t textureID)
+    {
         return reinterpret_cast<void*>(static_cast<intptr_t>(textureID));
     }
 
@@ -64,7 +65,8 @@ namespace Hazel
 
 #define PROFILE_SCOPE(name) Timer timer##__LINE__(name,[&](ProfileResult profileResult ){m_ProfileResults.push_back(profileResult);})
 
-    EditorLayer::EditorLayer(): Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true), m_SquareColor(1, 1, 1, 1.f)
+    EditorLayer::EditorLayer(): Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true),
+                                m_SquareColor(1, 1, 1, 1.f)
     // Initialize the camera with orthographic projection
     {
         HZ_PROFILE_FUNCTION();
@@ -82,73 +84,22 @@ namespace Hazel
         fbspec.Height = 720;
         m_Framebuffer = Framebuffer::Create(fbspec);
         m_ActiveScene = CreateRef<Scene>();
-        
-        // // 调试：检查默认构造的实体状态
-        // HZ_CORE_INFO("=== EditorLayer Debug ===");
-        // HZ_CORE_INFO("Before CreateEntity - m_SquareEntity valid: {}", (bool)m_SquareEntity);
-        //
-        // // 创建实体并立即检查
-        // HZ_CORE_INFO("Calling CreateEntity...");
-        
-        // 测试：先用临时变量接收，然后再赋值
+
         Entity tempEntity = m_ActiveScene->CreateEntity("Green Square");
-        // HZ_CORE_INFO("CreateEntity returned to temp variable");
-        
-        // 检查临时变量
-        // HZ_CORE_INFO("Temp entity - Valid: {}, EntityID: {}",
-        //              (bool)tempEntity, (uint32_t)tempEntity.GetEntityHandle());
-        // HZ_CORE_INFO("Temp entity components - Transform: {}, Tag: {}, Sprite: {}",
-        //              tempEntity.HasComponent<TransformComponent>(),
-        //              tempEntity.HasComponent<TagComponent>(),
-        //              tempEntity.HasComponent<SpriteRendererComponent>());
-        //
-        // 现在赋值给成员变量
-
-        // HZ_CORE_INFO("Assigned temp to member variable");
-        //
-        // // 详细检查返回的实体
-        // HZ_CORE_INFO("=== EditorLayer Entity Debug ===");
-        // HZ_CORE_INFO("Scene address: {}", (void*)m_ActiveScene.get());
-        // HZ_CORE_INFO("Returned entity - Valid: {}, EntityID: {}",
-        //              (bool)m_SquareEntity,
-        //              (uint32_t)m_SquareEntity.GetEntityHandle());
-        //
-        // // 检查实体内部的 Scene 指针
-        // HZ_CORE_INFO("Entity's scene pointer: {}", (void*)m_SquareEntity.GetScene());
-        //
-        // 重新检查各种组件
-        // bool hasTransform = m_SquareEntity.HasComponent<TransformComponent>();
-        // bool hasTag = m_SquareEntity.HasComponent<TagComponent>();
-        // bool hasSprite = m_SquareEntity.HasComponent<SpriteRendererComponent>();
-        
-        // HZ_CORE_INFO("Component check - Transform: {}, Tag: {}, Sprite: {}",
-        //              hasTransform, hasTag, hasSprite);
-        //
-        // // 如果有 Sprite 组件，尝试获取它看看是怎么来的
-        // if (hasSprite) {
-        //     HZ_CORE_WARN("UNEXPECTED: Entity has SpriteRendererComponent!");
-        //     auto& sprite = m_SquareEntity.GetComponent<SpriteRendererComponent>();
-        //     HZ_CORE_INFO("Sprite color: ({}, {}, {}, {})",
-        //                  sprite.Color.r, sprite.Color.g, sprite.Color.b, sprite.Color.a);
-        // }
-        //
-        // HZ_CORE_INFO("=== End EditorLayer Debug ===");
-        //
-        // // 安全方式：如果没有组件就添加，如果有就获取并修改
-        // if (!m_SquareEntity.HasComponent<SpriteRendererComponent>()) {
-        //     HZ_CORE_INFO("Adding SpriteRendererComponent...");
-        //     m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
-        //     HZ_CORE_INFO("SpriteRendererComponent added successfully");
-        // } else {
-        //     HZ_CORE_WARN("Entity already has SpriteRendererComponent, updating color...");
-        //     auto& sprite = m_SquareEntity.GetComponent<SpriteRendererComponent>();
-        //     sprite.Color = glm::vec4{0.0f, 1.0f, 0.0f, 1.0f};
-        //     HZ_CORE_WARN("Color updated");
-        // }
-
-        tempEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
+        HZ_CORE_INFO("Temp entity - Valid: {}, EntityID: {}",
+                    (bool)tempEntity, (uint32_t)tempEntity.GetEntityHandle());
+        HZ_CORE_INFO("Temp entity components - Transform: {}, Tag: {}, Sprite: {}",
+                     tempEntity.HasComponent<TransformComponent>(),
+                     tempEntity.HasComponent<TagComponent>(),
+                     tempEntity.HasComponent<SpriteRendererComponent>());
         m_SquareEntity = tempEntity;
+        m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
+        m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+        m_CameraEntity.AddComponent<CameraComponent>();
 
+        m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
+        auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
+        cc.Primary = false;
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
     {
@@ -157,36 +108,30 @@ namespace Hazel
     {
         m_Rotation = m_Rotation <= 180 ? (m_Rotation += 1 * m_Speed) : 0;
         HZ_PROFILE_FUNCTION();
-        if(FramebufferSpecification spec = m_Framebuffer->GetSpecification();
-            m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+        if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+            m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && (spec.Width != m_ViewportSize.x || spec.Height !=
+                m_ViewportSize.y))
         {
             m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x,(uint32_t)m_ViewportSize.y);
         }
-        // PROFILE_SCOPE("EditorLayer::OnUpdate");
-        if(m_ViewportFocused)
+        if (m_ViewportFocused)
             m_CameraController.OnUpdate(timestep);
         Renderer2D::ResetStats();
         m_Framebuffer->Bind();
         {
             HZ_PROFILE_SCOPE("CameraController::OnUpdate");
             // PROFILE_SCOPE("CameraController::OnUpdate");
-            m_CameraController.OnUpdate(timestep);
+            // m_CameraController.OnUpdate(timestep);
             RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
             RenderCommand::Clear();
         }
-
-        {
-            HZ_PROFILE_SCOPE("Renderer Prep");
-            // Renderer::BeginScene(m_CameraController.GetCamera());
-            Renderer2D::BeginScene(m_CameraController.GetCamera());
-        }
-
         {
             // HZ_INFO("{}",m_Rotation);
             HZ_PROFILE_SCOPE("Renderer Draw");
-           m_ActiveScene->OnUpdate(timestep);
-            Renderer2D::EndScene();
+            m_ActiveScene->OnUpdate(timestep);
+            // Renderer2D::EndScene();
             m_Framebuffer->Unbind();
         }
     } //Update logic every frame
@@ -271,23 +216,46 @@ namespace Hazel
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-            if(m_SquareEntity)
+            if (m_SquareEntity)
             {
                 ImGui::Separator();
                 auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
-                ImGui::Text("%s",tag.c_str());
+                ImGui::Text("%s", tag.c_str());
                 auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
                 ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
                 ImGui::Separator();
             }
-            // ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-            //
-            // uint32_t textureColorID = m_Framebuffer->GetColorAttachmentRendererID();
-            // ImGui::Image(TextureIDToImGuiHandle(textureColorID), ImVec2{1280.0f, 720.0f});
-            //
-            // textureID = m_Framebuffer->GetDepthAttachmentRendererID();
-            //
-            // ImGui::Image(TextureIDToImGuiHandle(textureID), ImVec2{1280.0f, 720.0f});
+
+            // 先检查实体是否有效（存在于registry中）
+            auto entityHandle = m_CameraEntity.GetEntityHandle();
+            auto* scene = m_CameraEntity.GetScene();
+            auto& registry = scene->Reg();
+            // 直接从registry获取组件引用
+            auto* transformPtr = registry.try_get<TransformComponent>(entityHandle);
+
+            if (transformPtr)
+            {
+                // 检查Transform矩阵是否合理
+                glm::mat4& transform = transformPtr->Transform;
+                glm::vec3 translation = glm::vec3(transform[3]);
+            }
+            else
+            {
+                ImGui::Text("No Transform Component Found");
+            }
+
+            if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
+            {
+                m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+                m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+            }
+            {
+                auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
+                float orthoSize = camera.GetOrthographicSize();
+
+                if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
+                    camera.SetOrthographicSize(orthoSize);
+            }
             ImGui::End();
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -296,14 +264,16 @@ namespace Hazel
             m_ViewportHovered = ImGui::IsWindowHovered();
             Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-            if(m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+            if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
             {
                 // m_Framebuffer->Resize((uint32_t)viewportPanelSize.x,(uint32_t)viewportPanelSize.y);
                 m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+                // HZ_INFO("{},{}",viewportPanelSize.x,viewportPanelSize.y);
+                // m_SecondCamera.GetComponent<CameraComponent>().Camera.SetViewportsize(viewportPanelSize.x,viewportPanelSize.y);
                 // m_CameraController.OnResize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
             }
             uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-            ImGui::Image((void*)textureID,ImVec2{m_ViewportSize.x,m_ViewportSize.y},ImVec2{0,1},ImVec2{1,0});
+            ImGui::Image((void*)textureID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
             ImGui::End();
             ImGui::PopStyleVar();
 

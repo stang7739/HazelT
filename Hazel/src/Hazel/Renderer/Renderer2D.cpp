@@ -14,6 +14,7 @@
 #include "Texture.h"
 #include "VertexArray.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Camera.h"
 
 namespace Hazel
 {
@@ -140,6 +141,20 @@ namespace Hazel
         s_Data.QuadIndexCount = 0;
         s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
         s_Data.TextureSlotIndex = 1; // Reset texture slot index, 0 is reserved for white texture
+    }
+    void Renderer2D::BeginScene(const  glm::mat4& cameraPro,const glm::mat4& transform)
+    {
+        HZ_PROFILE_FUNCTION();
+
+        glm::mat4 viewProj = cameraPro * glm::inverse(transform);
+
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+
+        s_Data.QuadIndexCount = 0;
+        s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+        s_Data.TextureSlotIndex = 1;
     }
 
     void Renderer2D::EndScene()
