@@ -10,16 +10,40 @@
 #include "RenderCommand.h"
 #include "Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "RenderNodeDefaultDepthRenderSlot.h"
 
 namespace Hazel
 {
+    Renderer::SceneData* Renderer::s_SceneData = new SceneData;
+    Scope<RenderGraph> Renderer::s_RenderGraph = nullptr;
+    
     void Renderer::init()
     {
         RenderCommand::init();
+        InitRenderGraph();
     }
 
+    void Renderer::InitRenderGraph(const std::string& configPath)
+    {
+        s_RenderGraph = CreateScope<RenderGraph>();
+        
+        // Load render graph configuration from file
+        s_RenderGraph->LoadFromFile(configPath);
+        
+        // Add default depth render slot with early-Z optimization
+        auto depthRenderSlot = CreateRef<RenderNodeDefaultDepthRenderSlot>();
+        s_RenderGraph->AddNode(depthRenderSlot);
+        
+        HZ_CORE_INFO("Initialized render graph with early-Z optimization");
+    }
 
-    Renderer::SceneData* Renderer::s_SceneData = new SceneData;
+    void Renderer::ExecuteRenderGraph()
+    {
+        if (s_RenderGraph)
+        {
+            s_RenderGraph->ExecuteGraph();
+        }
+    }
     void Renderer::BeginScene(OrthographicCamera& camera)
     {
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();

@@ -1,0 +1,55 @@
+{
+    "renderGraph": {
+        "name": "LightweightRenderPipeline",
+        "version": "1.0",
+        "description": "Hazel Engine Lightweight Render Pipeline with Early-Z optimization",
+        "renderNodes": [
+            {
+                "name": "DefaultDepthRenderSlot",
+                "type": "RenderNodeDefaultDepthRenderSlot",
+                "enabled": true,
+                "settings": {
+                    "earlyZEnabled": true,
+                    "depthPrepassEnabled": true,
+                    "depthFunc": "GL_LEQUAL",
+                    "depthClampEnabled": true
+                },
+                "description": "Default depth render slot with early-Z optimization for improved performance"
+            },
+            {
+                "name": "OpaqueRenderSlot",
+                "type": "RenderNodeOpaque",
+                "enabled": true,
+                "dependsOn": ["DefaultDepthRenderSlot"],
+                "settings": {
+                    "sortMode": "FrontToBack",
+                    "useDepthPrepass": true
+                },
+                "description": "Render opaque geometry with depth pre-pass optimization"
+            },
+            {
+                "name": "TransparentRenderSlot",
+                "type": "RenderNodeTransparent",
+                "enabled": true,
+                "dependsOn": ["OpaqueRenderSlot"],
+                "settings": {
+                    "sortMode": "BackToFront",
+                    "blendMode": "Alpha"
+                },
+                "description": "Render transparent geometry back-to-front"
+            }
+        ],
+        "globalSettings": {
+            "clearFlags": {
+                "color": true,
+                "depth": true,
+                "stencil": false
+            },
+            "clearColor": [0.1, 0.1, 0.1, 1.0],
+            "depthRange": {
+                "near": 0.0,
+                "far": 1.0
+            }
+        }
+    }
+}

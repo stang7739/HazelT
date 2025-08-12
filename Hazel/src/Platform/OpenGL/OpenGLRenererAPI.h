@@ -18,8 +18,12 @@ namespace Hazel
         // virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount = 0) override;
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount = 0) override;
         virtual void DrawLine(const Ref<VertexArray>& vertexArray,uint32_t indexCount ) override;
-
         virtual void SetLineWidth(float width) override;
+        
+        // Early-Z and depth prepass support
+        virtual void BeginDepthPrepass() override;
+        virtual void EndDepthPrepass() override;
+        virtual void SetDepthFunction(uint32_t func) override;
     };
 }
 

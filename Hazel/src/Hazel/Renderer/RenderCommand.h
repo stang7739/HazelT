@@ -34,6 +34,22 @@ namespace Hazel
         {
             s_RendererAPI->SetViewport(x,y,width,height);
         }
+        
+        // Early-Z and depth prepass support
+        inline static void BeginDepthPrepass()
+        {
+            s_RendererAPI->BeginDepthPrepass();
+        }
+        
+        inline static void EndDepthPrepass()
+        {
+            s_RendererAPI->EndDepthPrepass();
+        }
+        
+        inline static void SetDepthFunction(uint32_t func)
+        {
+            s_RendererAPI->SetDepthFunction(func);
+        }
     private:
         static RendererAPI* s_RendererAPI;
     };
