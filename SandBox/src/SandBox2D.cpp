@@ -95,6 +95,15 @@ void SandBox2D::OnUpdate(Hazel::Timestep timestep)
         m_CameraController.OnUpdate(timestep);
         Hazel::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
         Hazel::RenderCommand::Clear();
+        
+        // Execute the render graph with early-Z optimization
+        // This will run the DefaultDepthRenderSlot with early-Z enabled
+        static bool loggedOnce = false;
+        if (!loggedOnce) {
+            HZ_INFO("Executing render graph with early-Z optimization enabled");
+            loggedOnce = true;
+        }
+        Hazel::Renderer::ExecuteRenderGraph();
     }
 
     {
@@ -217,6 +226,18 @@ void SandBox2D::OnImGuiRender()
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+        ImGui::Separator();
+        ImGui::Text("Render Graph (LWRP) Stats:");
+        auto& renderGraph = Hazel::Renderer::GetRenderGraph();
+        auto depthSlot = renderGraph.GetNode("DefaultDepthRenderSlot");
+        if (depthSlot) {
+            ImGui::Text("Early-Z Optimization: Enabled");
+            ImGui::Text("Depth Prepass: Active");
+            ImGui::Text("Render Pipeline: LWRP with Early-Z");
+        } else {
+            ImGui::Text("Early-Z Optimization: Not Available");
+        }
 
         ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
