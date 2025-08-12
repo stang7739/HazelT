@@ -6,3 +6,7 @@
 /SandBox/HazelProfile-Startup.json
 /SandBox/HazelProfile-Runtime.json
 /build/
+build_*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
