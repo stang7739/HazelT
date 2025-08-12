@@ -27,8 +27,12 @@ namespace Hazel
         // virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount = 0) = 0;
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray =0,uint32_t indexCount = 0) = 0;
         virtual void DrawLine(const Ref<VertexArray>& vertexArray,uint32_t indexCount ) = 0;
-
         virtual void SetLineWidth(float width) = 0;
+        
+        // Early-Z and depth prepass support
+        virtual void BeginDepthPrepass() = 0;
+        virtual void EndDepthPrepass() = 0;
+        virtual void SetDepthFunction(uint32_t func) = 0;
 
         static API GetAPI(){return s_API;}
         static Scope<RendererAPI> Create();
