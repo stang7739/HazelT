@@ -67,27 +67,44 @@ namespace Hazel
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
     };
+    // struct NativeScriptComponent
+    // {
+    //     ScriptableEntity* Instance = nullptr;
+    //     std::function<void()> InstantiateFunction;
+    //     std::function<void()> DestoryInstanceFunction;
+    //     std::function<void(ScriptableEntity*)> OnCreateFunction;
+    //     std::function<void(ScriptableEntity*,Timestep)> OnUpdateFunction;
+    //     std::function<void(ScriptableEntity*)> OnDestroyFunction;
+    //
+    //     template<typename T>
+    //     void Bind()
+    //     {
+    //         InstantiateFunction = [&]() { Instance = new T(); };
+    //         DestoryInstanceFunction = [&](){delete (T*)Instance;Instance=nullptr;};
+    //
+    //         OnCreateFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnCreate(); };
+    //         OnDestroyFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnDestory(); };
+    //         OnUpdateFunction = [](ScriptableEntity* instance,Timestep ts){ ((T*)instance)->OnUpdate(ts); };
+    //     }
+    //
+    // };
     struct NativeScriptComponent
     {
         ScriptableEntity* Instance = nullptr;
-        std::function<void()> InstantiateFunction;
-        std::function<void()> DestoryInstanceFunction;
-        std::function<void(ScriptableEntity*)> OnCreateFunction;
-        std::function<void(ScriptableEntity*,Timestep)> OnUpdateFunction;
-        std::function<void(ScriptableEntity*)> OnDestroyFunction;
+        //ScriptableEntity* (*InstantiateScript)(int) = nullptr;
+        ScriptableEntity*(*InstantiateScript)() = nullptr;
+        void (*DestoryScript)(NativeScriptComponent* nsc) = nullptr;
 
         template<typename T>
         void Bind()
         {
-            InstantiateFunction = [&]() { Instance = new T(); };
-            DestoryInstanceFunction = [&](){delete (T*)Instance;Instance=nullptr;};
+            InstantiateScript = [](){return static_cast<ScriptableEntity*>(new T());};
+            DestoryScript =  [](NativeScriptComponent* nsc){delete nsc->Instance;nsc->Instance = nullptr;};
 
-            OnCreateFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnCreate(); };
-            OnDestroyFunction = [](ScriptableEntity* instance){ ((T*)instance)->OnDestory(); };
-            OnUpdateFunction = [](ScriptableEntity* instance,Timestep ts){ ((T*)instance)->OnUpdate(ts); };
         }
 
     };
+
 }
 
 #endif //COMPONENT_H

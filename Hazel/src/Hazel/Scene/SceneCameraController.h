@@ -12,7 +12,8 @@
      public:
          void OnCreate()
          {
-
+            auto& transform = GetComponent<TransformComponent>().Transform;
+             transform[3][0] = rand() % 10 - 5.f; // Random position between -5 and 5
          }
          void OnDestory()
          {

@@ -103,6 +103,8 @@ namespace Hazel
         auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
         cc.Primary = false;
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
     {
@@ -209,6 +211,7 @@ namespace Hazel
 
                 ImGui::EndMenuBar();
             }
+            m_SceneHierarchyPanel.OnImGuiRender();
 
             ImGui::Begin("Settings");
 

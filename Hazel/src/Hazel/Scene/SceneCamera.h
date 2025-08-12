@@ -19,7 +19,7 @@ public:
 
 private:
     void RecalculateProjection();
-    float m_OrthographicSize = 2.f;
+    float m_OrthographicSize = 5.f;
     float m_OrthographicNear = -1.f,m_OrthographicFar = 1.f;
 
     float m_AspectRatio = 12.8/7.2;

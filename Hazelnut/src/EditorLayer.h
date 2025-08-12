@@ -6,6 +6,7 @@
 #define EDITORLAYER_H
 #include "Hazel_noEntityPoint.h"
 #include "Hazel/Scene/Entity.h"
+#include "Hazel/Scene/SceneHierarchyPanel.h"
 
 
 namespace entt
@@ -60,6 +61,7 @@ namespace Hazel
         };
         glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
         std::vector<ProfileResult> m_ProfileResults;
+        SceneHierarchyPanel m_SceneHierarchyPanel;
         float m_Rotation = 0.0f;
         float m_Speed = 0.5f;
         int m_Count = 1;
