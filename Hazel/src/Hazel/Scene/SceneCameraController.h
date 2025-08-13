@@ -10,16 +10,16 @@
      class HAZEL_API CameraController: public ScriptableEntity
      {
      public:
-         void OnCreate()
+         virtual void OnCreate() override
          {
             auto& transform = GetComponent<TransformComponent>().Transform;
              transform[3][0] = rand() % 10 - 5.f; // Random position between -5 and 5
          }
-         void OnDestory()
+         virtual void OnDestroy() override
          {
 
          }
-         void OnUpdate(Timestep ts)
+        virtual void OnUpdate(Timestep ts) override
          {
              auto& transform = GetComponent<TransformComponent>().Transform;
              float speed = 5.f;
