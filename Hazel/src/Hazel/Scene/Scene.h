@@ -6,6 +6,7 @@
 #define SCENE_H
 #include <entt.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace Hazel
 {
@@ -16,7 +17,7 @@ namespace Hazel
     public:
         Scene();
         ~Scene();
-        Entity CreateEntity(const std::string& name = std::string());
+        Entity CreateEntity(const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         void OnUpdate(Timestep ts);
         entt::registry& Reg() { return m_Registry; }
         void OnViewportResize(uint32_t width,uint32_t height);

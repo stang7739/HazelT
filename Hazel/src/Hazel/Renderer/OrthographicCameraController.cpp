@@ -61,6 +61,9 @@ namespace Hazel
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
         dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+        dispatcher.Dispatch<MouseMoveEvent>(HZ_BIND_EVENT_FN(OrthographicCameraController::OnMouseMove));
+
+
 
     }
 
@@ -75,6 +78,12 @@ namespace Hazel
         m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
     }
 
+    bool OrthographicCameraController::OnMouseMove(MouseMoveEvent& e)
+    {
+        // HZ_INFO("{},{}",e.GetX(),e.GetY());
+        return false; // Return false to allow further processing of the event
+
+    }
     bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
     {
         m_ZoomLevel -= static_cast<MouseScrolledEvent&>(e).GetOffsetY() * 0.25f;

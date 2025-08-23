@@ -12,8 +12,8 @@
      public:
          virtual void OnCreate() override
          {
-            auto& transform = GetComponent<TransformComponent>().Transform;
-             transform[3][0] = rand() % 10 - 5.f; // Random position between -5 and 5
+            auto& transform = GetComponent<TransformComponent>().Translation;
+              transform.x = rand() % 4 - 2.f; // Random position between -1 and 1
          }
          virtual void OnDestroy() override
          {
@@ -21,23 +21,23 @@
          }
         virtual void OnUpdate(Timestep ts) override
          {
-             auto& transform = GetComponent<TransformComponent>().Transform;
+             auto& transform = GetComponent<TransformComponent>().Translation;
              float speed = 5.f;
              if(Input::IsKeyPressed(HazelKey::A))
              {
-                 transform[3][0] -= speed * ts;
+                 transform.x -= speed * ts;
              }
              if(Input::IsKeyPressed(HazelKey::D))
              {
-                 transform[3][0] += speed * ts;
+                  transform.x += speed * ts;
              }
              if(Input::IsKeyPressed(HazelKey::W))
              {
-                 transform[3][1] += speed * ts;
+                  transform.x += speed * ts;
              }
              if(Input::IsKeyPressed(HazelKey::S))
              {
-                 transform[3][1] -= speed * ts;
+                  transform.x -= speed * ts;
              }
          }
      };

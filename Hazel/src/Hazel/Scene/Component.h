@@ -10,7 +10,7 @@
 #include "Hazel/Core/Timestep.h"
 #include "Hazel/Renderer/Camera.h"
 #include "ScriptableEntity.h"
-
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Hazel
 {
@@ -31,23 +31,34 @@ namespace Hazel
 
     struct TransformComponent
     {
-        glm::mat4 Transform{1.0f};
+        glm::vec3 Translation{1.0f};
+        glm::vec3 Rotation {0.0f};
+        glm::vec3 Scale = {1.0f, 1.0f, 1.0f};
+
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
 
-        TransformComponent(const glm::mat4& transform)
-            : Transform(transform)
+        TransformComponent(const glm::vec3& translation)
+            : Translation(translation)
         {
         }
 
-        operator glm::mat4&() { return Transform; }
-        operator const glm::mat4&() const { return Transform; }
+        glm::mat4 GetTransform() const
+        {
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                                  glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
+                                  glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat scale = glm::scale(glm::mat4(1.0f), Scale);
+            glm::mat translation = glm::translate(glm::mat4(1.0f), Translation);
+            return translation * rotation * scale;
+        }
+
     };
 
     struct SpriteRendererComponent
     {
-        glm::vec4 Color{1.0f, 1.0f, 1.0f, 1.0f};
+        glm::vec4 Color{0.0f, 1.0f, 0.0f, 1.0f};
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;

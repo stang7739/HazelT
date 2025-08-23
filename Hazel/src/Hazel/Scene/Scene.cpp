@@ -24,10 +24,11 @@ namespace Hazel
     {
     }
 
-    Entity Scene::CreateEntity(const std::string& name)
+    Entity Scene::CreateEntity(const std::string& name,glm::vec3 position)
     {
         Entity entity = {m_Registry.create(), this};
-        entity.AddComponent<TransformComponent>();
+
+        entity.AddComponent<TransformComponent>(position);
         entity.AddComponent<TagComponent>();
         auto& tag = entity.GetComponent<TagComponent>();
         tag.Tag = name.empty() ? "Entity" : name;
@@ -53,7 +54,7 @@ namespace Hazel
             });
         }
         Camera* mainCamera = nullptr;
-        glm::mat4* cameraTransform = nullptr;
+        glm::mat4 cameraTransform ;
         {
             auto group = m_Registry.view<TransformComponent,CameraComponent>();
             for(auto entity : group)
@@ -63,21 +64,21 @@ namespace Hazel
                 if(camera.Primary)
                 {
                     mainCamera = &camera.Camera;
-                    cameraTransform = &transform.Transform;
+                    cameraTransform = transform.GetTransform();
                     break;
                 }
             }
         }
         if(mainCamera)
         {
-            Renderer2D::BeginScene(mainCamera->GetProjection(), *cameraTransform);
+            Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
             auto group = m_Registry.view<TransformComponent,SpriteRendererComponent>();
             for (auto entity : group)
             {
                 auto& transform = group.get<TransformComponent>(entity);
                 auto& sprite = group.get<SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
             }
             Renderer2D::EndScene();
         }

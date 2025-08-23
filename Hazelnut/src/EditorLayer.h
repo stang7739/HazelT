@@ -68,7 +68,7 @@ namespace Hazel
         int m_speedsquare = 5.f;
         Ref<Framebuffer> m_Framebuffer;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
-
+        Timestep m_timestep;
 
 
     };

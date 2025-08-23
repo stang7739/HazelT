@@ -9,6 +9,11 @@
 
 namespace Hazel
 {
+    class MouseMoveEvent;
+}
+
+namespace Hazel
+{
     class MouseScrolledEvent;
 }
 
@@ -36,6 +41,7 @@ namespace Hazel
     private:
         bool OnMouseScrolled(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);
+        bool OnMouseMove(MouseMoveEvent& e);
         void CalculateView();
 
 
