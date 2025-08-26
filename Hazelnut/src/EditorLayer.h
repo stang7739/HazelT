@@ -40,6 +40,10 @@ namespace Hazel
         virtual void OnEvent(Event& event)override;//Respond to events that are distributed by the event system
         virtual void OnImGuiRender()override;//Draw the ImGui interface
     private:
+        bool OnKeyPressedEvent(KeyPressedEvent& e);
+        void NewSence();
+        void OpenSence();
+        void SaveSenceAs();
         OrthographicCameraController m_CameraController;
         Ref<VertexArray> m_SquareVA;
         Ref<Shader> m_BlueShader;

@@ -16,6 +16,8 @@
 #include "Hazel/Scene/Component.h"
 #include "Hazel/Scene/Scene.h"
 #include "Hazel/Scene/SceneCameraController.h"
+#include "Hazel/Scene/SceneSerializer.h"
+#include "Hazel/Utils/PlatformUtils.h"
 
 namespace Hazel
 {
@@ -86,7 +88,7 @@ namespace Hazel
         fbspec.Height = 720;
         m_Framebuffer = Framebuffer::Create(fbspec);
         m_ActiveScene = CreateRef<Scene>();
-
+#if 0
         auto square = m_ActiveScene->CreateEntity("Green Square", glm::vec3{0.5f, 0.0f, -1.0f});
         square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
@@ -102,6 +104,7 @@ namespace Hazel
         cc.Primary = false;
         m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
         m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+#endif
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
@@ -139,11 +142,7 @@ namespace Hazel
             m_Framebuffer->Unbind();
         }
     } //Update logic every frame
-    void EditorLayer::OnEvent(Event& event)
-    {
-        HZ_PROFILE_FUNCTION();
-        m_CameraController.OnEvent(event);
-    } //Respond to events that are distributed by the event system
+
     void EditorLayer::OnImGuiRender()
     {
         HZ_PROFILE_FUNCTION();
@@ -190,12 +189,15 @@ namespace Hazel
 
             // DockSpace
             ImGuiIO& io = ImGui::GetIO();
+            ImGuiStyle& style = ImGui::GetStyle();
+            float minWindowSizeX = style.WindowMinSize.x;
+            style.WindowMinSize.x = 370.0f;
             if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
             {
                 ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
                 ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
             }
-
+            style.WindowMinSize.x = minWindowSizeX;
             if (ImGui::BeginMenuBar())
             {
                 if (ImGui::BeginMenu("File"))
@@ -204,6 +206,23 @@ namespace Hazel
                     // which we can't undo at the moment without finer window depth/z control.
                     //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 
+                    if(ImGui::MenuItem("New","Ctrl+N"))
+                    {
+                        NewSence();
+                        // SceneSerializer serializer(m_ActiveScene);
+                        // serializer.Serialize("assets/scenes/Example.hazel");
+                    }
+
+                    if(ImGui::MenuItem("Open...","Ctrl+O"))
+                    {
+                        OpenSence();
+                        // SceneSerializer serializer(m_ActiveScene);
+                        // serializer.Deserialize("assets/scenes/Example.hazel");
+                    }
+                    if(ImGui::MenuItem("Save As...","Ctrl+Shift+S"))
+                    {
+                        SaveSenceAs();
+                    }
                     if (ImGui::MenuItem("Exit")) Application::Get().Close();
                     ImGui::EndMenu();
                 }
@@ -293,4 +312,74 @@ namespace Hazel
             ImGui::End();
         }
     } //Draw the ImGui interface
+    void EditorLayer::OnEvent(Event& event)
+    {
+        HZ_PROFILE_FUNCTION();
+        m_CameraController.OnEvent(event);
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+    } //Respond to events that are distributed by the event system
+
+    bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+    {
+        if(e.GetRepeatCount() > 0)
+            return false;
+        bool control = Input::IsKeyPressed(HazelKey::LeftControl) || Input::IsKeyPressed(HazelKey::RightControl);
+        bool shift = Input::IsKeyPressed(HazelKey::LeftShift) || Input::IsKeyPressed(HazelKey::RightShift);
+        switch(e.GetKeyCode())
+        {
+        case HazelKey::N:
+            {
+                if(control)
+                    NewSence();
+                break;
+            }
+        case HazelKey::O:
+            {
+                if(control)
+                    OpenSence();
+                break;
+            }
+        case HazelKey::S:
+            {
+                if(control && shift)
+                    SaveSenceAs();
+            }
+
+        }
+        return false;
+    }
+    void EditorLayer::NewSence()
+    {
+        HZ_INFO("New Sence");
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x,(uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    }
+    void EditorLayer::OpenSence()
+    {
+        HZ_INFO("OpenSence");
+        std::optional<std::string> filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+        if(filepath)
+        {
+            m_ActiveScene = CreateRef<Scene>();
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x,(uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Deserialize(*filepath);
+        }
+
+    }
+    void EditorLayer::SaveSenceAs()
+    {
+        HZ_INFO("SaveSenceAs");
+        std::optional<std::string> filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+        if(filepath)
+        {
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(*filepath);
+        }
+
+    }
 }

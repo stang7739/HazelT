@@ -28,6 +28,8 @@ public:
     void Begin();
     void End();
     void BlockEvents(bool block){m_BlockEvent = block;}
+    void SetDarkThemeColors();
+
     private:
     bool m_BlockEvent = true;
     // bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);

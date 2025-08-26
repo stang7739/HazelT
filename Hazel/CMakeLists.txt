@@ -44,6 +44,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC imgui)
 target_link_libraries(${TARGET_NAME} PRIVATE glad)
 target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
 target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
+target_link_libraries(${TARGET_NAME} PUBLIC yaml-cpp)
 
 
 # Set symbols for static library - no need for DLL export/import

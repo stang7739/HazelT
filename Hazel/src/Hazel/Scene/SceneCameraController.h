@@ -33,11 +33,11 @@
              }
              if(Input::IsKeyPressed(HazelKey::W))
              {
-                  transform.x += speed * ts;
+                  transform.y += speed * ts;
              }
              if(Input::IsKeyPressed(HazelKey::S))
              {
-                  transform.x -= speed * ts;
+                  transform.y -= speed * ts;
              }
          }
      };
