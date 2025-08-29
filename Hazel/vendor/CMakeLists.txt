@@ -90,8 +90,27 @@ if(NOT TARGET yaml-cpp)
     set_target_properties(yaml-cpp PROPERTIES FOLDER ${third_party_folder}/yaml-cpp)
 endif()
 
-# ImGuizmo (depends on imgui)
+# ImGuizmo
 if(NOT TARGET ImGuizmo)
-    add_subdirectory(imGuizmo)
+    set(IMGUIZMO_TARGET ImGuizmo)
+    if(NOT TARGET imgui)
+        message(FATAL_ERROR "ImGuizmo requires imgui target to be defined before adding this subdirectory.")
+    endif()
+    add_library(${IMGUIZMO_TARGET} STATIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/ImGuizmo.cpp
+    )
+    target_include_directories(${IMGUIZMO_TARGET} PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui>
+    )
+    # ImGuizmo uses ImGui math operators, define before including imgui.h
+    target_compile_definitions(${IMGUIZMO_TARGET} PRIVATE
+            IMGUI_DEFINE_MATH_OPERATORS
+            "CaptureMouseFromApp()=SetNextFrameWantCaptureMouse(true)"
+    )
+    target_link_libraries(${IMGUIZMO_TARGET} PUBLIC imgui)
+    # Optional: group in IDE
+    set_target_properties(${IMGUIZMO_TARGET} PROPERTIES
+            FOLDER "${third_party_folder}/ImGuizmo"
+    )
 endif()
-
