@@ -75,38 +75,23 @@ if(NOT TARGET stb_image)
 endif ()
 
 if(NOT TARGET entt)
-    # EnTT is a header-only library
-    add_library(entt INTERFACE)
-    target_include_directories(entt INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/entt/include)
-    
-    # Optional: Add C++ standard requirement for entt
-#    target_compile_features(entt INTERFACE cxx_std_17)
-    
-    # Optional: Set folder for IDE organization
-    set_target_properties(entt PROPERTIES FOLDER ${third_party_folder}/entt)
-    
-    # Create alias for better namespace management
-    add_library(entt::entt ALIAS entt)
+    add_subdirectory(entt)
 endif ()
 
 if(NOT TARGET yaml-cpp)
-    set(yaml-cpp_SOURCE_DIR_ ${CMAKE_CURRENT_SOURCE_DIR}/yaml-cpp)
-
-    file(GLOB_RECURSE yaml-cpp_sources
-            CONFIGURE_DEPENDS
-            "${yaml-cpp_SOURCE_DIR_}/src/*.cpp"
-    )
-
-    add_library(yaml-cpp STATIC ${yaml-cpp_sources})
-    target_include_directories(yaml-cpp PUBLIC
-            $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR_}/include>
-    )
-
-    # Build yaml-cpp as a static library: use the macro expected by yaml-cpp's dll.h
-    # YAML_CPP_STATIC (old/incorrect here) causes MSVC to treat symbols as dllimport.
-    target_compile_definitions(yaml-cpp PUBLIC YAML_CPP_STATIC_DEFINE)
-
-    set_target_properties(yaml-cpp PROPERTIES
-            FOLDER ${third_party_folder}/yaml-cpp
-    )
+    # Prefer upstream CMake: static lib, no contrib/tools/tests/install
+    set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "" FORCE)
+    set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+    set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(YAML_CPP_INSTALL OFF CACHE BOOL "" FORCE)
+    set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "" FORCE)
+    add_subdirectory(yaml-cpp)
+    set_target_properties(yaml-cpp PROPERTIES FOLDER ${third_party_folder}/yaml-cpp)
 endif()
+
+# ImGuizmo (depends on imgui)
+if(NOT TARGET ImGuizmo)
+    add_subdirectory(imGuizmo)
+endif()
+

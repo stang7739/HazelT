@@ -8,7 +8,6 @@ file(GLOB_RECURSE HAZEL_SOURCES CONFIGURE_DEPENDS
 file(GLOB_RECURSE HAZEL_HEADERS CONFIGURE_DEPENDS
         "include/*.h"
         "src/*.h"
-
 )
 #Compile the files in these directories as if they were the source files
 add_library(${TARGET_NAME} STATIC
@@ -45,6 +44,8 @@ target_link_libraries(${TARGET_NAME} PRIVATE glad)
 target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
 target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 target_link_libraries(${TARGET_NAME} PUBLIC yaml-cpp)
+target_link_libraries(${TARGET_NAME} PUBLIC ImGuizmo)
+
 
 
 # Set symbols for static library - no need for DLL export/import
