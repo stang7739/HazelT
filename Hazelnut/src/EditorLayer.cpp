@@ -10,6 +10,7 @@
 
 #include "Hazel/Renderer/Renderer2D.h"
 #include <chrono>
+#include <ImGuizmo.h>
 
 
 #include "Hazel/Renderer/Framebuffer.h"
@@ -271,7 +272,21 @@ namespace Hazel
             ImGui::Begin("Viewport");
             m_ViewportFocused = ImGui::IsWindowFocused();
             m_ViewportHovered = ImGui::IsWindowHovered();
-            Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+            Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
+            Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+            if(selectedEntity && m_GizmoType != -1)
+            {
+                ImGuizmo::SetOrthographic(false);
+                ImGuizmo::SetDrawlist();
+
+                float windowWidth = (float)ImGui::GetWindowWidth();
+                float windowHeight = (float)ImGui::GetWindowHeight();
+                ImGuizmo::SetRect(ImGui::GetWindowPos().x,ImGui::GetWindowPos().y,windowWidth,windowHeight);
+                // Camera
+                auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+                const auto& camera = cameraEntity.GetComponent<CameraComponent>();
+                const glm::mat4& cameraProjection = camera.Camera.GetProjection();
+            }
             ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
             if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
             {
@@ -283,6 +298,7 @@ namespace Hazel
             }
             uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
             ImGui::Image(textureID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
             ImGui::End();
             ImGui::PopStyleVar();
 

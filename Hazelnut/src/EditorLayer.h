@@ -73,7 +73,7 @@ namespace Hazel
         Ref<Framebuffer> m_Framebuffer;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         Timestep m_timestep;
-
+        int m_GizmoType = -1;
 
     };
 }

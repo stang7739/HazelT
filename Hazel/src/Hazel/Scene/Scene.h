@@ -22,6 +22,7 @@ namespace Hazel
         void OnUpdate(Timestep ts);
         entt::registry& Reg() { return m_Registry; }
         void OnViewportResize(uint32_t width,uint32_t height);
+        Entity GetPrimaryCameraEntity();
     private:
         template<typename T>
         void OnComponentAdded(Entity entity,T& component);

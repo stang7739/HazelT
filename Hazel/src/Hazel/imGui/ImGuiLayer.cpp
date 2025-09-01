@@ -11,6 +11,7 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
+#include "../../../vendor/ImGuizmo/ImGuizmo.h"
 #include "Hazel/Core/Application.h"
 
 namespace Hazel
@@ -353,6 +354,7 @@ namespace Hazel
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
         // HZ_CORE_TRACE("BackendFlags: {0:x}", ImGui::GetIO().BackendFlags);
         // ImGuiContext* ctx = ImGui::GetCurrentContext();
         // HZ_CORE_TRACE("ImGuiLayer Context: {0}", (void*)ctx);

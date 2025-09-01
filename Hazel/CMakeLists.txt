@@ -44,7 +44,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE glad)
 target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
 target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 target_link_libraries(${TARGET_NAME} PUBLIC yaml-cpp)
-
+target_link_libraries(${TARGET_NAME} PUBLIC ImGuizmo)
 
 
 
