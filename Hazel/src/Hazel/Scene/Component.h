@@ -5,12 +5,13 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 #include "SceneCamera.h"
-#include "Hazel/Core/Timestep.h"
-#include "Hazel/Renderer/Camera.h"
 #include "ScriptableEntity.h"
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace Hazel
 {
@@ -46,9 +47,10 @@ namespace Hazel
 
         glm::mat4 GetTransform() const
         {
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                                  glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
-                                  glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+            // glm::mat4 rotation = glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+            //                       glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
+            //                       glm::rotate(glm::mat4(1.0f),glm::radians(Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
             glm::mat scale = glm::scale(glm::mat4(1.0f), Scale);
             glm::mat translation = glm::translate(glm::mat4(1.0f), Translation);
             return translation * rotation * scale;

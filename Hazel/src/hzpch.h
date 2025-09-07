@@ -5,6 +5,10 @@
 #ifndef HZPCH_H
 #define HZPCH_H
 
+// // 启用 GLM 实验特性（需在包含任何 glm 头之前）
+// #ifndef GLM_ENABLE_EXPERIMENTAL
+// #define GLM_ENABLE_EXPERIMENTAL
+// #endif
 
 #include <iostream>
 #include <algorithm>

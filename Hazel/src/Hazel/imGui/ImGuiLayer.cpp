@@ -5,13 +5,16 @@
 #include "ImGuiLayer.h"
 
 #define GLFW_INCLUDE_NONE
+
+
 #include "GLFW/glfw3.h"
 
 #include "imgui.h"
+#include <ImGuizmo.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
-#include "../../../vendor/ImGuizmo/ImGuizmo.h"
+
 #include "Hazel/Core/Application.h"
 
 namespace Hazel

@@ -4,10 +4,10 @@
 
  #ifndef SCENECAMERACONTROLLER_H
  #define SCENECAMERACONTROLLER_H
- #include "ScriptableEntity.h"
+
  namespace Hazel
  {
-     class HAZEL_API CameraController: public ScriptableEntity
+     class  CameraController: public ScriptableEntity
      {
      public:
          virtual void OnCreate() override

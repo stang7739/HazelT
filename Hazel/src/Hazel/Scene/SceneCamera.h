@@ -8,7 +8,7 @@
 
 
 namespace Hazel{
-class HAZEL_API SceneCamera : public Camera {
+class  SceneCamera : public Camera {
 public:
     enum class ProjectionType
     {

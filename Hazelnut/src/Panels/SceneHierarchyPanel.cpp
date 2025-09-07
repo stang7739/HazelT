@@ -1,15 +1,15 @@
 //
 // Created by stang on 25-8-12.
 //
-
+#include "hzpch.h"
 #include "SceneHierarchyPanel.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Component.h"
-#include <cstring>
+#include "Hazel/Core/Core.h"
+#include "Hazel/Scene/Component.h"
 
 /* The Microsoft C++ compiler is non-compliant with the C++ standard and needs
  * the following definition to disable a security warning on std::strncpy().

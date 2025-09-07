@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Hazel/Core/Timestep.h"
+#include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Renderer/Renderer2D.h"
 
 namespace Hazel
@@ -89,6 +90,20 @@ namespace Hazel
 
 
     }
+    void Scene::OnUpdate(Timestep ts,EditorCamera& camera)
+    {
+        Renderer2D::BeginScene(camera);
+        auto group = m_Registry.view<TransformComponent,SpriteRendererComponent>();
+        for (auto entity : group)
+        {
+            auto& transform = group.get<TransformComponent>(entity);
+            auto& sprite = group.get<SpriteRendererComponent>(entity);
+
+            Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+        }
+        Renderer2D::EndScene();
+    }
+
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
     {
         m_ViewportWidth = width;

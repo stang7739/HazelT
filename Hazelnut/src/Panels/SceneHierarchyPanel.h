@@ -4,9 +4,10 @@
 
 #ifndef SCENEHIERARCHYPANEL_H
 #define SCENEHIERARCHYPANEL_H
-#include "Entity.h"
+
 #include "Hazel/Core/Base.h"
 #include "Hazel/Core/Timestep.h"
+#include "Hazel/Scene/Entity.h"
 
 
 namespace Hazel

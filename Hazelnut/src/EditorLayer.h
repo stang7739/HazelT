@@ -5,30 +5,23 @@
 #ifndef EDITORLAYER_H
 #define EDITORLAYER_H
 #include "Hazel_noEntityPoint.h"
+#include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Entity.h"
-#include "Hazel/Scene/SceneHierarchyPanel.h"
+#include "Panels/SceneHierarchyPanel.h"
+// #include "Hazel/Scene/SceneHierarchyPanel.h"
 
 
 namespace entt
 {
     enum class entity : std::uint32_t;
 }
-
-namespace Hazel
-{
-    class Scene;
-}
-
 namespace Hazel
 {
     class Framebuffer;
-
-
-
     class Texture2D;
     class Shader;
     class VertexArray;
-
+    class Scene;
 
     class EditorLayer : public  Layer{
     public:
@@ -44,35 +37,38 @@ namespace Hazel
         void NewSence();
         void OpenSence();
         void SaveSenceAs();
-        OrthographicCameraController m_CameraController;
-        Ref<VertexArray> m_SquareVA;
-        Ref<Shader> m_BlueShader;
 
-        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture;
-        Ref<SubTexture2D> m_TextureStairs;
-        Ref<Scene> m_ActiveScene;
-        Entity m_SquareEntity;
-
-        Entity m_CameraEntity;
-        Entity m_SecondCamera;
-        bool m_PrimaryCamera = true;
-
-        glm::vec4 m_SquareColor = {0.2f, 0.3f, 0.8f, 1.0f};
         struct ProfileResult
         {
             const char* Name;
             float Time;
         };
+
+        OrthographicCameraController m_CameraController;
+        SceneHierarchyPanel m_SceneHierarchyPanel;
+        Timestep m_timestep;
+        EditorCamera m_EditorCamera;
+
+        Ref<VertexArray> m_SquareVA;
+        Ref<Shader> m_BlueShader;
+        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture;
+        Ref<SubTexture2D> m_TextureStairs;
+        Ref<Scene> m_ActiveScene;
+        Ref<Framebuffer> m_Framebuffer;
+
+        Entity m_SquareEntity;
+        Entity m_CameraEntity;
+        Entity m_SecondCamera;
+
+        glm::vec4 m_SquareColor = {0.2f, 0.3f, 0.8f, 1.0f};
         glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
         std::vector<ProfileResult> m_ProfileResults;
-        SceneHierarchyPanel m_SceneHierarchyPanel;
         float m_Rotation = 0.0f;
         float m_Speed = 0.5f;
         int m_Count = 1;
         int m_speedsquare = 5.f;
-        Ref<Framebuffer> m_Framebuffer;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
-        Timestep m_timestep;
+        bool m_PrimaryCamera = true;
         int m_GizmoType = -1;
 
     };

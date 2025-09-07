@@ -8,13 +8,13 @@
 
 #include "Hazel/Core/Base.h"
 
-
 namespace Hazel
 {
     class Camera;
     class SubTexture2D;
     class Texture2D;
     class OrthographicCamera;
+    class EditorCamera;
 
 
     class HAZEL_API Renderer2D
@@ -24,6 +24,7 @@ namespace Hazel
         static void Shutdown();
 
         static void BeginScene(const OrthographicCamera& camera);
+        static void BeginScene(const EditorCamera& camera);
         static void BeginScene(const Camera& camera,const glm::mat4& transform);
         static void BeginScene(const  glm::mat4& cameraPro,const glm::mat4& transform);
 
@@ -77,6 +78,8 @@ namespace Hazel
         static Statistics GetStats();
 
     private:
+        static void StartBatch();
+        static void NextBatch();
         static void FlushAndReset();
     };
 }
