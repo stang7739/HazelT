@@ -22,7 +22,7 @@ namespace Hazel
         Entity CreateEntity(const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         void DestoryEntity(Entity entity);
         void OnUpdate(Timestep ts);
-        void OnUpdate(Timestep ts,EditorCamera& camera);
+        void OnUpdateEditor(Timestep ts,EditorCamera& camera);
         entt::registry& Reg() { return m_Registry; }
         void OnViewportResize(uint32_t width,uint32_t height);
         Entity GetPrimaryCameraEntity();

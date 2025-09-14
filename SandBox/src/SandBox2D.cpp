@@ -77,6 +77,7 @@ void SandBox2D::OnAttach()
     Hazel::FramebufferSpecification fbspec;
     fbspec.Width = 1280;
     fbspec.Height = 720;
+    fbspec.Attachments = { Hazel::FramebufferTextureFormat::RGBA8, Hazel::FramebufferTextureFormat::Depth };
     m_Framebuffer = Hazel::Framebuffer::Create(fbspec);
 } //Executed when the layer is loaded into the stack
 void SandBox2D::OnDetach()

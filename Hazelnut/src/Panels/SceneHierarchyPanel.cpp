@@ -15,7 +15,7 @@
  * the following definition to disable a security warning on std::strncpy().
  */
 #ifdef _MSVC_LANG
-  #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #endif
 namespace Hazel
 {
@@ -58,6 +58,11 @@ namespace Hazel
             DrawComponents(m_SelectionContext);
         }
         ImGui::End();
+    }
+
+    void SceneHierarchyPanel::SetSeletedEntity(Entity entity)
+    {
+        m_SelectionContext = entity;
     }
 
     void SceneHierarchyPanel::DrawEntityNode(Entity entityID)
@@ -204,7 +209,7 @@ namespace Hazel
             bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags,
                                           name.c_str());
             ImGui::PopStyleVar();
-            ImGui::SameLine(contentReginAvailable.x - lineHeight *0.5f);
+            ImGui::SameLine(contentReginAvailable.x - lineHeight * 0.5f);
             if (ImGui::Button("+", ImVec2{lineHeight, lineHeight}))
             {
                 ImGui::OpenPopup("ComponentSettings");

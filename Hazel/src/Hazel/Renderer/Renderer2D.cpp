@@ -16,6 +16,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Camera.h"
 #include "EditorCamera.h"
+#include "Hazel/Scene/Component.h"
 
 namespace Hazel
 {
@@ -26,6 +27,7 @@ namespace Hazel
         glm::vec2 TexCoord;
         float TexIndex;
         float TilingFactor;
+        int EntityID = -1; // TODO: Remove this
     };
 
     struct Renderer2DData
@@ -72,8 +74,8 @@ namespace Hazel
             {ShaderDataType::Float4, "a_Color"},
             {ShaderDataType::Float2, "a_TexCoord"},
             {ShaderDataType::Float, "a_TexIndex"},
-            {ShaderDataType::Float, "a_TilingFactor"}
-
+            {ShaderDataType::Float, "a_TilingFactor"},
+            {ShaderDataType::Int, "a_EntityID"}
 
         });
         s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
@@ -317,7 +319,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
         // s_Data.QuadVertexArray->Bind();
         // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
-     void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+     void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color,int entityID)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
             FlushAndReset();
@@ -336,13 +338,14 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
             s_Data.QuadVertexBufferPtr->TexCoord =textureCoords[i] ; // Default texture coordinates
             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
             s_Data.QuadVertexBufferPtr->TilingFactor = TilingFactor; // Default tilling factor
+            s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;
         }
 
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
     }
-     void Renderer2D::DrawQuad(const glm::mat4& transform,  const Ref<Texture2D> texture,float tilingFactor , const glm::vec4& tintColor )
+     void Renderer2D::DrawQuad(const glm::mat4& transform,  const Ref<Texture2D> texture,float tilingFactor , const glm::vec4& tintColor ,int entityID)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
             FlushAndReset();
@@ -376,10 +379,15 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
             s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i]; // Default texture coordinates
             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
             s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor; // Default tilling factor
+            s_Data.QuadVertexBufferPtr->EntityID = entityID; // Default tilling factor
             s_Data.QuadVertexBufferPtr++;
         }
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
+    }
+     void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+    {
+        DrawQuad(transform, src.Color, entityID);
     }
 
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,

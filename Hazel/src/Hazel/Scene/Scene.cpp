@@ -83,14 +83,14 @@ namespace Hazel
                 auto& transform = group.get<TransformComponent>(entity);
                 auto& sprite = group.get<SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
             }
             Renderer2D::EndScene();
         }
 
 
     }
-    void Scene::OnUpdate(Timestep ts,EditorCamera& camera)
+    void Scene::OnUpdateEditor(Timestep ts,EditorCamera& camera)
     {
         Renderer2D::BeginScene(camera);
         auto group = m_Registry.view<TransformComponent,SpriteRendererComponent>();
@@ -99,7 +99,7 @@ namespace Hazel
             auto& transform = group.get<TransformComponent>(entity);
             auto& sprite = group.get<SpriteRendererComponent>(entity);
 
-            Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
         }
         Renderer2D::EndScene();
     }

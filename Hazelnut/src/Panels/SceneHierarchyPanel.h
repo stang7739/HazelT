@@ -23,6 +23,7 @@ namespace Hazel
         void OnImGuiRender();
         void OnImGuiRender(Timestep ts);
         Entity GetSelectedEntity() const { return m_SelectionContext; }
+          void SetSeletedEntity(Entity entity);
     private:
         void DrawEntityNode(Entity entityID);
         void DrawComponents(Entity entity);

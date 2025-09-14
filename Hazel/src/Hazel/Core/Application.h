@@ -55,7 +55,7 @@ namespace Hazel
         //It is declared within the class, defined outside the class, and globally unique
         //The address used to store this unique application instance
         static Application* s_Instance;
-        std::unique_ptr<Window> m_Window;
+        Scope<Window> m_Window;
         bool m_Running = true;
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;

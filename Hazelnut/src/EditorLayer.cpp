@@ -87,6 +87,9 @@ namespace Hazel
         FramebufferSpecification fbspec;
         fbspec.Width = 1280;
         fbspec.Height = 720;
+        fbspec.Attachments = {
+            FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth
+        };
         m_Framebuffer = Framebuffer::Create(fbspec);
         m_ActiveScene = CreateRef<Scene>();
         m_EditorCamera = EditorCamera(30.f, 1.778f, 0.1f, 1000.f);
@@ -137,11 +140,25 @@ namespace Hazel
             HZ_PROFILE_SCOPE("CameraController::OnUpdate");
             RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
             RenderCommand::Clear();
+            m_Framebuffer->ClearAttachment(1, -1);
         }
         {
             HZ_PROFILE_SCOPE("Renderer Draw");
             // m_ActiveScene->OnUpdate(timestep);
-            m_ActiveScene->OnUpdate(timestep, m_EditorCamera);
+            m_ActiveScene->OnUpdateEditor(timestep, m_EditorCamera);
+            auto [mx,my] = ImGui::GetMousePos();
+            mx -= m_ViewportBounds[0].x;
+            my -= m_ViewportBounds[0].y;
+            glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+            my = viewportSize.y - my;
+            int mouseX = (int)mx;
+            int mouseY = (int)my;
+            if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+            {
+                int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+                m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
+            }
+            // HZ_INFO("{},{}", mouseX, mouseY);
             m_Framebuffer->Unbind();
         }
     } //Update logic every frame
@@ -235,6 +252,13 @@ namespace Hazel
             m_SceneHierarchyPanel.OnImGuiRender(m_timestep);
 
             ImGui::Begin("Stats");
+            std::string name = "None";
+            if (m_HoveredEntity)
+            {
+                name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
+            }
+
+            ImGui::Text("Hovered Entity: %s", name.c_str());
 
             auto stats = Renderer2D::GetStats();
             ImGui::Text("Renderer2D Stats:");
@@ -272,6 +296,13 @@ namespace Hazel
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
             ImGui::Begin("Viewport");
+            auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+            auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+            auto viewportOffset = ImGui::GetWindowPos();
+            m_ViewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y};
+            m_ViewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
+
+            // HZ_INFO("{},{}", viewportOffset.x, viewportOffset.y);
             m_ViewportFocused = ImGui::IsWindowFocused();
             m_ViewportHovered = ImGui::IsWindowHovered();
             Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
@@ -280,9 +311,14 @@ namespace Hazel
             m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
 
             uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-            ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
-
-
+            ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1},
+                         ImVec2{1, 0});
+            // auto windowSize = ImGui::GetWindowSize();
+            // auto winpos = ImGui::GetWindowPos();
+            // auto minBound = ImVec2{winpos.x + viewportOffset.x, winpos.y + viewportOffset.y};
+            // auto maxBound = ImVec2{minBound.x + windowSize.x, minBound.y + windowSize.y};
+            // m_ViewportBounds[0] = {minBound.x, minBound.y};
+            // m_ViewportBounds[1] = {maxBound.x, maxBound.y};
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
             if (selectedEntity && m_GizmoType != -1)
             {
@@ -366,8 +402,20 @@ namespace Hazel
         m_EditorCamera.OnEvent(event);
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressedEvent));
     } //Respond to events that are distributed by the event system
 
+    bool EditorLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+    {
+        if(e.GetMouseButton() == HazelKey::MouseLeft)
+        {
+            if(m_ViewportHovered&& !Input::IsKeyPressed(HazelKey::LeftAlt) && !ImGuizmo::IsOver())
+            {
+                m_SceneHierarchyPanel.SetSeletedEntity(m_HoveredEntity);
+            }
+        }
+        return false;
+    }
     bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
     {
         if (e.GetRepeatCount() > 0)
@@ -402,13 +450,13 @@ namespace Hazel
         case HazelKey::W:
             {
                 m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-                HZ_INFO("{}","W is pressed");
+                HZ_INFO("{}", "W is pressed");
                 break;
             }
         case HazelKey::E:
             {
                 m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-                HZ_INFO("{}","R is pressed");
+                HZ_INFO("{}", "R is pressed");
 
                 break;
             }
@@ -424,6 +472,8 @@ namespace Hazel
     void EditorLayer::NewSence()
     {
         HZ_INFO("New Sence");
+        // Clear hovered entity to avoid dangling entity handles across scene switches
+        m_HoveredEntity = Entity();
         m_ActiveScene = CreateRef<Scene>();
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
@@ -435,6 +485,8 @@ namespace Hazel
         std::optional<std::string> filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
         if (filepath)
         {
+            // Clear hovered entity when loading a different scene
+            m_HoveredEntity = Entity();
             m_ActiveScene = CreateRef<Scene>();
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);

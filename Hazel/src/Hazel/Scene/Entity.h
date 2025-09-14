@@ -56,9 +56,16 @@ namespace Hazel
         }
         bool operator!=(const Entity& other)const{return !(*this == other);}
 
-        [[nodiscard]]
+        // [[nodiscard]]
         entt::entity GetEntityHandle() const { return m_EntityHandle; }
         Scene* GetScene() const { return m_Scene; }
+
+        // Checks whether the entity handle is valid (alive) in the associated registry
+        // [[nodiscard]]
+        bool IsValid() const
+        {
+            return m_Scene != nullptr && m_EntityHandle != entt::null && m_Scene->m_Registry.valid(m_EntityHandle);
+        }
 
     private:
         entt::entity m_EntityHandle{entt::null};

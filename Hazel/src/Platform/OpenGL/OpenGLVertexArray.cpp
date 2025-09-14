@@ -26,9 +26,10 @@ namespace Hazel
         HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
         return 0;
     }
+
     OpenGLVertexArray::OpenGLVertexArray()
     {
-        glCreateVertexArrays(1,&m_RendererID);
+        glCreateVertexArrays(1, &m_RendererID);
     }
 
     OpenGLVertexArray::~OpenGLVertexArray()
@@ -48,23 +49,65 @@ namespace Hazel
 
     void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {
-        HZ_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(),"VertexBuffer has no layout!");
+        HZ_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "VertexBuffer has no layout!");
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
 
         uint32_t index = 0;
         const auto& layout = vertexBuffer->GetLayout();
-        for(const auto& element : layout)
+        for (const auto& element : layout)
         {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
-                element.GetCompoentCount(),
-                ShaderDataTypeToOpenGLBaseType(element.Type),
-                element.Normalized ? GL_TRUE : GL_FALSE,
-                layout.GetStride(),
-                (const void*)(uintptr_t)element.Offset
-                );
-            index++;
+            switch (element.Type)
+            {
+            case ShaderDataType::Float:
+            case ShaderDataType::Float2:
+            case ShaderDataType::Float3:
+            case ShaderDataType::Float4:
+                {
+                    glEnableVertexAttribArray(index);
+                    glVertexAttribPointer(index,
+                                          element.GetCompoentCount(),
+                                          ShaderDataTypeToOpenGLBaseType(element.Type),
+                                          element.Normalized ? GL_TRUE : GL_FALSE,
+                                          layout.GetStride(),
+                                          (const void*)(uintptr_t)element.Offset
+                    );
+                    index++;
+                    break;
+                }
+            case ShaderDataType::Int:
+            case ShaderDataType::Int2:
+            case ShaderDataType::Int3:
+            case ShaderDataType::Int4:
+            case ShaderDataType::Bool:
+                {
+                    glEnableVertexAttribArray(index);
+                    glVertexAttribIPointer(index, element.GetCompoentCount(),
+                                           ShaderDataTypeToOpenGLBaseType(element.Type), layout.GetStride(),
+                                           (const void*)(uintptr_t)element.Offset);
+                    index++;
+                    break;
+                }
+            case ShaderDataType::Mat3:
+            case ShaderDataType::Mat4:
+                {
+                    uint8_t count = element.GetCompoentCount();
+                    for (uint8_t i = 0; i < count; i++)
+                    {
+                        glEnableVertexAttribArray(index);
+                        glVertexAttribPointer(index,
+                                              count,
+                                              ShaderDataTypeToOpenGLBaseType(ShaderDataType::Float),
+                                              element.Normalized ? GL_TRUE : GL_FALSE,
+                                              layout.GetStride(),
+                                              (const void*)(uintptr_t)(element.Offset + sizeof(float) * count * i)
+                        );
+                        glVertexAttribDivisor(index, 1);
+                        index++;
+                    }
+                    break;
+                }
+            }
         }
         m_VertexBuffers.push_back(vertexBuffer);
     }
