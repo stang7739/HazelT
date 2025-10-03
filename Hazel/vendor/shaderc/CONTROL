@@ -1,0 +1,7 @@
+Package: shaderc
+Version: 2025.2
+Depends: glslang, spirv-tools, vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 65646b5909074bab235463bb9344234ad552340a3881c88056485b25b4a63554
+Description: A collection of tools, libraries and tests for shader compilation.

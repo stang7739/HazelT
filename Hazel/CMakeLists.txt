@@ -46,6 +46,13 @@ target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 target_link_libraries(${TARGET_NAME} PUBLIC yaml-cpp)
 target_link_libraries(${TARGET_NAME} PUBLIC ImGuizmo)
 
+#target_link_libraries(${TARGET_NAME} PUBLIC
+#        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/shaderc/lib/shaderc_util.lib>
+#        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/SPIRV-Cross/lib/spirv-cross-core.lib>
+#
+#)
+#target_link_libraries(${TARGET_NAME} PUBLIC shaderc)
+#target_link_libraries(${TARGET_NAME} PUBLIC SPIRV-Cross)
 
 
 # Set symbols for static library - no need for DLL export/import

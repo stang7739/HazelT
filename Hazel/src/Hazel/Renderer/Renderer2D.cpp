@@ -16,6 +16,7 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Camera.h"
 #include "EditorCamera.h"
+#include "UniformBuffer.h"
 #include "Hazel/Scene/Component.h"
 
 namespace Hazel
@@ -50,6 +51,12 @@ namespace Hazel
 
         glm::vec4 QuadVertexPositions[4];
         Renderer2D::Statistics Stats;
+        struct CameraData
+        {
+            glm::mat4 ViewProjection;
+        };
+        CameraData CameraBuffer;
+        Ref<UniformBuffer> CameraUniformBuffer;
     };
 
     static Renderer2DData s_Data;
@@ -57,16 +64,6 @@ namespace Hazel
     void Renderer2D::Init()
     {
         s_Data.QuadVertexArray = VertexArray::Create();
-        // float squareVertices[5 * 4] = {
-        //
-        //     -0.5f, -0.5f, 0.0f, 0.f, 0.f,
-        //     0.5f, -0.5f, 0.0f, 1.f, 0.f,
-        //     0.5f, 0.5f, 0.0f, 1.f, 1.f,
-        //     -0.5f, 0.5f, 0.0f, 0.f, 1.f
-        // };
-        // Ref<VertexBuffer> squarevertexBuffer;
-        // squarevertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-        // // HZ_CORE_TRACE("squarevertexBuffer called, ptr = {0}", (void*)squarevertexBuffer.get());
 
         s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
         s_Data.QuadVertexBuffer->SetLayout({
@@ -93,13 +90,7 @@ namespace Hazel
             offset += 4;
         }
 
-
-        // unsigned int squareIndices[6] = {
-        //     0, 1, 2, // Triangle 1
-        //     2, 3, 0 // Triangle 2
-        // };
-        // Ref<IndexBuffer> squareIndexBuffer =(IndexBuffer::Create(quad, sizeof(squareIndices) / sizeof(unsigned int)));
-        Ref<IndexBuffer> squareIndexBuffer = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+        Ref<IndexBuffer> squareIndexBuffer = IndexBuffer::Create(quadIndices, s_Data.MaxIndices); //每个四边形
         s_Data.QuadVertexArray->SetIndexBuffer(squareIndexBuffer);
         delete[] quadIndices;
         // HZ_CORE_TRACE("squareIndexBuffer called, ptr = {0}", (void*)squareIndexBuffer.get());
@@ -126,28 +117,31 @@ namespace Hazel
         s_Data.QuadVertexPositions[2] = {0.5f, 0.5f, 0.0f, 1.f}; // Top right
         s_Data.QuadVertexPositions[3] = {-0.5f, 0.5f, 0.0f, 1.f}; // Top left
 
-
-        // m_Texture = Texture2D::Create("assets/textures/Checkerboard.png");
-        // m_ChernoLogoTexture = Texture2D::Create("assets/textures/ChernoLogo.png");
+        s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
     }
 
     void Renderer2D::Shutdown()
     {
         // delete s_Data;
         delete[] s_Data.QuadVertexBufferBase;
+
     }
 
     void Renderer2D::BeginScene(const OrthographicCamera& camera)
     {
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+        // s_Data.TextureShader->Bind();
+        // s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+        s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
        StartBatch();
     }
     void Renderer2D::BeginScene(const EditorCamera& camera)
     {
-        auto viewprojection = camera.GetViewProjectionMatrix();
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewprojection);
+        // auto viewprojection = camera.GetViewProjectionMatrix();
+        // s_Data.TextureShader->Bind();
+        // s_Data.TextureShader->SetMat4("u_ViewProjection", viewprojection);
+        s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
         StartBatch();
     }
     void Renderer2D::BeginScene(const  glm::mat4& cameraPro,const glm::mat4& transform)
@@ -156,8 +150,11 @@ namespace Hazel
 
         glm::mat4 viewProj = cameraPro * glm::inverse(transform);
 
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+        // s_Data.TextureShader->Bind();
+        // s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+        s_Data.CameraBuffer.ViewProjection = viewProj;
+        s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
+        // s_Data.CameraUniformBuffer->SetData()
 
         StartBatch();
     }
@@ -176,6 +173,7 @@ namespace Hazel
         {
             s_Data.TextureSlots[i]->Bind(i);
         }
+        s_Data.TextureShader->Bind();
         RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
         s_Data.Stats.DrawCalls++;
     }

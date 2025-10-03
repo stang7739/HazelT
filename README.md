@@ -3,7 +3,8 @@ git submodule update --init --recursive
 
 imgui docking branch
 
-imgui.h 4302行 取消注释
+imgui.h 4315行 取消注释
+static inline bool  BeginPopupContextWindow(const char* str_id, ImGuiMouseButton mb, bool over_items) { return BeginPopupContextWindow(str_id, mb | (over_items ? 0 : ImGuiPopupFlags_NoOpenOverItems)); } // OBSOLETED in 1.77 (from June 2020)
 
 工作路径 D:\HazelT\Hazel\HazelInut 
 
