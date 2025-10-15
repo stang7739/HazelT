@@ -97,4 +97,8 @@
 
 #define BIT(x) (1 << x)
 #define HZ_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+// Core DM Constants
+#define CORE_DM_CONSTANT_ID_SH_ORDER 3
+
 #endif //CORE_H
