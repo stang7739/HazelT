@@ -7,8 +7,10 @@
 #include "Hazel_noEntityPoint.h"
 #include "Hazel/Renderer/EditorCamera.h"
 #include "Hazel/Scene/Entity.h"
+#include "Panels/ContentBrowerPanel.h"
 #include "Panels/SceneHierarchyPanel.h"
-// #include "Hazel/Scene/SceneHierarchyPanel.h"
+
+
 
 
 namespace entt
@@ -37,6 +39,7 @@ namespace Hazel
         bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
         void NewSence();
         void OpenSence();
+        void OpenSence(const std::filesystem::path& path);
         void SaveSenceAs();
 
         struct ProfileResult
@@ -47,6 +50,7 @@ namespace Hazel
 
         OrthographicCameraController m_CameraController;
         SceneHierarchyPanel m_SceneHierarchyPanel;
+        ContentBrowerPanel m_ContentBrowerPanel;
         Timestep m_timestep;
         EditorCamera m_EditorCamera;
 

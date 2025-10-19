@@ -15,8 +15,6 @@
 #include "Hazel/Renderer/Framebuffer.h"
 #include "Hazel/Scene/Component.h"
 #include "Hazel/Scene/Scene.h"
-#include "Panels/SceneCameraController.h"
-// #include "Hazel/Scene/SceneCameraController.h"
 #include "Hazel/Scene/SceneSerializer.h"
 #include "Hazel/Utils/PlatformUtils.h"
 
@@ -27,7 +25,7 @@ namespace Hazel
     {
         return reinterpret_cast<void*>(static_cast<intptr_t>(textureID));
     }
-
+    extern const std::filesystem::path g_AssetPath;
     EditorLayer::EditorLayer(): Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true),
                                 m_SquareColor(1, 1, 1, 1.f)
     {
@@ -208,6 +206,7 @@ namespace Hazel
                 ImGui::EndMenuBar();
             }
             m_SceneHierarchyPanel.OnImGuiRender(m_timestep);
+            m_ContentBrowerPanel.OnImGuiRender();
 
             ImGui::Begin("Stats");
             std::string name = "None";
@@ -225,31 +224,6 @@ namespace Hazel
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-            // if (m_SquareEntity)
-            // {
-            //     ImGui::Separator();
-            //     auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
-            //     ImGui::Text("%s", tag.c_str());
-            //     auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-            //     ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-            //     ImGui::Separator();
-            // }
-            //
-            // ImGui::DragFloat3("Camera Transform",
-            //             glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
-            //
-            // if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-            // {
-            //     m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-            //     m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-            // }
-            // {
-            //     auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-            //     float orthoSize = camera.GetOrthographicSize();
-            //
-            //     if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-            //         camera.SetOrthographicSize(orthoSize);
-            // }
             ImGui::End();
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -271,12 +245,16 @@ namespace Hazel
             uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
             ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1},
                          ImVec2{1, 0});
-            // auto windowSize = ImGui::GetWindowSize();
-            // auto winpos = ImGui::GetWindowPos();
-            // auto minBound = ImVec2{winpos.x + viewportOffset.x, winpos.y + viewportOffset.y};
-            // auto maxBound = ImVec2{minBound.x + windowSize.x, minBound.y + windowSize.y};
-            // m_ViewportBounds[0] = {minBound.x, minBound.y};
-            // m_ViewportBounds[1] = {maxBound.x, maxBound.y};
+
+            if(ImGui::BeginDragDropTarget()) // Accept drag drop payloads
+            {
+                if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_DROWSER_ITEM"))
+                {
+                    const wchar_t* path = (const wchar_t*)payload->Data;
+                    OpenSence(std::filesystem::path(g_AssetPath / path));
+                }
+                ImGui::EndDragDropTarget();
+            }
             Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
             if (selectedEntity && m_GizmoType != -1)
             {
@@ -440,28 +418,30 @@ namespace Hazel
     void EditorLayer::OpenSence()
     {
         HZ_INFO("OpenSence");
-        std::optional<std::string> filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
-        if (filepath)
+        std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
+        if (!filepath.empty())
         {
             // Clear hovered entity when loading a different scene
-            m_HoveredEntity = Entity();
-            m_ActiveScene = CreateRef<Scene>();
-            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
-            SceneSerializer serializer(m_ActiveScene);
-            serializer.Deserialize(*filepath);
+           OpenSence(filepath);
         }
+    }
+    void EditorLayer::OpenSence(const std::filesystem::path& path)
+    {
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+        SceneSerializer serializer(m_ActiveScene);
+        serializer.Deserialize(path.string());
     }
 
     void EditorLayer::SaveSenceAs()
     {
         HZ_INFO("SaveSenceAs");
-        std::optional<std::string> filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
-        if (filepath)
+        std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
+        if (!filepath.empty())
         {
             SceneSerializer serializer(m_ActiveScene);
-            serializer.Serialize(*filepath);
+            serializer.Serialize(filepath);
         }
     }
 }
