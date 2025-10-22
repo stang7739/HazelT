@@ -9,6 +9,8 @@
 #include <string>
 #include <glm/glm.hpp>
 
+class b2World;
+
 namespace Hazel
 {
     class EditorCamera;
@@ -22,6 +24,9 @@ namespace Hazel
         Entity CreateEntity(const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         void DestoryEntity(Entity entity);
         void OnUpdate(Timestep ts);
+        void OnUpdateRuntime(Timestep ts);
+        void OnRuntimeStart();
+        void OnRuntimeStop();
         void OnUpdateEditor(Timestep ts,EditorCamera& camera);
         entt::registry& Reg() { return m_Registry; }
         void OnViewportResize(uint32_t width,uint32_t height);
@@ -31,6 +36,7 @@ namespace Hazel
         void OnComponentAdded(Entity entity,T& component);
         entt::registry m_Registry;
         uint32_t m_ViewportWidth = 0,m_ViewportHeight;
+        b2World* m_PhysicsWorld = nullptr;
         friend class Entity;
         friend class SceneSerializer;
         friend class SceneHierarchyPanel;

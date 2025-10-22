@@ -26,6 +26,9 @@ target_include_directories(Hazel PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 
 )
+
+# Ensure Box2D headers are available when compiling Hazel sources
+target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Box2D/include)
 target_precompile_headers(${TARGET_NAME} PRIVATE src/hzpch.h)
 
 # Set C++ standard
@@ -45,6 +48,7 @@ target_link_libraries(${TARGET_NAME} PRIVATE stb_image)
 target_link_libraries(${TARGET_NAME} PUBLIC entt::entt)
 target_link_libraries(${TARGET_NAME} PUBLIC yaml-cpp)
 target_link_libraries(${TARGET_NAME} PUBLIC ImGuizmo)
+target_link_libraries(${TARGET_NAME} PUBLIC box2d)
 
 #target_link_libraries(${TARGET_NAME} PUBLIC
 #        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/vendor/shaderc/lib/shaderc_util.lib>

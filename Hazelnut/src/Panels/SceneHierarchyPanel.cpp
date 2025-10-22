@@ -44,7 +44,7 @@ namespace Hazel
         });
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
             m_SelectionContext = {};
-        if (ImGui::BeginPopupContextWindow(0, 1, false))
+        if (ImGui::BeginPopupContextWindow(0, 1))
         {
             if (ImGui::MenuItem("Create Empty Entity"))
             {
@@ -108,13 +108,14 @@ namespace Hazel
         if (outerOpened)
         {
             // 子节点标志：同样采用“点击箭头才开合”
-            ImGuiTreeNodeFlags childFlags = ImGuiTreeNodeFlags_OpenOnArrow;
+            ImGuiTreeNodeFlags childFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
             // 6) 绘制一个子节点示例
             //    这里用一个固定常量 9817239 转成 void* 当作唯一 ID（仅示例，不够健壮）。
             //    实际项目里应为每个子项生成稳定的唯一 ID（或使用 PushID/PopID）。
+            ImGui::PushID((int)(uint32_t)entityID);
             bool childOpened = ImGui::TreeNodeEx(
-                (void*)9817239,
+                tag.c_str(),
                 childFlags,
                 tag.c_str() // 示意：这里复用同一文本
             );
@@ -124,7 +125,7 @@ namespace Hazel
             {
                 ImGui::TreePop(); // 与 childOpened 的 TreeNodeEx 成对
             }
-
+            ImGui::PopID();
             ImGui::TreePop(); // 与 outerOpened 的 TreeNodeEx 成对
         }
         if (entityDeleted)
@@ -226,8 +227,6 @@ namespace Hazel
             }
             if (open)
             {
-                // auto& src = entity.GetComponent<SpriteRendererComponent>();
-                // ImGui::ColorEdit4("Color", glm::value_ptr(src.Color));
                 uifunction(component);
                 ImGui::TreePop();
             }
@@ -258,22 +257,41 @@ namespace Hazel
         }
         if (ImGui::BeginPopup("AddComponent"))
         {
-            if (ImGui::MenuItem("Camera"))
+            if(!m_SelectionContext.HasComponent<CameraComponent>())
             {
-                if (!m_SelectionContext.HasComponent<CameraComponent>())
-                    m_SelectionContext.AddComponent<CameraComponent>();
-                else
-                    HZ_CORE_WARN("This entity already has the Camera Component!");
-                ImGui::CloseCurrentPopup();
+                if (ImGui::MenuItem("Camera"))
+                {
+                    if (!m_SelectionContext.HasComponent<CameraComponent>())
+                        m_SelectionContext.AddComponent<CameraComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
             }
-            if (ImGui::MenuItem("Sprite Renderer"))
+           if(!m_SelectionContext.HasComponent<SpriteRendererComponent>())
+           {
+               if (ImGui::MenuItem("Sprite Renderer"))
+               {
+                   if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
+                       m_SelectionContext.AddComponent<SpriteRendererComponent>();
+                   ImGui::CloseCurrentPopup();
+               }
+           }
+            if(!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
             {
-                if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-                    m_SelectionContext.AddComponent<SpriteRendererComponent>();
-                else
-                    HZ_CORE_WARN("This entity already has the Sprite Renderer Component!");
-
-                ImGui::CloseCurrentPopup();
+                if(ImGui::MenuItem("Rigidbody 2D"))
+                {
+                    if(!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
+                        m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            if(!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
+            {
+                if(ImGui::MenuItem("Box Collider 2D"))
+                {
+                    if(!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
+                        m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
             }
             ImGui::EndPopup();
         }
@@ -359,11 +377,47 @@ namespace Hazel
                 {
                     const wchar_t* path = (const wchar_t*)payload->Data;
                     std::filesystem::path texturePath= std::filesystem::path(g_AssetPath / path);
-                    component.Texture = Texture2D::Create(texturePath.string());
+                    Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
+                    if(texture->IsLoaded())
+                        component.Texture = texture;
+                    else
+                    HZ_WARN("Could not load texture from path: {}",texturePath.string());
                 }
                 ImGui::EndDragDropTarget();
             }
             ImGui::DragFloat("Tiling Factor", &component.TilingFactor,0.1f,0.0f,100.0f);
+        });
+        DrawComponent<Rigidbody2DComponent>("Rigidbody 2D",entity,[&](auto& component)
+        {
+            const char* bodyTypeStrings[] = {"Static","Dynaimc","Kinematic"};
+            const char* currentTypeString = bodyTypeStrings[(int)component.Type];
+            if(ImGui::BeginCombo("Body Type",currentTypeString))
+            {
+                for(int i=0;i<2;i++)
+                {
+                    bool isSeleted = currentTypeString == bodyTypeStrings[i];
+                    if(ImGui::Selectable(bodyTypeStrings[i],isSeleted))
+                    {
+                        currentTypeString = bodyTypeStrings[i];
+                        component.Type = (Rigidbody2DComponent::BodyType)i;
+                    }
+                    if(isSeleted)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::Checkbox("Fixed Rotation",&component.FixedRotation);
+        });
+        DrawComponent<BoxCollider2DComponent>("Box Collider 2D",entity,[&](auto& component)
+        {
+            ImGui::DragFloat2("Size",glm::value_ptr(component.Size),0.1f,0.0f,100.0f);
+            ImGui::DragFloat2("Offset",glm::value_ptr(component.Offset),0.1f,0.0f,100.0f);
+            ImGui::DragFloat("Density",&component.Density,0.1f,0.0f,100.0f);
+            ImGui::DragFloat("Friction",&component.Friction,0.1f,0.0f,100.0f);
+            ImGui::DragFloat("Restitution",&component.Restitution,0.1f,0.0f,100.0f);
+            ImGui::DragFloat("RestitutionThreshold",&component.RestitutionThreshold,0.1f,0.0f,100.0f);
         });
     }
 }

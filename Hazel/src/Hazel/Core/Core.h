@@ -5,6 +5,8 @@
 #ifndef CORE_H
 #define CORE_H
 #include <filesystem>
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/string_cast.hpp"
 #ifdef HZ_PLATFORM_WINDOWS
 #ifdef HZ_BUILD_DLL
 #define HAZEL_API __declspec(dllexport)
@@ -43,6 +45,24 @@
 // #define HZ_WARN(fmt, ...)  ::Hazel::Log::GetClientLogger()->warn("[{}:{}] " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 // #define HZ_ERROR(fmt, ...) ::Hazel::Log::GetClientLogger()->error("[{}:{}] " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 // #define HZ_FATAL(fmt, ...) ::Hazel::Log::GetClientLogger()->fatal("[{}:{}] " fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+
+template<typename OStream, glm::length_t L, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::vec<L, T, Q>& vector)
+{
+    return os << glm::to_string(vector);
+}
+
+template<typename OStream, glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::mat<C, R, T, Q>& matrix)
+{
+    return os << glm::to_string(matrix);
+}
+
+template<typename OStream, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternio)
+{
+    return os << glm::to_string(quaternio);
+}
 
 #define HZ_CORE_TRACE(fmt, ...) ::Hazel::Log::GetCoreLogger()->trace("[{}:{}] " fmt, std::filesystem::path(__FILE__).filename().string(), __LINE__, ##__VA_ARGS__)
 #define HZ_CORE_INFO(fmt, ...)  ::Hazel::Log::GetCoreLogger()->info("[{}:{}] " fmt, std::filesystem::path(__FILE__).filename().string(), __LINE__, ##__VA_ARGS__)

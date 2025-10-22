@@ -114,18 +114,15 @@ if(NOT TARGET ImGuizmo)
             FOLDER "${third_party_folder}/ImGuizmo"
     )
 endif()
-#if(NOT TARGET shaderc)
-#    # 使用绝对路径确保可靠性
-#    get_filename_component(SHADERC_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaderc/lib/shaderc_util.lib" ABSOLUTE)
-#
-#    # 添加 Debug 和 Release 配置支持
-#    add_library(shaderc STATIC IMPORTED)
-#    set_target_properties(shaderc PROPERTIES
-#            IMPORTED_LOCATION_DEBUG "${SHADERC_LIB_PATH}"
-#            IMPORTED_LOCATION_RELEASE "${SHADERC_LIB_PATH}"
-#            INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/shaderc/include"
-#    )
-#endif()
+
+# Box2D
+if(NOT TARGET box2d)
+    set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+    set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+    set(BOX2D_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    add_subdirectory(Box2D)
+    set_target_properties(box2d PROPERTIES FOLDER ${third_party_folder}/Box2D)
+endif()
 #
 #if(NOT TARGET SPIRV-Cross)
 #    get_filename_component(SPIRV_CROSS_LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Cross/lib/spirv-cross-core.lib" ABSOLUTE)

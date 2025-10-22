@@ -143,11 +143,11 @@ namespace Hazel
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
         StartBatch();
     }
-    void Renderer2D::BeginScene(const  glm::mat4& cameraPro,const glm::mat4& transform)
+    void Renderer2D::BeginScene(const  Camera& camera,const glm::mat4& transform)
     {
         HZ_PROFILE_FUNCTION();
 
-        glm::mat4 viewProj = cameraPro * glm::inverse(transform);
+        glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 
         // s_Data.TextureShader->Bind();
         // s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);

@@ -28,7 +28,7 @@ namespace Hazel
     class EditorLayer : public  Layer{
     public:
         EditorLayer() ;
-        virtual ~EditorLayer() = default;
+        virtual ~EditorLayer() override = default ;
         virtual void OnAttach() override; //Executed when the layer is loaded into the stack
         virtual void OnDetach() override;//Executed when the layer is removed from the stack
         virtual void OnUpdate(Timestep timestep)override;//Update logic every frame
@@ -38,9 +38,12 @@ namespace Hazel
         bool OnKeyPressedEvent(KeyPressedEvent& e);
         bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
         void NewSence();
-        void OpenSence();
-        void OpenSence(const std::filesystem::path& path);
+        void OpenScene();
+        void OpenScene(const std::filesystem::path& path);
         void SaveSenceAs();
+        void OnScenePlay();
+        void OnSceneStop();
+        void UI_Toolbar();
 
         struct ProfileResult
         {
@@ -48,6 +51,12 @@ namespace Hazel
             float Time;
         };
 
+        enum class SceneState
+        {
+            Edit =0,
+            Play =1,
+        };
+        SceneState m_SceneState = SceneState::Edit;
         OrthographicCameraController m_CameraController;
         SceneHierarchyPanel m_SceneHierarchyPanel;
         ContentBrowerPanel m_ContentBrowerPanel;
@@ -56,10 +65,11 @@ namespace Hazel
 
         Ref<VertexArray> m_SquareVA;
         Ref<Shader> m_BlueShader;
-        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture;
+        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture,m_IconPlay,m_IconStop;
         Ref<SubTexture2D> m_TextureStairs;
         Ref<Scene> m_ActiveScene;
         Ref<Framebuffer> m_Framebuffer;
+
 
         Entity m_SquareEntity;
         Entity m_CameraEntity;
