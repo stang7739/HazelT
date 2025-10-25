@@ -4,6 +4,8 @@
 
 #ifndef ENTITY_H
 #define ENTITY_H
+#include "Hazel/Core/UUID.h"
+#include "Component.h"
 #include"Scene.h"
 #include "entt.hpp"
 
@@ -59,6 +61,7 @@ namespace Hazel
         // [[nodiscard]]
         entt::entity GetEntityHandle() const { return m_EntityHandle; }
         Scene* GetScene() const { return m_Scene; }
+    UUID GetUUID(){return GetComponent<IDComponent>().ID;}
 
         // Checks whether the entity handle is valid (alive) in the associated registry
         // [[nodiscard]]

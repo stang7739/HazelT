@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Component.h"
 #include "Entity.h"
+#include "ScriptableEntity.h"
 #include <glm/glm.hpp>
 
 #include "Hazel/Core/Timestep.h"
@@ -40,14 +41,19 @@ namespace Hazel
 
     Entity Scene::CreateEntity(const std::string& name, glm::vec3 position)
     {
+         return CreateEntityWithUUID(UUID(),name,position);
+    }
+    Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name, glm::vec3 position)
+    {
         Entity entity = {m_Registry.create(), this};
-
+        entity.AddComponent<IDComponent>(uuid);
         entity.AddComponent<TransformComponent>(position);
         entity.AddComponent<TagComponent>();
         auto& tag = entity.GetComponent<TagComponent>();
         tag.Tag = name.empty() ? "Entity" : name;
         return entity;
     }
+
 
     void Scene::DestoryEntity(Entity entity)
     {
@@ -293,5 +299,10 @@ namespace Hazel
     template <>
     void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
     {
+    }
+    template <>
+    void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+    {
+
     }
 }

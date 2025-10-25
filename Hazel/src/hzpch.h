@@ -25,6 +25,7 @@
 #include <unordered_map>
 #include <Hazel/Core/Log.h>
 #include <Hazel/Debug/Instrumentor.h>
+#include <random>
 
 #ifdef HZ_PLATFORM_WINDOWS
 #ifndef NOMINMAX

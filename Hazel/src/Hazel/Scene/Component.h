@@ -11,13 +11,21 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
 #include "Hazel/Renderer/Texture.h"
 
 
 namespace Hazel
 {
     class ScriptableEntity;
+    struct IDComponent{
+        UUID ID;
+        IDComponent() = default;
+        IDComponent(const UUID& id)
+            : ID(id)
+        {
+        }
+        IDComponent(const IDComponent&) = default;
+    };
 
     struct TagComponent
     {

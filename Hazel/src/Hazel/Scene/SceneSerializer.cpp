@@ -3,10 +3,8 @@
 //
 #include "hzpch.h"
 #include "SceneSerializer.h"
-
-#include "Entity.h"
 #include "Component.h"
-
+#include "Entity.h"
 #include <yaml-cpp/yaml.h>
 
 namespace YAML
@@ -133,7 +131,7 @@ namespace Hazel
     static void SerializeEntity(YAML::Emitter& out, Entity entity)
     {
         out << YAML::BeginMap; // Entity
-        out << YAML::Key << "Entity" << YAML::Value << "12837192831273";
+        out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
 
         if (entity.HasComponent<TagComponent>())
         {
@@ -281,7 +279,8 @@ namespace Hazel
 
                 HZ_CORE_TRACE("Deserialized entity with ID = {}, name = {}",uuid,name);
 
-                Entity deserializedEntity = m_Scene->CreateEntity(name);
+                // UUID is a strong type; explicitly construct it from the uint64_t read from YAML
+                Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
                 auto transformComponent = entity["TransformComponent"];
 

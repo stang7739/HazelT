@@ -314,7 +314,7 @@ namespace Hazel
                     glm::vec3 deltaRotation = rotation - tc.Rotation;
                     tc.Translation = translation;
                     tc.Rotation += deltaRotation;
-                    HZ_INFO("{},{},{}", tc.Rotation.x, tc.Rotation.y, tc.Rotation.z);
+                    // HZ_INFO("{},{},{}", tc.Rotation.x, tc.Rotation.y, tc.Rotation.z);
                     tc.Scale = scale;
                 }
             }

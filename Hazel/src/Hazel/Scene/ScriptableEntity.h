@@ -7,8 +7,6 @@
 #include "Entity.h"
 #include "Hazel/Core/Timestep.h"
 
-#include "Entity.h"
-
 namespace Hazel {
 
     class ScriptableEntity
