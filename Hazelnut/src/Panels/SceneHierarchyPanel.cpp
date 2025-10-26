@@ -36,21 +36,23 @@ namespace Hazel
     {
         m_Times = m_Times <= 360 ? m_Times + 1 : 0;
         ImGui::Begin("Scene Hierarchy");
-
-        m_Context->m_Registry.each([&](auto entityID)
+        if(m_Context)
         {
-            Entity entity{entityID, m_Context.get()};
-            DrawEntityNode(entity);
-        });
-        if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-            m_SelectionContext = {};
-        if (ImGui::BeginPopupContextWindow(0, 1))
-        {
-            if (ImGui::MenuItem("Create Empty Entity"))
+            m_Context->m_Registry.each([&](auto entityID)
             {
-                m_Context->CreateEntity("Empty Entity");
+                Entity entity{entityID, m_Context.get()};
+                DrawEntityNode(entity);
+            });
+            if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+                m_SelectionContext = {};
+            if (ImGui::BeginPopupContextWindow(0, 1))
+            {
+                if (ImGui::MenuItem("Create Empty Entity"))
+                {
+                    m_Context->CreateEntity("Empty Entity");
+                }
+                ImGui::EndPopup();
             }
-            ImGui::EndPopup();
         }
         ImGui::End();
 

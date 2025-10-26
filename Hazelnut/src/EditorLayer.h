@@ -41,8 +41,11 @@ namespace Hazel
         void OpenScene();
         void OpenScene(const std::filesystem::path& path);
         void SaveSenceAs();
+        void SaveSence();
+        void SerialzeScene(Ref<Scene> scene,const std::filesystem::path& path);
         void OnScenePlay();
         void OnSceneStop();
+        void OnDuplicateEntity();
         void UI_Toolbar();
 
         struct ProfileResult
@@ -68,8 +71,9 @@ namespace Hazel
         Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture,m_IconPlay,m_IconStop;
         Ref<SubTexture2D> m_TextureStairs;
         Ref<Scene> m_ActiveScene;
+        Ref<Scene> m_EditorScene;
+        std::filesystem::path m_EditorScenePath;
         Ref<Framebuffer> m_Framebuffer;
-
 
         Entity m_SquareEntity;
         Entity m_CameraEntity;

@@ -8,6 +8,8 @@
 #include <entt.hpp>
 #include <string>
 #include <glm/glm.hpp>
+
+#include "Hazel/Core/Base.h"
 #include "Hazel/Core/UUID.h"
 
 class b2World;
@@ -22,6 +24,7 @@ namespace Hazel
     public:
         Scene();
         ~Scene();
+        static Ref<Scene>Copy(Ref<Scene> other);
         Entity CreateEntity(const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         void DestoryEntity(Entity entity);
@@ -33,6 +36,7 @@ namespace Hazel
         entt::registry& Reg() { return m_Registry; }
         void OnViewportResize(uint32_t width,uint32_t height);
         Entity GetPrimaryCameraEntity();
+        void DuplicateEntity(Entity entity);
 
     private:
         template<typename T>
