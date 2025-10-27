@@ -29,6 +29,15 @@ namespace Hazel
         float TilingFactor;
         int EntityID = -1; // TODO: Remove this
     };
+    struct CircleVertex
+    {
+        glm::vec3 WorldPosition;
+        glm::vec3 LocalPosition;
+        glm::vec4 Color;
+        float Thickness;
+        float Fade;
+        int EntityID;
+    };
 
     struct Renderer2DData
     {
@@ -38,12 +47,20 @@ namespace Hazel
         static constexpr uint32_t MaxTextureSlots = 32; //TODO :RenderCaps
         Ref<VertexArray> QuadVertexArray;
         Ref<VertexBuffer> QuadVertexBuffer;
-        Ref<Shader> TextureShader;
+        Ref<Shader> QuadShader;
         Ref<Texture2D> WhiteTexture;
+
+        Ref<VertexArray>CircleVertexArray;
+        Ref<VertexBuffer>CircleVertexBuffer;
+        Ref<Shader> CircleShader;
 
         uint32_t QuadIndexCount = 0;
         QuadVertex* QuadVertexBufferBase = nullptr;
         QuadVertex* QuadVertexBufferPtr = nullptr;
+
+        uint32_t CircleIndexCount = 0;
+        CircleVertex* CircleVertexBufferBase = nullptr;
+        CircleVertex* CircleVertexBufferPtr = nullptr;
 
         std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
         uint32_t TextureSlotIndex = 1; // 0 is reserved for white texture
@@ -92,6 +109,23 @@ namespace Hazel
         Ref<IndexBuffer> squareIndexBuffer = IndexBuffer::Create(quadIndices, Renderer2DData::MaxIndices); //每个四边形
         s_Data.QuadVertexArray->SetIndexBuffer(squareIndexBuffer);
         delete[] quadIndices;
+
+        s_Data.CircleVertexArray = VertexArray::Create();
+
+        s_Data.CircleVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(CircleVertex));
+        s_Data.CircleVertexBuffer->SetLayout({
+            {ShaderDataType::Float3, "a_WorldPosition"},
+            {ShaderDataType::Float3, "a_LocalPosition"},
+            {ShaderDataType::Float4, "a_Color"},
+            {ShaderDataType::Float, "a_Thickness"},
+            {ShaderDataType::Float, "a_Fade"},
+            {ShaderDataType::Int, "a_EntityID"}
+
+        });
+        s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
+        s_Data.CircleVertexArray->SetIndexBuffer(squareIndexBuffer);
+        s_Data.CircleVertexBufferBase = new CircleVertex[Renderer2DData::MaxVertices];
+
         // HZ_CORE_TRACE("squareIndexBuffer called, ptr = {0}", (void*)squareIndexBuffer.get());
 
         s_Data.WhiteTexture = Texture2D::Create(1, 1);
@@ -106,9 +140,10 @@ namespace Hazel
         }
 
 
-        s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetIntArray("u_Textures", samplers, Renderer2DData::MaxTextureSlots);
+        s_Data.QuadShader = Shader::Create("assets/shaders/Renderer2D_Quad.glsl");
+        s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");
+        s_Data.QuadShader->Bind();
+        s_Data.QuadShader->SetIntArray("u_Textures", samplers, Renderer2DData::MaxTextureSlots);
         s_Data.TextureSlots[0] = s_Data.WhiteTexture; // Bind white texture to slot 0
 
         s_Data.QuadVertexPositions[0] = {-0.5f, -0.5f, 0.0f, 1.f}; // Bottom left
@@ -128,17 +163,14 @@ namespace Hazel
 
     void Renderer2D::BeginScene(const OrthographicCamera& camera)
     {
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
         s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
        StartBatch();
     }
     void Renderer2D::BeginScene(const EditorCamera& camera)
     {
-        // auto viewprojection = camera.GetViewProjectionMatrix();
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetMat4("u_ViewProjection", viewprojection);
+
         s_Data.CameraBuffer.ViewProjection = camera.GetViewProjectionMatrix();
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
         StartBatch();
@@ -149,8 +181,7 @@ namespace Hazel
 
         glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+
         s_Data.CameraBuffer.ViewProjection = viewProj;
         s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer,sizeof(s_Data.CameraBuffer));
         // s_Data.CameraUniformBuffer->SetData()
@@ -161,33 +192,56 @@ namespace Hazel
     void Renderer2D::EndScene()
     {
         HZ_PROFILE_FUNCTION();
-        uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-        s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+        // uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+        // s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
         Flush();
     }
 
     void Renderer2D::Flush()
     {
-        for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+        if(s_Data.QuadIndexCount)
         {
-            s_Data.TextureSlots[i]->Bind(i);
+            uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
+            s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+            for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+            {
+                s_Data.TextureSlots[i]->Bind(i);
+            }
+            s_Data.QuadShader->Bind();
+            RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+            s_Data.Stats.DrawCalls++;
         }
-        s_Data.TextureShader->Bind();
-        RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
-        s_Data.Stats.DrawCalls++;
+        if(s_Data.CircleIndexCount)
+        {
+            uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase);
+            s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
+            // for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+            // {
+            //     s_Data.TextureSlots[i]->Bind(i);
+            // }
+            s_Data.CircleShader->Bind();
+            RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleIndexCount);
+            s_Data.Stats.DrawCalls++;
+        }
+
     }
 
-    void Renderer2D::FlushAndReset()
-    {
-        EndScene();
-        s_Data.QuadIndexCount = 0;
-        s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-        s_Data.TextureSlotIndex = 1; // Reset texture slot index, 0 is reserved for white texture
-    }
+    // void Renderer2D::FlushAndReset()
+    // {
+    //     EndScene();
+    //     s_Data.QuadIndexCount = 0;
+    //     s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+    //     s_Data.CircleIndexCount = 0;
+    //     s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
+    //
+    //     s_Data.TextureSlotIndex = 1; // Reset texture slot index, 0 is reserved for white texture
+    // }
      void Renderer2D::StartBatch()
     {
         s_Data.QuadIndexCount = 0;
         s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+        s_Data.CircleIndexCount = 0;
+        s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
 
         s_Data.TextureSlotIndex = 1;// Reset texture slot index, 0 is reserved for white texture
     }
@@ -208,25 +262,6 @@ namespace Hazel
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(
             glm::mat4(1.0f), glm::vec3(size, 1.0f));
         DrawQuad(transform, color);
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // s_Data.TextureShader->SetFloat4("u_Color", color);
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", 1.0f); // Set default tilling factor
-        // s_Data.WhiteTexture->Bind(0); // Bind the white texture
-        //
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
-
-
-
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", 1.0f); // Set default tilling factor
-        //
-        // s_Data.WhiteTexture->Bind(0); // Bind the white texture
-        //
-        // glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(
-        // glm::mat4(1.0f), glm::vec3(size, 1.0f));
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
 
     void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D> &texture,
@@ -244,16 +279,6 @@ namespace Hazel
             glm::mat4(1.0f), glm::vec3(size, 1.0f));
         DrawQuad(transform,  texture, TilingFactor , tintColor );
 
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetFloat4("u_Color", tintColor); // Set color to white
-        // glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(
-        //     glm::mat4(1.0f), glm::vec3(size, 1.0f));
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", TilingFactor); // Set the tilling factor
-        // texture->Bind(0);
-        //
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
 void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture,
                               float TilingFactor, const glm::vec4& tintColor)
@@ -265,7 +290,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
                               float TilingFactor, const glm::vec4& tintColor)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(
             glm::mat4(1.0f), glm::vec3(size, 1.0f));
         // constexpr glm::vec4 color = {1.f, 1.f, 1.f, 1.f}; // Default color for texture quads
@@ -308,7 +333,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
      void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color,int entityID)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
 
         //Compilation time constants
         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -336,7 +361,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
      void Renderer2D::DrawQuad(const glm::mat4& transform,  const Ref<Texture2D>& texture,float tilingFactor , const glm::vec4& tintColor ,int entityID)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
         constexpr size_t quadVertexCount = 4;
         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
         if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
@@ -372,6 +397,23 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
     }
+    void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade, int entityID)
+    {
+        for(int i =0;i<4;i++)
+        {
+            s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPositions[i];
+            s_Data.CircleVertexBufferPtr->LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f;
+            s_Data.CircleVertexBufferPtr->Color = color;
+            s_Data.CircleVertexBufferPtr->Thickness = thickness;
+            s_Data.CircleVertexBufferPtr->Fade = fade;
+            s_Data.CircleVertexBufferPtr->EntityID = entityID;
+            s_Data.CircleVertexBufferPtr++;
+        }
+        s_Data.CircleIndexCount += 6;
+
+        s_Data.Stats.QuadCount++;
+    }
+
      void Renderer2D::DrawSprite(const glm::mat4& transform,const SpriteRendererComponent& src, int entityID)
     {
         if(src.Texture)
@@ -395,7 +437,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
                                      const glm::vec4& color)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
             glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
             glm::mat4(1.f), glm::vec3(size, 1.f));
@@ -417,16 +459,6 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
 
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetFloat4("u_Color", color);
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", 1.0f); // Set default tilling factor
-        // glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
-        //     glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
-        //     glm::mat4(1.f), glm::vec3(size, 1.f));
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // s_Data.WhiteTexture->Bind(0); // Bind the white texture
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
 
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
@@ -441,7 +473,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
                                      float TilingFactor, const glm::vec4& tintColor)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
             glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
             glm::mat4(1.f), glm::vec3(size, 1.f));
@@ -477,16 +509,6 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
 
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetFloat4("u_Color", tintColor);
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", TilingFactor); // Set default tilling factor
-        // glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
-        //     glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
-        //     glm::mat4(1.f), glm::vec3(size, 1.f));
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // texture->Bind(0); // Bind the white texture
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
                                      const Ref<SubTexture2D>& subtexture,
@@ -500,7 +522,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
                                      float TilingFactor, const glm::vec4& tintColor)
     {
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-            FlushAndReset();
+            NextBatch();
         glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
             glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
             glm::mat4(1.f), glm::vec3(size, 1.f));
@@ -540,16 +562,6 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, cons
 
         s_Data.QuadIndexCount += 6; // Each quad has 6 indices (2 triangles)
         s_Data.Stats.QuadCount++;
-        // s_Data.TextureShader->Bind();
-        // s_Data.TextureShader->SetFloat4("u_Color", tintColor);
-        // s_Data.TextureShader->SetFloat("u_TilingFactor", TilingFactor); // Set default tilling factor
-        // glm::mat transform = glm::translate(glm::mat4(1.0f), position) * glm::rotate(
-        //     glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.f, 0.f, 1.f)) * glm::scale(
-        //     glm::mat4(1.f), glm::vec3(size, 1.f));
-        // s_Data.TextureShader->SetMat4("u_Transform", transform);
-        // texture->Bind(0); // Bind the white texture
-        // s_Data.QuadVertexArray->Bind();
-        // RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
     }
 
     Renderer2D::Statistics Renderer2D::GetStats()

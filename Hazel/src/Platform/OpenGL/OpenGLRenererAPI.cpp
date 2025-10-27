@@ -42,9 +42,10 @@ namespace Hazel
 
     void OpenGLRenererAPI:: DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount)
     {
+        vertexArray->Bind();
         uint32_t count = indexCount ?indexCount : vertexArray->GetIndexBuffer()->GetCount() ;
         glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-        glBindTexture(GL_TEXTURE_2D, 0); // Unbind any texture after drawing
+        // glBindTexture(GL_TEXTURE_2D, 0); // Unbind any texture after drawing
     }
 
     void OpenGLRenererAPI::DrawLine(const Ref<VertexArray>& vertexArray, uint32_t indexCount)

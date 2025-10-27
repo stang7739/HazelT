@@ -77,6 +77,7 @@ namespace Hazel
         }
         CopyComponent<TransformComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
         CopyComponent<SpriteRendererComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
+        CopyComponent<CircleRendererComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
         CopyComponent<CameraComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
         CopyComponent<NativeScriptComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
         CopyComponent<Rigidbody2DComponent>(dstSceneRegistry,srcSceneRegistry,enttMap);
@@ -94,6 +95,7 @@ namespace Hazel
         Entity newEntity = CreateEntity(name);
         CopyComponentIfExists<TransformComponent>(newEntity,entity);
         CopyComponentIfExists<SpriteRendererComponent>(newEntity,entity);
+        CopyComponentIfExists<CircleRendererComponent>(newEntity,entity);
         CopyComponentIfExists<CameraComponent>(newEntity,entity);
         CopyComponentIfExists<NativeScriptComponent>(newEntity,entity);
         CopyComponentIfExists<Rigidbody2DComponent>(newEntity,entity);
@@ -117,63 +119,82 @@ namespace Hazel
         m_Registry.destroy(entity);
     }
 
-    void Scene::OnUpdate(Timestep ts)
-    {
-        {
-            m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-            {
-                if (!nsc.Instance)
-                {
-                    nsc.Instance = nsc.InstantiateScript();
-                    nsc.Instance->m_Entity = Entity{entity, this};
-
-                    nsc.Instance->OnCreate();
-                }
-
-                nsc.Instance->OnUpdate(ts);
-            });
-        }
-        Camera* mainCamera = nullptr;
-        glm::mat4 cameraTransform;
-        {
-            auto group = m_Registry.view<TransformComponent, CameraComponent>();
-            for (auto entity : group)
-            {
-                auto& transform = group.get<TransformComponent>(entity);
-                auto& camera = group.get<CameraComponent>(entity);
-                if (camera.Primary)
-                {
-                    mainCamera = &camera.Camera;
-                    cameraTransform = transform.GetTransform();
-                    break;
-                }
-            }
-        }
-        if (mainCamera)
-        {
-            Renderer2D::BeginScene(*mainCamera, cameraTransform);
-            auto group = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-            for (auto entity : group)
-            {
-                auto& transform = group.get<TransformComponent>(entity);
-                auto& sprite = group.get<SpriteRendererComponent>(entity);
-
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-            }
-            Renderer2D::EndScene();
-        }
-    }
+    // void Scene::OnUpdate(Timestep ts)
+    // {
+    //     {
+    //         m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+    //         {
+    //             if (!nsc.Instance)
+    //             {
+    //                 nsc.Instance = nsc.InstantiateScript();
+    //                 nsc.Instance->m_Entity = Entity{entity, this};
+    //
+    //                 nsc.Instance->OnCreate();
+    //             }
+    //
+    //             nsc.Instance->OnUpdate(ts);
+    //         });
+    //     }
+    //     Camera* mainCamera = nullptr;
+    //     glm::mat4 cameraTransform;
+    //     {
+    //         auto group = m_Registry.view<TransformComponent, CameraComponent>();
+    //         for (auto entity : group)
+    //         {
+    //             auto& transform = group.get<TransformComponent>(entity);
+    //             auto& camera = group.get<CameraComponent>(entity);
+    //             if (camera.Primary)
+    //             {
+    //                 mainCamera = &camera.Camera;
+    //                 cameraTransform = transform.GetTransform();
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     if (mainCamera)
+    //     {
+    //         Renderer2D::BeginScene(*mainCamera, cameraTransform);
+    //         {
+    //             auto view = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+    //             for(auto entity : view)
+    //             {
+    //
+    //                 auto [transform,sprite] = view.get<TransformComponent,SpriteRendererComponent>(entity);
+    //                 Renderer2D::DrawSprite(transform.GetTransform(),sprite,(int)entity);
+    //             }
+    //         }
+    //         {
+    //             auto view = m_Registry.group<TransformComponent>(entt::get<CircleRendererComponent>);
+    //             for(auto entity : view)
+    //             {
+    //                 auto[transform,circle] = view.get<TransformComponent,CircleRendererComponent>(entity);
+    //                 Renderer2D::DrawCircle(transform.GetTransform(),circle.Color,circle.Thickness,circle.Fade,(int)entity);
+    //             }
+    //         }
+    //         Renderer2D::EndScene();
+    //     }
+    // }
 
     void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     {
         Renderer2D::BeginScene(camera);
-        auto group = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-        for (auto entity : group)
         {
-            auto& transform = group.get<TransformComponent>(entity);
-            auto& sprite = group.get<SpriteRendererComponent>(entity);
+            auto view = m_Registry.view<TransformComponent,SpriteRendererComponent>();
 
-            Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+            for(auto entity : view)
+            {
+
+                auto [transform,sprite] = view.get<TransformComponent,SpriteRendererComponent>(entity);
+                Renderer2D::DrawSprite(transform.GetTransform(),sprite,(int)entity);
+            }
+        }
+        {
+            auto view = m_Registry.view<TransformComponent,CircleRendererComponent>();
+            for(auto entity : view)
+            {
+                auto[transform,circle] = view.get<TransformComponent,CircleRendererComponent>(entity);
+                Renderer2D::DrawCircle(transform.GetTransform(),circle.Color,circle.Thickness,circle.Fade,(int)entity);
+            }
         }
         Renderer2D::EndScene();
     }
@@ -228,13 +249,24 @@ namespace Hazel
         if(mainCamera)
         {
             Renderer2D::BeginScene(*mainCamera,cameraTransform);
-            auto view = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for(auto entity : view)
             {
+            auto view = m_Registry.view<TransformComponent,SpriteRendererComponent>();
+                for(auto entity : view)
+                {
 
-                auto [transform,sprite] = view.get<TransformComponent,SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(),sprite,(int)entity);
+                    auto [transform,sprite] = view.get<TransformComponent,SpriteRendererComponent>(entity);
+                    Renderer2D::DrawSprite(transform.GetTransform(),sprite,(int)entity);
+                }
             }
+            {
+                auto view = m_Registry.view<TransformComponent,CircleRendererComponent>();
+                for(auto entity : view)
+                {
+                    auto[transform,circle] = view.get<TransformComponent,CircleRendererComponent>(entity);
+                    Renderer2D::DrawCircle(transform.GetTransform(),circle.Color,circle.Thickness,circle.Fade,(int)entity);
+                }
+            }
+
             Renderer2D::EndScene();
         }
 
@@ -272,7 +304,6 @@ namespace Hazel
                 fixtureDef.restitution = bc2d.Restitution;
                 fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
                 body->CreateFixture(&fixtureDef);
-
 
             }
 
@@ -359,6 +390,11 @@ namespace Hazel
     }
     template <>
     void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+    {
+
+    }
+    template <>
+    void Scene::OnComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
     {
 
     }

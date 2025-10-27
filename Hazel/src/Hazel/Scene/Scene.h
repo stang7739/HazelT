@@ -28,7 +28,7 @@ namespace Hazel
         Entity CreateEntity(const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         Entity CreateEntityWithUUID(UUID uuid,const std::string& name = std::string(),glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f));
         void DestoryEntity(Entity entity);
-        void OnUpdate(Timestep ts);
+        // void OnUpdate(Timestep ts);
         void OnUpdateRuntime(Timestep ts);
         void OnRuntimeStart();
         void OnRuntimeStop();

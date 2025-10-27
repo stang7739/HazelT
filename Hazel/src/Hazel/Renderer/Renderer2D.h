@@ -48,8 +48,8 @@ namespace Hazel
         static void DrawQuad(const glm::mat4& transform, const glm::vec4& color,int entityID = -1);
         // static void DrawQuad(const glm::mat4& transform,  const Ref<Texture2D> texture,float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
         static void DrawQuad(const glm::mat4& transform,  const Ref<Texture2D>& texture,float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f),int entityID = -1);
+        static void DrawCircle(const glm::mat4& transform,const glm::vec4& color,float thickness = 1.0f,float fade = 0.005f, int entityID = -1);
         static void DrawSprite(const glm::mat4& transform,const SpriteRendererComponent& src, int entityID);
-
 
 
         static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
@@ -84,7 +84,7 @@ namespace Hazel
     private:
         static void StartBatch();
         static void NextBatch();
-        static void FlushAndReset();
+        // static void FlushAndReset();
     };
 }
 

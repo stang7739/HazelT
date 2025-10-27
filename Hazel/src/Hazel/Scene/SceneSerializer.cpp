@@ -220,6 +220,16 @@ namespace Hazel
             out << YAML::Key << "RestitutionThreshold" << YAML::Value << boxCollider2DComponent.RestitutionThreshold;
             out << YAML::EndMap; // BoxCollider2DComponent
         }
+        if(entity.HasComponent<CircleRendererComponent>())
+        {
+            out << YAML::Key << "CircleRendererComponent";
+            out << YAML::BeginMap;
+            auto& circleRendererComponent = entity.GetComponent<CircleRendererComponent>();
+            out << YAML::Key << "Color" << YAML::Value << circleRendererComponent.Color;
+            out << YAML::Key << "Thickness" << YAML::Value << circleRendererComponent.Thickness;
+            out << YAML::Key << "Fade" << YAML::Value << circleRendererComponent.Fade;
+            out << YAML::EndMap; // CircleRendererComponent
+        }
     }
     void SceneSerializer::Serialize(const std::string& filepath)
     {
@@ -334,6 +344,14 @@ namespace Hazel
                     src.Friction = boxCollider2DComponent["Friction"].as<float>();
                     src.Restitution = boxCollider2DComponent["Restitution"].as<float>();
                     src.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+                }
+                auto circleRendererComponent = entity["CircleRendererComponent"];
+                if(circleRendererComponent)
+                {
+                    auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
+                    src.Color = circleRendererComponent["Color"].as<glm::vec4>();
+                    src.Thickness = circleRendererComponent["Thickness"].as<float>();
+                    src.Fade = circleRendererComponent["Fade"].as<float>();
                 }
             }
         }
