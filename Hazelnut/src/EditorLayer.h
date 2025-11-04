@@ -37,16 +37,17 @@ namespace Hazel
     private:
         bool OnKeyPressedEvent(KeyPressedEvent& e);
         bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-        void NewSence();
+        void NewScene();
         void OpenScene();
         void OpenScene(const std::filesystem::path& path);
-        void SaveSenceAs();
-        void SaveSence();
+        void SaveSceneAs();
+        void SaveScene();
         void SerialzeScene(Ref<Scene> scene,const std::filesystem::path& path);
         void OnScenePlay();
         void OnSceneStop();
         void OnDuplicateEntity();
         void UI_Toolbar();
+        void OnOverlayRender();
 
         struct ProfileResult
         {
@@ -90,6 +91,7 @@ namespace Hazel
         int m_speedsquare = 5.f;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         bool m_PrimaryCamera = true;
+        bool m_ShowPhysicsColliders = false;
         int m_GizmoType = -1;
 
     };

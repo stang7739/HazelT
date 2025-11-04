@@ -17,6 +17,7 @@
 namespace Hazel
 {
     class ScriptableEntity;
+
     struct CircleRendererComponent
     {
         glm::vec4 Color{1.0f, 1.0f, 1.0f, 1.0f};
@@ -25,13 +26,17 @@ namespace Hazel
         CircleRendererComponent() = default;
         CircleRendererComponent(const CircleRendererComponent&) = default;
     };
-    struct IDComponent{
+
+    struct IDComponent
+    {
         UUID ID;
         IDComponent() = default;
+
         IDComponent(const UUID& id)
             : ID(id)
         {
         }
+
         IDComponent(const IDComponent&) = default;
     };
 
@@ -40,6 +45,7 @@ namespace Hazel
         std::string Tag;
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
+
         TagComponent(const std::string& tag)
             : Tag(tag)
         {
@@ -49,10 +55,11 @@ namespace Hazel
     struct TransformComponent
     {
         glm::vec3 Translation{1.0f};
-        glm::vec3 Rotation {0.0f};
+        glm::vec3 Rotation{0.0f};
         glm::vec3 Scale = {1.0f, 1.0f, 1.0f};
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
+
         TransformComponent(const glm::vec3& translation)
             : Translation(translation)
         {
@@ -65,7 +72,6 @@ namespace Hazel
             glm::mat translation = glm::translate(glm::mat4(1.0f), Translation);
             return translation * rotation * scale;
         }
-
     };
 
     struct SpriteRendererComponent
@@ -75,6 +81,7 @@ namespace Hazel
         float TilingFactor = 1.0f;
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
+
         SpriteRendererComponent(const glm::vec4& color)
             : Color(color)
         {
@@ -89,43 +96,67 @@ namespace Hazel
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
     };
+
     struct NativeScriptComponent
     {
         ScriptableEntity* Instance = nullptr;
         //ScriptableEntity* (*InstantiateScript)(int) = nullptr;
         ScriptableEntity*(*InstantiateScript)() = nullptr;
         void (*DestoryScript)(NativeScriptComponent* nsc) = nullptr;
-        template<typename T>
+
+        template <typename T>
         void Bind()
         {
-            InstantiateScript = [](){return static_cast<ScriptableEntity*>(new T());};
-            DestoryScript =  [](NativeScriptComponent* nsc){delete nsc->Instance;nsc->Instance = nullptr;};
+            InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+            DestoryScript = [](NativeScriptComponent* nsc)
+            {
+                delete nsc->Instance;
+                nsc->Instance = nullptr;
+            };
         }
-
     };
+
     struct Rigidbody2DComponent
-    {//类型 固定旋转 运行时指针 质量/密度/摩擦/弹性
-        enum class BodyType{Static ,Dynamic,Kinematic};
+    {
+        //类型 固定旋转 运行时指针 质量/密度/摩擦/弹性
+        enum class BodyType { Static, Dynamic, Kinematic };
+
         BodyType Type = BodyType::Static;
         bool FixedRotation = false;
         void* RuntimeBody = nullptr;
-        Rigidbody2DComponent() =default;
+        Rigidbody2DComponent() = default;
         Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
     };
+
     struct BoxCollider2DComponent
-    {//碰撞体尺寸 偏移 密度/摩擦/弹性
-        glm::vec2 Offset{0.0f,0.0f};
-        glm::vec2 Size{0.5f,0.5f};
-        float Density =1.0f;
-        float Friction =0.5f;
-        float Restitution =0.0f;
-        float RestitutionThreshold =0.5f;
+    {
+        //碰撞体尺寸 偏移 密度/摩擦/弹性
+        glm::vec2 Offset{0.0f, 0.0f};
+        glm::vec2 Size{0.5f, 0.5f};
+        float Density = 1.0f;
+        float Friction = 0.5f;
+        float Restitution = 0.0f;
+        float RestitutionThreshold = 0.5f;
 
         void* RuntimeFixture = nullptr;
-        BoxCollider2DComponent() =default;
+        BoxCollider2DComponent() = default;
         BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
     };
 
+    struct CircleCollider2DComponent
+    {
+        //碰撞体尺寸 偏移 密度/摩擦/弹性
+        glm::vec2 Offset{0.0f, 0.0f};
+        float Radius = 0.5f;
+        float Density = 1.0f;
+        float Friction = 0.5f;
+        float Restitution = 0.0f;
+        float RestitutionThreshold = 0.5f;
+
+        void* RuntimeFixture = nullptr;
+        CircleCollider2DComponent() = default;
+        CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
+    };
 }
 
 #endif //COMPONENT_H

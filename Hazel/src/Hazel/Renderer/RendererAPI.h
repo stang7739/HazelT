@@ -26,7 +26,7 @@ namespace Hazel
         virtual void Clear() = 0;
         // virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount = 0) = 0;
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray =0,uint32_t indexCount = 0) = 0;
-        virtual void DrawLine(const Ref<VertexArray>& vertexArray,uint32_t indexCount ) = 0;
+        virtual void DrawLine(const Ref<VertexArray>& vertexArray,uint32_t vertexCount ) = 0;
 
         virtual void SetLineWidth(float width) = 0;
 

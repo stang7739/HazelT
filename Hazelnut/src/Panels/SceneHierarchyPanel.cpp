@@ -21,6 +21,7 @@
 namespace Hazel
 {
     extern const std::filesystem::path g_AssetPath;
+
     SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
     {
         SetContext(context);
@@ -36,7 +37,7 @@ namespace Hazel
     {
         m_Times = m_Times <= 360 ? m_Times + 1 : 0;
         ImGui::Begin("Scene Hierarchy");
-        if(m_Context)
+        if (m_Context)
         {
             m_Context->m_Registry.each([&](auto entityID)
             {
@@ -57,9 +58,16 @@ namespace Hazel
         ImGui::End();
 
         ImGui::Begin("Properties");
-        if (m_SelectionContext)
+        // Only draw properties for a valid, alive entity. Operator bool only checks for non-null handle,
+        // but the underlying entt entity may have been destroyed which would make registry.has<T>() crash.
+        if (m_SelectionContext && m_SelectionContext.IsValid())
         {
             DrawComponents(m_SelectionContext);
+        }
+        else
+        {
+            // If the selection is invalid (entity destroyed), clear it to avoid accidental use later.
+            m_SelectionContext = {};
         }
         ImGui::End();
     }
@@ -239,6 +247,10 @@ namespace Hazel
 
     void SceneHierarchyPanel::DrawComponents(Entity entity)
     {
+            // Protect against invalid entities: caller may pass a stale Entity whose underlying
+            // entt handle has been destroyed. Avoid calling HasComponent/GetComponent on those.
+            if (!entity.IsValid())
+                return;
         if (entity.HasComponent<TagComponent>())
         {
             auto& tag = entity.GetComponent<TagComponent>().Tag;
@@ -259,39 +271,43 @@ namespace Hazel
         }
         if (ImGui::BeginPopup("AddComponent"))
         {
-            if(!m_SelectionContext.HasComponent<CameraComponent>())
+            if (!m_SelectionContext.HasComponent<CameraComponent>())
             {
                 if (ImGui::MenuItem("Camera"))
                 {
-                    if (!m_SelectionContext.HasComponent<CameraComponent>())
-                        m_SelectionContext.AddComponent<CameraComponent>();
+                    m_SelectionContext.AddComponent<CameraComponent>();
                     ImGui::CloseCurrentPopup();
                 }
             }
-           if(!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-           {
-               if (ImGui::MenuItem("Sprite Renderer"))
-               {
-                   if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-                       m_SelectionContext.AddComponent<SpriteRendererComponent>();
-                   ImGui::CloseCurrentPopup();
-               }
-           }
-            if(!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
+            if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
             {
-                if(ImGui::MenuItem("Rigidbody 2D"))
+                if (ImGui::MenuItem("Sprite Renderer"))
                 {
-                    if(!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
-                        m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+                    m_SelectionContext.AddComponent<SpriteRendererComponent>();
                     ImGui::CloseCurrentPopup();
                 }
             }
-            if(!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
+            if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
             {
-                if(ImGui::MenuItem("Box Collider 2D"))
+                if (ImGui::MenuItem("Rigidbody 2D"))
                 {
-                    if(!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
-                        m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+                    m_SelectionContext.AddComponent<Rigidbody2DComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
+            {
+                if (ImGui::MenuItem("Box Collider 2D"))
+                {
+                    m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            if (!m_SelectionContext.HasComponent<CircleCollider2DComponent>())
+            {
+                if (ImGui::MenuItem("Circle Collider 2D"))
+                {
+                    m_SelectionContext.AddComponent<CircleCollider2DComponent>();
                     ImGui::CloseCurrentPopup();
                 }
             }
@@ -299,7 +315,7 @@ namespace Hazel
         }
         ImGui::PopItemWidth();
 
-        DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+        DrawComponent<TransformComponent>("Transform", entity, [&](auto& component)
         {
             DrawVec3Control("Translation", component.Translation);
             glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -309,7 +325,7 @@ namespace Hazel
         });
 
 
-        DrawComponent<CameraComponent>("Camera", entity, [&](auto& component)
+        DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
         {
             auto& camera = component.Camera;
 
@@ -369,63 +385,72 @@ namespace Hazel
         });
 
 
-        DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [&](auto& component)
+        DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
         {
             ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
-            ImGui::Button("Texture",ImVec2(100.0f,0.0f));
-            if(ImGui::BeginDragDropTarget())
+            ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+            if (ImGui::BeginDragDropTarget())
             {
-                if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_DROWSER_ITEM"))
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_DROWSER_ITEM"))
                 {
                     const wchar_t* path = (const wchar_t*)payload->Data;
-                    std::filesystem::path texturePath= std::filesystem::path(g_AssetPath / path);
+                    std::filesystem::path texturePath = std::filesystem::path(g_AssetPath / path);
                     Ref<Texture2D> texture = Texture2D::Create(texturePath.string());
-                    if(texture->IsLoaded())
+                    if (texture->IsLoaded())
                         component.Texture = texture;
                     else
-                    HZ_WARN("Could not load texture from path: {}",texturePath.string());
+                        HZ_WARN("Could not load texture from path: {}", texturePath.string());
                 }
                 ImGui::EndDragDropTarget();
             }
-            ImGui::DragFloat("Tiling Factor", &component.TilingFactor,0.1f,0.0f,100.0f);
+            ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
         });
-        DrawComponent<CircleRendererComponent>("Circle Renderer",entity,[&](auto& component)
+        DrawComponent<CircleRendererComponent>("Circle Renderer", entity, [](auto& component)
         {
-            ImGui::ColorEdit4("Color",glm::value_ptr(component.Color));
-            ImGui::DragFloat("Thickness",&component.Thickness,0.01f,0.0f,1.0f);
-            ImGui::DragFloat("Fade",&component.Fade,0.001f,0.0f,1.0f);
+            ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+            ImGui::DragFloat("Thickness", &component.Thickness, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Fade", &component.Fade, 0.001f, 0.0f, 1.0f);
         });
-        DrawComponent<Rigidbody2DComponent>("Rigidbody 2D",entity,[&](auto& component)
+        DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
         {
-            const char* bodyTypeStrings[] = {"Static","Dynaimc","Kinematic"};
+            const char* bodyTypeStrings[] = {"Static", "Dynaimc", "Kinematic"};
             const char* currentTypeString = bodyTypeStrings[(int)component.Type];
-            if(ImGui::BeginCombo("Body Type",currentTypeString))
+            if (ImGui::BeginCombo("Body Type", currentTypeString))
             {
-                for(int i=0;i<2;i++)
+                for (int i = 0; i < 2; i++)
                 {
                     bool isSeleted = currentTypeString == bodyTypeStrings[i];
-                    if(ImGui::Selectable(bodyTypeStrings[i],isSeleted))
+                    if (ImGui::Selectable(bodyTypeStrings[i], isSeleted))
                     {
                         currentTypeString = bodyTypeStrings[i];
                         component.Type = (Rigidbody2DComponent::BodyType)i;
                     }
-                    if(isSeleted)
+                    if (isSeleted)
                     {
                         ImGui::SetItemDefaultFocus();
                     }
                 }
                 ImGui::EndCombo();
             }
-            ImGui::Checkbox("Fixed Rotation",&component.FixedRotation);
+            ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
         });
-        DrawComponent<BoxCollider2DComponent>("Box Collider 2D",entity,[&](auto& component)
+        DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
         {
-            ImGui::DragFloat2("Size",glm::value_ptr(component.Size),0.1f,0.0f,100.0f);
-            ImGui::DragFloat2("Offset",glm::value_ptr(component.Offset),0.1f,0.0f,100.0f);
-            ImGui::DragFloat("Density",&component.Density,0.1f,0.0f,100.0f);
-            ImGui::DragFloat("Friction",&component.Friction,0.1f,0.0f,100.0f);
-            ImGui::DragFloat("Restitution",&component.Restitution,0.1f,0.0f,100.0f);
-            ImGui::DragFloat("RestitutionThreshold",&component.RestitutionThreshold,0.1f,0.0f,100.0f);
+            ImGui::DragFloat2("Size", glm::value_ptr(component.Size), 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset), 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Density", &component.Density, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Friction", &component.Friction, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Restitution", &component.Restitution, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.1f, 0.0f, 100.0f);
+        });
+        DrawComponent<CircleCollider2DComponent>("Circle Collider 2D", entity, [](auto& component)
+        {
+            ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset), 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Radius", &component.Radius);
+            ImGui::DragFloat("Density", &component.Density, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Friction", &component.Friction, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Restitution", &component.Restitution, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.1f, 0.0f, 100.0f);
         });
     }
 }

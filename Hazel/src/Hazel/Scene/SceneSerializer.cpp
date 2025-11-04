@@ -230,6 +230,19 @@ namespace Hazel
             out << YAML::Key << "Fade" << YAML::Value << circleRendererComponent.Fade;
             out << YAML::EndMap; // CircleRendererComponent
         }
+        if (entity.HasComponent<CircleCollider2DComponent>())
+        {
+            out << YAML::Key << "CircleCollider2DComponent";
+            out << YAML::BeginMap;
+            auto& circleCollider2DComponent = entity.GetComponent<CircleCollider2DComponent>();
+            out << YAML::Key << "Offset" << YAML::Value << circleCollider2DComponent.Offset;
+            out << YAML::Key << "Radius" << YAML::Value << circleCollider2DComponent.Radius;
+            out << YAML::Key << "Density" << YAML::Value << circleCollider2DComponent.Density;
+            out << YAML::Key << "Friction" << YAML::Value << circleCollider2DComponent.Friction;
+            out << YAML::Key << "Restitution" << YAML::Value << circleCollider2DComponent.Restitution;
+            out << YAML::Key << "RestitutionThreshold" << YAML::Value << circleCollider2DComponent.RestitutionThreshold;
+            out << YAML::EndMap; // CircleCollider2DComponent
+        }
     }
     void SceneSerializer::Serialize(const std::string& filepath)
     {
@@ -352,6 +365,17 @@ namespace Hazel
                     src.Color = circleRendererComponent["Color"].as<glm::vec4>();
                     src.Thickness = circleRendererComponent["Thickness"].as<float>();
                     src.Fade = circleRendererComponent["Fade"].as<float>();
+                }
+                auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+                if (circleCollider2DComponent)
+                {
+                    auto& src = deserializedEntity.AddComponent<CircleCollider2DComponent>();
+                    src.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
+                    src.Radius = boxCollider2DComponent["Radius"].as<float>();
+                    src.Density = boxCollider2DComponent["Density"].as<float>();
+                    src.Friction = boxCollider2DComponent["Friction"].as<float>();
+                    src.Restitution = boxCollider2DComponent["Restitution"].as<float>();
+                    src.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
                 }
             }
         }

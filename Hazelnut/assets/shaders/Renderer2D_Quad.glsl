@@ -32,8 +32,8 @@ gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 #type fragment
 #version 450
 
-layout(location = 0) out vec4 color;
-layout(location = 1)out int entityID;
+layout(location = 0) out vec4 o_color;
+layout(location = 1)out int o_entityID;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
@@ -81,6 +81,6 @@ case 29: texColor *= texture(u_Textures[29], v_TexCoord * v_TilingFactor); break
 case 30: texColor *= texture(u_Textures[30], v_TexCoord * v_TilingFactor); break;
 case 31: texColor *= texture(u_Textures[31], v_TexCoord * v_TilingFactor); break;
 }
-color = texColor;
-entityID = v_EntityID;
+o_color = texColor;
+o_entityID = v_EntityID;
 }

@@ -36,6 +36,11 @@ namespace Hazel
         inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
         inline glm::mat4 GetViewProjectionMatrix() const { return m_Projection * m_ViewMatrix; }
         inline float GetDistance() const { return m_Distance; }
+        inline float GetViewportWidth() const {return m_ViewportWidth; }
+        inline float GetViewportHeight() const {return m_ViewportHeight; }
+        inline float GetNearClip() const { return m_NearClip; }
+        inline float GetFarClip() const { return m_FarClip; }
+        inline float GetFOV() { return m_FOV; }
 
         inline void SetDistance(float distance)
         {

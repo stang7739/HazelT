@@ -28,8 +28,8 @@ namespace Hazel
 
     extern const std::filesystem::path g_AssetPath;
 
-    EditorLayer::EditorLayer(): Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true),
-                                m_SquareColor(1, 1, 1, 1.f)
+    EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1260.f / 720.f, true),
+                                 m_SquareColor(1, 1, 1, 1.f)
     {
         // Initialize the camera with orthographic projection
         HZ_PROFILE_FUNCTION();
@@ -58,7 +58,7 @@ namespace Hazel
         square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
         auto redSquare = m_ActiveScene->CreateEntity("Red Square", glm::vec3{-0.5f, 0.0f, -2.0f});
-        redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+        redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
 
         m_SquareEntity = square;
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera A", glm::vec3{0.0f, 0.0f, 0.0f});
@@ -132,6 +132,8 @@ namespace Hazel
                 m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
             }
             // HZ_INFO("{},{}", mouseX, mouseY);
+
+            OnOverlayRender();
             m_Framebuffer->Unbind();
         }
     } //Update logic every frame
@@ -201,7 +203,7 @@ namespace Hazel
 
                     if (ImGui::MenuItem("New", "Ctrl+N"))
                     {
-                        NewSence();
+                        NewScene();
                         // SceneSerializer serializer(m_ActiveScene);
                         // serializer.Serialize("assets/scenes/Example.hazel");
                     }
@@ -214,7 +216,7 @@ namespace Hazel
                     }
                     if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                     {
-                        SaveSenceAs();
+                        SaveSceneAs();
                     }
                     if (ImGui::MenuItem("Exit")) Application::Get().Close();
                     ImGui::EndMenu();
@@ -243,6 +245,10 @@ namespace Hazel
 
             ImGui::End();
 
+            ImGui::Begin("Settings");
+            ImGui::Checkbox("Show physics colliders", &m_ShowPhysicsColliders);
+            ImGui::End();
+
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
             ImGui::Begin("Viewport");
             auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -265,7 +271,7 @@ namespace Hazel
 
             if (ImGui::BeginDragDropTarget()) // Accept drag drop payloads
             {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_DROWSER_ITEM"))
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_BROWSER_ITEM"))
                 {
                     const wchar_t* path = (const wchar_t*)payload->Data;
                     OpenScene(std::filesystem::path(g_AssetPath / path));
@@ -406,7 +412,7 @@ namespace Hazel
         case HazelKey::N:
             {
                 if (control)
-                    NewSence();
+                    NewScene();
                 break;
             }
         case HazelKey::O:
@@ -421,11 +427,11 @@ namespace Hazel
                 {
                     if (shift)
                     {
-                        SaveSenceAs();
+                        SaveSceneAs();
                     }
                     else
                     {
-                        SaveSence();
+                        SaveScene();
                     }
                 }
                 break;
@@ -463,9 +469,58 @@ namespace Hazel
         return false;
     }
 
-    void EditorLayer::NewSence()
+    void EditorLayer::OnOverlayRender()
     {
-        HZ_INFO("New Sence");
+        if (m_SceneState == SceneState::Play)
+        {
+            auto camera = m_ActiveScene->GetPrimaryCameraEntity();
+            Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera,
+                                   camera.GetComponent<TransformComponent>().GetTransform());
+        }
+        else
+        {
+            Renderer2D::BeginScene(m_EditorCamera);
+        }
+
+        if (m_ShowPhysicsColliders)
+        {
+            //Box Colliders
+            {
+                auto view = m_ActiveScene->GetAllEntitiesWith<BoxCollider2DComponent,TransformComponent>();
+                for (auto entity : view)
+                {
+                    auto [bc2d,tc] = view.get< BoxCollider2DComponent,TransformComponent>(entity);
+                    glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
+                    glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
+                    glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+                        * glm::rotate(glm::mat4(1.0f), tc.Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+                        * glm::scale(glm::mat4(1.0f), scale);
+
+                    Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+
+                }
+            }
+            //Circle Colliders
+            {
+                auto view = m_ActiveScene->GetAllEntitiesWith<CircleCollider2DComponent,TransformComponent>();
+                for (auto entity : view)
+                {
+                    auto [cc2d,tc] = view.get< CircleCollider2DComponent,TransformComponent>(entity);
+                    glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
+                    glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
+                    glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+                        * glm::scale(glm::mat4(1.0f), scale);
+                    Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
+                }
+            }
+        }
+        Renderer2D::EndScene();
+    }
+
+
+    void EditorLayer::NewScene()
+    {
+        HZ_INFO("New Scene");
         // Clear hovered entity to avoid dangling entity handles across scene switches
         m_HoveredEntity = Entity();
         m_ActiveScene = CreateRef<Scene>();
@@ -508,27 +563,29 @@ namespace Hazel
         }
     }
 
-    void EditorLayer::SaveSence()
+    void EditorLayer::SaveScene()
     {
-        if(!m_EditorScenePath.empty())
+        if (!m_EditorScenePath.empty())
         {
-            SerialzeScene(m_ActiveScene,m_EditorScenePath);
-        }else
+            SerialzeScene(m_ActiveScene, m_EditorScenePath);
+        }
+        else
         {
-            SaveSenceAs();
+            SaveSceneAs();
         }
     }
 
-    void EditorLayer::SaveSenceAs()
+    void EditorLayer::SaveSceneAs()
     {
-        HZ_INFO("SaveSenceAs");
+        HZ_INFO("SaveSceneAs");
         std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
         if (!filepath.empty())
         {
-            SerialzeScene(m_ActiveScene,filepath);
+            SerialzeScene(m_ActiveScene, filepath);
             m_EditorScenePath = filepath;
         }
     }
+
     void EditorLayer::SerialzeScene(Ref<Scene> scene, const std::filesystem::path& path)
     {
         SceneSerializer serializer(m_ActiveScene);
@@ -537,10 +594,10 @@ namespace Hazel
 
     void EditorLayer::OnDuplicateEntity()
     {
-        if(m_SceneState != SceneState::Edit)
+        if (m_SceneState != SceneState::Edit)
             return;
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        if(selectedEntity)
+        if (selectedEntity)
         {
             m_EditorScene->DuplicateEntity(selectedEntity);
         }
