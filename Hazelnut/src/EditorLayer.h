@@ -10,9 +10,6 @@
 #include "Panels/ContentBrowerPanel.h"
 #include "Panels/SceneHierarchyPanel.h"
 
-
-
-
 namespace entt
 {
     enum class entity : std::uint32_t;
@@ -45,6 +42,7 @@ namespace Hazel
         void SerialzeScene(Ref<Scene> scene,const std::filesystem::path& path);
         void OnScenePlay();
         void OnSceneStop();
+        void OnSceneSimulate();
         void OnDuplicateEntity();
         void UI_Toolbar();
         void OnOverlayRender();
@@ -59,6 +57,7 @@ namespace Hazel
         {
             Edit =0,
             Play =1,
+            Simulate =2,
         };
         SceneState m_SceneState = SceneState::Edit;
         OrthographicCameraController m_CameraController;
@@ -69,7 +68,7 @@ namespace Hazel
 
         Ref<VertexArray> m_SquareVA;
         Ref<Shader> m_BlueShader;
-        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture,m_IconPlay,m_IconStop;
+        Ref<Texture2D> m_CheckerboardTexture, m_ChernoLogoTexture,m_IconPlay,m_IconStop,m_IconSimulate;
         Ref<SubTexture2D> m_TextureStairs;
         Ref<Scene> m_ActiveScene;
         Ref<Scene> m_EditorScene;

@@ -39,6 +39,7 @@ namespace Hazel
 
     Scene::~Scene()
     {
+        delete m_PhysicsWorld;
     }
 
     template <typename Component>
@@ -129,28 +130,7 @@ namespace Hazel
 
     void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     {
-        Renderer2D::BeginScene(camera);
-        {
-            auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-
-            for (auto entity : view)
-            {
-                auto [transform,sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-            }
-        }
-        {
-            auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
-            for (auto entity : view)
-            {
-                auto [transform,circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
-                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
-                                       (int)entity);
-            }
-        }
-        // Renderer2D::DrawLine({0.0f,0.0f,0.0f},{5.0f,5.0f,5.0f},{1.0f,0.0f,0.0f,1.0f});
-        // Renderer2D::DrawRect({0.0f,0.0f,0.0f},{5.0f,5.0f},{1.0f,0.0f,0.0f,1.0f});
-        Renderer2D::EndScene();
+        RenderScene(camera);
     }
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -226,7 +206,49 @@ namespace Hazel
 
     void Scene::OnRuntimeStart()
     {
-        m_PhysicsWorld = new b2World({0.f, -9.8f});
+        OnPhysics2DStart();
+    }
+
+    void Scene::OnRuntimeStop()
+    {
+        OnPhysics2DStop();
+    }
+
+    void Scene::OnSimulateStart()
+    {
+        OnPhysics2DStart();
+    }
+    void Scene::OnSimulateStop()
+    {
+        OnPhysics2DStop();
+
+    }
+    void Scene::OnUpdateSimulation(Timestep ts, EditorCamera& camera)
+    {
+        // Physics
+        {
+            const int32_t velocityIterations = 6;
+            const int32_t positionItenrations = 2;
+            m_PhysicsWorld->Step(ts,velocityIterations,positionItenrations);
+            auto view = m_Registry.view<Rigidbody2DComponent>();
+            for (auto entt : view)
+            {
+                Entity entity = {entt,this};
+                auto& transform = entity.GetComponent<TransformComponent>();
+                auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+                b2Body* body = (b2Body*)rb2d.RuntimeBody;
+                const auto& position = body->GetPosition();
+                transform.Translation.x = position.x;
+                transform.Translation.y = position.y;
+                transform.Rotation.z = body->GetAngle();
+            }
+        }
+        RenderScene(camera);
+    }
+
+    void Scene::OnPhysics2DStart()
+    {
+         m_PhysicsWorld = new b2World({0.f, -9.8f});
         auto view = m_Registry.view<Rigidbody2DComponent>();
 
         for (auto entt : view)
@@ -273,10 +295,35 @@ namespace Hazel
         }
     }
 
-    void Scene::OnRuntimeStop()
+    void Scene::OnPhysics2DStop()
     {
         delete m_PhysicsWorld;
         m_PhysicsWorld = nullptr;
+    }
+    void Scene::RenderScene(EditorCamera& camera)
+    {
+        Renderer2D::BeginScene(camera);
+        {
+            auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+
+            for (auto entity : view)
+            {
+                auto [transform,sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+            }
+        }
+        {
+            auto view = m_Registry.view<TransformComponent, CircleRendererComponent>();
+            for (auto entity : view)
+            {
+                auto [transform,circle] = view.get<TransformComponent, CircleRendererComponent>(entity);
+                Renderer2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade,
+                                       (int)entity);
+            }
+        }
+        // Renderer2D::DrawLine({0.0f,0.0f,0.0f},{5.0f,5.0f,5.0f},{1.0f,0.0f,0.0f,1.0f});
+        // Renderer2D::DrawRect({0.0f,0.0f,0.0f},{5.0f,5.0f},{1.0f,0.0f,0.0f,1.0f});
+        Renderer2D::EndScene();
     }
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)

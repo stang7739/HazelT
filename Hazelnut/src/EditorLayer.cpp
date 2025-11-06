@@ -43,6 +43,7 @@ namespace Hazel
         m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
         m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
         m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
+        m_IconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
         m_TextureStairs = SubTexture2D::CreateFromCoords(m_CheckerboardTexture, {0, 0}, {1, 1}, {0.2f, 0.2f});
         FramebufferSpecification fbspec;
         fbspec.Width = 1280;
@@ -51,25 +52,9 @@ namespace Hazel
             FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth
         };
         m_Framebuffer = Framebuffer::Create(fbspec);
-        m_ActiveScene = CreateRef<Scene>();
+        m_EditorScene = CreateRef<Scene>();
+        m_ActiveScene = m_EditorScene;
         m_EditorCamera = EditorCamera(30.f, 1.778f, 0.1f, 1000.f);
-#if 0
-        auto square = m_ActiveScene->CreateEntity("Green Square", glm::vec3{0.5f, 0.0f, -1.0f});
-        square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
-
-        auto redSquare = m_ActiveScene->CreateEntity("Red Square", glm::vec3{-0.5f, 0.0f, -2.0f});
-        redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
-
-        m_SquareEntity = square;
-        m_CameraEntity = m_ActiveScene->CreateEntity("Camera A", glm::vec3{0.0f, 0.0f, 0.0f});
-        m_CameraEntity.AddComponent<CameraComponent>();
-
-        m_SecondCamera = m_ActiveScene->CreateEntity("Camera B", glm::vec3{0.0f, 0.0f, 0.1f});
-        auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-        cc.Primary = false;
-        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
         // m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
@@ -116,6 +101,12 @@ namespace Hazel
             case SceneState::Play:
                 {
                     m_ActiveScene->OnUpdateRuntime(timestep);
+                    break;
+                }
+            case SceneState::Simulate:
+                {
+                    m_EditorCamera.OnUpdate(timestep);
+                    m_ActiveScene->OnUpdateSimulation(timestep, m_EditorCamera);
                     break;
                 }
             }
@@ -271,7 +262,7 @@ namespace Hazel
 
             if (ImGui::BeginDragDropTarget()) // Accept drag drop payloads
             {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_BROWSER_ITEM"))
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONNECTOR_DROWSER_ITEM"))
                 {
                     const wchar_t* path = (const wchar_t*)payload->Data;
                     OpenScene(std::filesystem::path(g_AssetPath / path));
@@ -344,20 +335,36 @@ namespace Hazel
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
         ImGui::Begin("##toolbar", nullptr,
                      ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
         float size = ImGui::GetWindowHeight() - 4.0f;
-        Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
-        ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-        if (ImGui::ImageButton(" ", (ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1)))
+        bool toolbarEnabled = (bool)m_ActiveScene;
+
+        ImVec4 tintColor = ImVec4(1, 1, 1, 1);
+        if (!toolbarEnabled)
+            tintColor.w = 0.5f;
         {
-            if (m_SceneState == SceneState::Edit)
+            Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate) ? m_IconPlay : m_IconStop;
+            ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+            if (ImGui::ImageButton(" ",(ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1),  ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled)
             {
-                OnScenePlay();
-            }
-            else
-            {
-                OnSceneStop();
+                if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate)
+                    OnScenePlay();
+                else if (m_SceneState == SceneState::Play)
+                    OnSceneStop();
             }
         }
+        ImGui::SameLine();
+        {
+            Ref<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;		//ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+            if (ImGui::ImageButton("Simulate",(ImTextureID)icon->GetRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tintColor) && toolbarEnabled)
+            {
+                if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play)
+                    OnSceneSimulate();
+                else if (m_SceneState == SceneState::Simulate)
+                    OnSceneStop();
+            }
+        }
+
         ImGui::PopStyleVar(2);
         ImGui::PopStyleColor(3);
         ImGui::End();
@@ -365,6 +372,8 @@ namespace Hazel
 
     void EditorLayer::OnScenePlay()
     {
+        if (m_SceneState == SceneState::Simulate)
+            OnSceneStop();
         m_SceneState = SceneState::Play;
         m_ActiveScene = Scene::Copy(m_EditorScene);
         m_ActiveScene->OnRuntimeStart();
@@ -373,9 +382,24 @@ namespace Hazel
 
     void EditorLayer::OnSceneStop()
     {
+        HZ_CORE_ASSERT(m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulate);
+        if (m_SceneState == SceneState::Play)
+            m_ActiveScene->OnRuntimeStop();
+        else if (m_SceneState == SceneState::Simulate)
+            m_ActiveScene->OnSimulateStop();
         m_SceneState = SceneState::Edit;
-        m_ActiveScene->OnRuntimeStop();
+
         m_ActiveScene = m_EditorScene;
+    }
+
+    void EditorLayer::OnSceneSimulate()
+    {
+        if (m_SceneState == SceneState::Play)
+            OnSceneStop();
+        m_SceneState = SceneState::Simulate;
+        m_ActiveScene = Scene::Copy(m_EditorScene);
+        m_ActiveScene->OnSimulateStart();
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
 
@@ -474,6 +498,8 @@ namespace Hazel
         if (m_SceneState == SceneState::Play)
         {
             auto camera = m_ActiveScene->GetPrimaryCameraEntity();
+            if (!camera)
+                return;
             Renderer2D::BeginScene(camera.GetComponent<CameraComponent>().Camera,
                                    camera.GetComponent<TransformComponent>().GetTransform());
         }
@@ -486,10 +512,10 @@ namespace Hazel
         {
             //Box Colliders
             {
-                auto view = m_ActiveScene->GetAllEntitiesWith<BoxCollider2DComponent,TransformComponent>();
+                auto view = m_ActiveScene->GetAllEntitiesWith<BoxCollider2DComponent, TransformComponent>();
                 for (auto entity : view)
                 {
-                    auto [bc2d,tc] = view.get< BoxCollider2DComponent,TransformComponent>(entity);
+                    auto [bc2d,tc] = view.get<BoxCollider2DComponent, TransformComponent>(entity);
                     glm::vec3 translation = tc.Translation + glm::vec3(bc2d.Offset, 0.001f);
                     glm::vec3 scale = tc.Scale * glm::vec3(bc2d.Size * 2.0f, 1.0f);
                     glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
@@ -497,15 +523,14 @@ namespace Hazel
                         * glm::scale(glm::mat4(1.0f), scale);
 
                     Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
-
                 }
             }
             //Circle Colliders
             {
-                auto view = m_ActiveScene->GetAllEntitiesWith<CircleCollider2DComponent,TransformComponent>();
+                auto view = m_ActiveScene->GetAllEntitiesWith<CircleCollider2DComponent, TransformComponent>();
                 for (auto entity : view)
                 {
-                    auto [cc2d,tc] = view.get< CircleCollider2DComponent,TransformComponent>(entity);
+                    auto [cc2d,tc] = view.get<CircleCollider2DComponent, TransformComponent>(entity);
                     glm::vec3 translation = tc.Translation + glm::vec3(cc2d.Offset, 0.001f);
                     glm::vec3 scale = tc.Scale * glm::vec3(cc2d.Radius * 2.0f);
                     glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
