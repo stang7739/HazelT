@@ -37,13 +37,13 @@ namespace Hazel
             columnCount = 1;
         ImGui::Columns(columnCount,nullptr,false);
         int _itemID = 0;
-        for(auto& directoryEntity: std::filesystem::directory_iterator(m_CurrentDirectory))
+        for(auto& directoryEntry: std::filesystem::directory_iterator(m_CurrentDirectory))
         {
-            const auto& path = directoryEntity.path();
+            const auto& path = directoryEntry.path();
             auto relativePath = std::filesystem::relative(path,g_AssetPath);
             std::string filenamestring = relativePath.filename().string();
             // ImGui::PushID(filenamestring.c_str());
-            Ref<Texture2D> icon = directoryEntity.is_directory() ? m_DirectoryIcon : m_FileIcon;
+            Ref<Texture2D> icon = directoryEntry.is_directory() ? m_DirectoryIcon : m_FileIcon;
             // cpp
             ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0,0,0,0));
             std::string id = std::string("##icon_") + std::to_string(_itemID++);
@@ -62,7 +62,7 @@ namespace Hazel
             ImGui::PopStyleColor();
             if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
-                if(directoryEntity.is_directory())
+                if(directoryEntry.is_directory())
                 {
                     m_CurrentDirectory /= path.filename();
                 }

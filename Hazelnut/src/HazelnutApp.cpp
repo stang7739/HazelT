@@ -16,7 +16,7 @@ namespace Hazel
     class Hazelnet : public Application
     {
     public:
-        Hazelnet(ApplicationCommandLineArgs args) : Application("Hazelnut",args)
+        Hazelnet(const ApplicationSpecification& spec) : Application(spec)
         {
             //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
             ImGui::SetCurrentContext(ImGuiLayer::GetContext());
@@ -28,14 +28,17 @@ namespace Hazel
             // PushLayer(new GameLayer());
         }
 
-        ~Hazelnet()
-        {
-        }
+        // ~Hazelnet()
+        // {
+        // }
     };
 
     //Create a SanBox Factory Pattern Abstraction of the application entry point
     Application* CreateApplication(ApplicationCommandLineArgs args)
     {
-        return new Hazelnet(args);
+        ApplicationSpecification spec;
+        spec.Name = "Hazelnut";
+        spec.CommandLineArgs = args;
+        return new Hazelnet(spec);
     }
 }

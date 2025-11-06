@@ -36,6 +36,12 @@ namespace Hazel
             return Args[index];
         }
     };
+    struct ApplicationSpecification
+    {
+        std::string Name = "Hazel Application";
+        std::string WorkingDirectory;
+        ApplicationCommandLineArgs CommandLineArgs;
+    };
     class Shader;
 
     // Symbolic macros everywhere
@@ -43,7 +49,7 @@ namespace Hazel
     {
 
     public:
-        Application(const std::string& name = "Hazel Application", ApplicationCommandLineArgs args = ApplicationCommandLineArgs{});
+        Application(const ApplicationSpecification& specification);
         //Virtual constructor function:
         //Support class polymorphism Ensure that the derived class object created by the base pointer
         //calls the corresponding destructor to properly free up memory
@@ -59,7 +65,7 @@ namespace Hazel
         void Close();
         inline static Application& Get(){return *s_Instance;}
         ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-        ApplicationCommandLineArgs GetCommandLineArgs() const { return m_CommandLineArgs; }
+        const ApplicationSpecification& GetSpecifition() const { return m_Specification; }
 
     private:
         //s_Instance is a static pointer member variable of the Application class
@@ -73,6 +79,7 @@ namespace Hazel
         float m_LastFrameTime = 0.0f;
         bool m_Minimized = false;
         ApplicationCommandLineArgs m_CommandLineArgs;
+        ApplicationSpecification m_Specification;
     };
 
     // Application* CreateApplication();

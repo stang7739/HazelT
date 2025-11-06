@@ -42,30 +42,46 @@ namespace Hazel
         delete m_PhysicsWorld;
     }
 
-    template <typename Component>
+    template <typename... Component>
     static void CopyComponent(entt::registry& dst, entt::registry& src,
                               const std::unordered_map<UUID, entt::entity>& enttMap)
     {
-        auto view = src.view<Component>();
-        for (auto e : view)
+        ([&]()
         {
-            UUID uuid = src.get<IDComponent>(e).ID;
-            HZ_CORE_ASSERT(enttMap.find(uuid) != enttMap.end());
-            entt::entity dstEnttID = enttMap.at(uuid);
-            auto& component = src.get<Component>(e);
-            dst.emplace_or_replace<Component>(dstEnttID, component);
-        }
+            auto view = src.view<Component>();
+            for (auto e : view)
+            {
+                UUID uuid = src.get<IDComponent>(e).ID;
+                HZ_CORE_ASSERT(enttMap.find(uuid) != enttMap.end());
+                entt::entity dstEnttID = enttMap.at(uuid);
+                auto& component = src.get<Component>(e);
+                dst.emplace_or_replace<Component>(dstEnttID, component);
+            }
+        }(), ...);
     }
 
-    template <typename Component>
+    template <typename... Component>
     static void CopyComponentIfExists(Entity dst, Entity src)
     {
-        if (src.HasComponent<Component>())
+        ([&]()
         {
-            dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
-        }
+            if (src.HasComponent<Component>())
+            {
+                dst.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
+            }
+        }(), ...);
     }
-
+    template <typename... Component>
+    static void CopyComponent(ComponentGroup<Component...>,entt::registry& dst, entt::registry& src,
+                              const std::unordered_map<UUID, entt::entity>& enttMap)
+    {
+        CopyComponent<Component...>(dst,src,enttMap);
+    }
+    template <typename... Component>
+       static void CopyComponentIfExists(ComponentGroup<Component...>, Entity dst, Entity src)
+    {
+        CopyComponentIfExists<Component...>(dst,src);
+    }
     Ref<Scene> Scene::Copy(Ref<Scene> other)
     {
         Ref<Scene> newScene = CreateRef<Scene>();
@@ -82,14 +98,8 @@ namespace Hazel
             Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
             enttMap[uuid] = (entt::entity)newEntity;
         }
-        CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<CircleRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
-        CopyComponent<CircleCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+        CopyComponent(AllComponents{},dstSceneRegistry, srcSceneRegistry, enttMap);
+
         return newScene;
     }
 
@@ -102,14 +112,7 @@ namespace Hazel
     {
         std::string name = entity.GetName();
         Entity newEntity = CreateEntity(name);
-        CopyComponentIfExists<TransformComponent>(newEntity, entity);
-        CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
-        CopyComponentIfExists<CircleRendererComponent>(newEntity, entity);
-        CopyComponentIfExists<CameraComponent>(newEntity, entity);
-        CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
-        CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
-        CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
-        CopyComponentIfExists<CircleCollider2DComponent>(newEntity, entity);
+        CopyComponentIfExists(AllComponents{},newEntity, entity);
     }
 
     Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name, glm::vec3 position)
@@ -218,22 +221,23 @@ namespace Hazel
     {
         OnPhysics2DStart();
     }
+
     void Scene::OnSimulateStop()
     {
         OnPhysics2DStop();
-
     }
+
     void Scene::OnUpdateSimulation(Timestep ts, EditorCamera& camera)
     {
         // Physics
         {
             const int32_t velocityIterations = 6;
             const int32_t positionItenrations = 2;
-            m_PhysicsWorld->Step(ts,velocityIterations,positionItenrations);
+            m_PhysicsWorld->Step(ts, velocityIterations, positionItenrations);
             auto view = m_Registry.view<Rigidbody2DComponent>();
             for (auto entt : view)
             {
-                Entity entity = {entt,this};
+                Entity entity = {entt, this};
                 auto& transform = entity.GetComponent<TransformComponent>();
                 auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
                 b2Body* body = (b2Body*)rb2d.RuntimeBody;
@@ -248,7 +252,7 @@ namespace Hazel
 
     void Scene::OnPhysics2DStart()
     {
-         m_PhysicsWorld = new b2World({0.f, -9.8f});
+        m_PhysicsWorld = new b2World({0.f, -9.8f});
         auto view = m_Registry.view<Rigidbody2DComponent>();
 
         for (auto entt : view)
@@ -300,6 +304,7 @@ namespace Hazel
         delete m_PhysicsWorld;
         m_PhysicsWorld = nullptr;
     }
+
     void Scene::RenderScene(EditorCamera& camera)
     {
         Renderer2D::BeginScene(camera);
@@ -357,7 +362,7 @@ namespace Hazel
     template <typename T>
     void Scene::OnComponentAdded(Entity entity, T& component)
     {
-        static_assert(false);
+        static_assert(sizeof(T) == 0);
     }
 
     template <>

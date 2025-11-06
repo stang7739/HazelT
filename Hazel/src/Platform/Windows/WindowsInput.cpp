@@ -261,7 +261,7 @@
              return false;
          }
          auto state = glfwGetKey(window, HazelKeyToGlfwKey(Keycode));
-         return state == GLFW_PRESS || state == GLFW_REPEAT;
+         return state == GLFW_PRESS ;
      }
 
      bool WindowsInput::IsMouseButtonPressedImpl(HazelKey Button)

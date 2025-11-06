@@ -271,46 +271,12 @@ namespace Hazel
         }
         if (ImGui::BeginPopup("AddComponent"))
         {
-            if (!m_SelectionContext.HasComponent<CameraComponent>())
-            {
-                if (ImGui::MenuItem("Camera"))
-                {
-                    m_SelectionContext.AddComponent<CameraComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-            }
-            if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
-            {
-                if (ImGui::MenuItem("Sprite Renderer"))
-                {
-                    m_SelectionContext.AddComponent<SpriteRendererComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-            }
-            if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
-            {
-                if (ImGui::MenuItem("Rigidbody 2D"))
-                {
-                    m_SelectionContext.AddComponent<Rigidbody2DComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-            }
-            if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
-            {
-                if (ImGui::MenuItem("Box Collider 2D"))
-                {
-                    m_SelectionContext.AddComponent<BoxCollider2DComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-            }
-            if (!m_SelectionContext.HasComponent<CircleCollider2DComponent>())
-            {
-                if (ImGui::MenuItem("Circle Collider 2D"))
-                {
-                    m_SelectionContext.AddComponent<CircleCollider2DComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-            }
+            DisplayAddComponent<CameraComponent>("Camera");
+            DisplayAddComponent<SpriteRendererComponent>("Sprite Renderer");
+            DisplayAddComponent<CircleRendererComponent>("Circle Renderer");
+            DisplayAddComponent<Rigidbody2DComponent>("Rigidbody 2D");
+            DisplayAddComponent<BoxCollider2DComponent>("Box Collider 2D");
+            DisplayAddComponent<CircleCollider2DComponent>("Circle Collider 2D");
             ImGui::EndPopup();
         }
         ImGui::PopItemWidth();
@@ -453,4 +419,17 @@ namespace Hazel
             ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.1f, 0.0f, 100.0f);
         });
     }
+    template <typename T>
+    void SceneHierarchyPanel::DisplayAddComponent(const std::string& entryName)
+    {
+        if (!m_SelectionContext.HasComponent<T>())
+        {
+            if (ImGui::MenuItem(entryName.c_str()))
+            {
+                m_SelectionContext.AddComponent<T>();
+                ImGui::CloseCurrentPopup();
+            }
+        }
+    }
+
 }

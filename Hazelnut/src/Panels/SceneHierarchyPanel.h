@@ -27,6 +27,8 @@ namespace Hazel
     private:
         void DrawEntityNode(Entity entityID);
         void DrawComponents(Entity entity);
+        template<typename T>
+        void DisplayAddComponent(const std::string& entryName);
 
     private:
         float m_Times = 0.0f;

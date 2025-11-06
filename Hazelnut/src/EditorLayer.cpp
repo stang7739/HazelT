@@ -54,7 +54,15 @@ namespace Hazel
         m_Framebuffer = Framebuffer::Create(fbspec);
         m_EditorScene = CreateRef<Scene>();
         m_ActiveScene = m_EditorScene;
+        auto commandLineArgs = Application::Get().GetSpecifition().CommandLineArgs;
+        if (commandLineArgs.Count > 1)
+        {
+            auto sceneFilePath = commandLineArgs[1];
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Deserialize(sceneFilePath);
+        }
         m_EditorCamera = EditorCamera(30.f, 1.778f, 0.1f, 1000.f);
+        Renderer2D::SetLineWidth(4.0f);
         // m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     } //Executed when the layer is loaded into the stack
     void EditorLayer::OnDetach()
@@ -204,6 +212,10 @@ namespace Hazel
                         OpenScene();
                         // SceneSerializer serializer(m_ActiveScene);
                         // serializer.Deserialize("assets/scenes/Example.hazel");
+                    }
+                    if (ImGui::MenuItem("Save", "Ctrl+S"))
+                    {
+                        SaveScene();
                     }
                     if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                     {
@@ -406,7 +418,10 @@ namespace Hazel
     void EditorLayer::OnEvent(Event& event)
     {
         HZ_PROFILE_FUNCTION();
-        m_CameraController.OnEvent(event);
+        if (m_SceneState == SceneState::Edit)
+        {
+            m_EditorCamera.OnEvent(event);
+        }
         m_EditorCamera.OnEvent(event);
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
@@ -427,7 +442,7 @@ namespace Hazel
 
     bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e)
     {
-        if (e.GetRepeatCount() > 0)
+        if (e.IsRepeat())
             return false;
         bool control = Input::IsKeyPressed(HazelKey::LeftControl) || Input::IsKeyPressed(HazelKey::RightControl);
         bool shift = Input::IsKeyPressed(HazelKey::LeftShift) || Input::IsKeyPressed(HazelKey::RightShift);
@@ -538,6 +553,13 @@ namespace Hazel
                     Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.01f);
                 }
             }
+        }
+
+        // Draw selected entity outline
+        if (Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity())
+        {
+            const TransformComponent& transform = selectedEntity.GetComponent<TransformComponent>();
+            Renderer2D::DrawRect(transform.GetTransform(), glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
         }
         Renderer2D::EndScene();
     }

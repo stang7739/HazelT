@@ -12,14 +12,13 @@
 #include "imgui_internal.h"
 #include "Input.h"
 #include "Hazel/Events/KeyEvent.h"
-#include <Hazel/Renderer/Shader.h>
+
 
 #include "Timestep.h"
-#include "GLFW/glfw3.h"
-#include "Hazel/Renderer/Buffer.h"
-#include "Hazel/Renderer/RenderCommand.h"
+#include "Hazel/Utils/PlatformUtils.h"
+
 #include "Hazel/Renderer/Renderer.h"
-#include "Hazel/Renderer/VertexArray.h"
+
 
 namespace Hazel
 {
@@ -29,13 +28,24 @@ namespace Hazel
     Application* Application::s_Instance = nullptr;
 
 
-    Application::Application(const std::string& name ,ApplicationCommandLineArgs args):m_CommandLineArgs(args)
+    Application::Application(const ApplicationSpecification& specification):m_Specification(specification)
     {
         HZ_CORE_ASSERT(!s_Instance, "Application already exit");
         HZ_CORE_INFO("Application created");
 
         s_Instance = this;
-        m_Window = std::unique_ptr<Window>(Window::Create(WindowProps(name)));
+        if (!m_Specification.WorkingDirectory.empty())
+        {
+            std::error_code ec;
+            std::filesystem::current_path(m_Specification.WorkingDirectory, ec);
+            if (ec)
+                HZ_CORE_WARN("Failed to set working directory to '{}': {}", m_Specification.WorkingDirectory, ec.message());
+            else
+                HZ_CORE_INFO("Working directory set to '{}'", std::filesystem::current_path().string());
+        }
+
+        // Always create a window; use application Name as the window title
+        m_Window = Window::Create(WindowProps(m_Specification.Name));
         m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
         Renderer::init();
         m_ImGuiLayer = new ImGuiLayer{};
@@ -81,7 +91,7 @@ namespace Hazel
         while (m_Running)
         {
             //The number of seconds from the start of GLFW initialization to the current moment
-            float time = (float)glfwGetTime();
+            float time = Time::GetTime();
             Timestep timestep = time - m_LastFrameTime;
             m_LastFrameTime = time;
             if (!m_Minimized)

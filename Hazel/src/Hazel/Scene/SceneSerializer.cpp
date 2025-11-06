@@ -195,6 +195,9 @@ namespace Hazel
             out << YAML::BeginMap; // SpriteRendererComponent
             auto& spriterendererComponent = entity.GetComponent<SpriteRendererComponent>();
             out << YAML::Key << "Color" << YAML::Value << spriterendererComponent.Color;
+            if (spriterendererComponent.Texture)
+                out << YAML::Key << YAML::Value << spriterendererComponent.Texture->GetPath();
+            out << YAML::Key << "TilingFactor" << YAML::Value << spriterendererComponent.TilingFactor;
             out << YAML::EndMap; // SpriteRendererComponent
         }
         out << YAML::EndMap; // Entity
@@ -280,6 +283,7 @@ namespace Hazel
             data = YAML::LoadFile(filepath);
         }catch(YAML::ParserException e)
         {
+            HZ_CORE_ERROR("Failed to load .hazel file '{}'\n     {}", filepath, e.what());
             return false;
         }
         if(!data["Scene"])
@@ -339,6 +343,11 @@ namespace Hazel
                 {
                     auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                     src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+                    if (spriteRendererComponent["TexturePath"])
+						src.Texture = Texture2D::Create(spriteRendererComponent["TexturePath"].as<std::string>());
+
+					if (spriteRendererComponent["TilingFactor"])
+						src.TilingFactor = spriteRendererComponent["TilingFactor"].as<float>();
                 }
                 auto rigidbody2DComponent = entity["Rigidbody2DComponent"];
                 if(rigidbody2DComponent)
@@ -370,12 +379,12 @@ namespace Hazel
                 if (circleCollider2DComponent)
                 {
                     auto& src = deserializedEntity.AddComponent<CircleCollider2DComponent>();
-                    src.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
-                    src.Radius = boxCollider2DComponent["Radius"].as<float>();
-                    src.Density = boxCollider2DComponent["Density"].as<float>();
-                    src.Friction = boxCollider2DComponent["Friction"].as<float>();
-                    src.Restitution = boxCollider2DComponent["Restitution"].as<float>();
-                    src.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
+                    src.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+                    src.Radius = circleCollider2DComponent["Radius"].as<float>();
+                    src.Density = circleCollider2DComponent["Density"].as<float>();
+                    src.Friction = circleCollider2DComponent["Friction"].as<float>();
+                    src.Restitution = circleCollider2DComponent["Restitution"].as<float>();
+                    src.RestitutionThreshold = circleCollider2DComponent["RestitutionThreshold"].as<float>();
                 }
             }
         }

@@ -93,13 +93,13 @@ namespace Hazel
                     }
                 case GLFW_PRESS:
                     {
-                        KeyPressedEvent event(keycode,0);
+                        KeyPressedEvent event(keycode,false);
                     data.EventCallback(event);
                         break;
                     }
                 case GLFW_REPEAT:
                     {
-                        KeyPressedEvent event(keycode,1);
+                        KeyPressedEvent event(keycode,true);
                     data.EventCallback(event);
                         break;
                     }

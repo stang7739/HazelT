@@ -11,12 +11,13 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "SceneCamera.h"
+
 #include "Hazel/Renderer/Texture.h"
 
 
 namespace Hazel
 {
-    class ScriptableEntity;
+
 
     struct CircleRendererComponent
     {
@@ -96,7 +97,8 @@ namespace Hazel
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
     };
-
+    // Forward declaration
+    class ScriptableEntity;
     struct NativeScriptComponent
     {
         ScriptableEntity* Instance = nullptr;
@@ -157,6 +159,10 @@ namespace Hazel
         CircleCollider2DComponent() = default;
         CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
     };
+    template<typename... Component>
+    struct ComponentGroup{};
+    using AllComponents = ComponentGroup<TransformComponent,SpriteRendererComponent,CircleRendererComponent,BoxCollider2DComponent,
+        CircleCollider2DComponent,Rigidbody2DComponent,CameraComponent,NativeScriptComponent>;
 }
 
 #endif //COMPONENT_H

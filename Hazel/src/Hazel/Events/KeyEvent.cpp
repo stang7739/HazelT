@@ -18,17 +18,17 @@ namespace Hazel
     int KeyEvent::GetCategoryFlags() const { return EventCategoryInput | EventCategoryKeyBoard; }
 
     //////////////////////////
-    KeyPressedEvent::KeyPressedEvent(HazelKey keycode, int repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount)
+    KeyPressedEvent::KeyPressedEvent(HazelKey keycode, bool isRepeat) : KeyEvent(keycode), m_IsRepeat(isRepeat)
     {
     }
 
-    int KeyPressedEvent::GetRepeatCount() const
+    bool KeyPressedEvent::IsRepeat() const
     {
-        return m_RepeatCount;
+        return m_IsRepeat;
     }
 
     std::string KeyPressedEvent::ToString() const {
-        return std::format("KeyPressedEvent: {0} ({1})", m_keyCode, m_RepeatCount);
+        return std::format("KeyPressedEvent: {0} ({1})", m_keyCode, m_IsRepeat);
     }
 
     ///////////////////////////////

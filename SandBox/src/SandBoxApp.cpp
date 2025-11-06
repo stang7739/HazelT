@@ -13,7 +13,8 @@ namespace Hazel
 class SandBox : public Hazel::Application
 {
 public:
-    SandBox(Hazel::ApplicationCommandLineArgs args)
+    SandBox(const Hazel::ApplicationSpecification& specification)
+    : Hazel::Application(specification)
     {
         //https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-data Fix this problem
         ImGui::SetCurrentContext(Hazel::ImGuiLayer::GetContext());
@@ -33,5 +34,10 @@ public:
 //Create a SanBox Factory Pattern Abstraction of the application entry point
 Hazel::Application* Hazel::CreateApplication(Hazel::ApplicationCommandLineArgs args)
 {
-    return new SandBox(args);
+    ApplicationSpecification spec;
+    spec.Name = "Sandbox";
+    spec.WorkingDirectory = "../Hazelnut";
+    spec.CommandLineArgs = args;
+
+    return new SandBox(spec);
 }

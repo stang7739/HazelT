@@ -27,12 +27,12 @@ namespace Hazel
     class HAZEL_API KeyPressedEvent : public KeyEvent
     {
     public:
-        KeyPressedEvent(HazelKey keycode, int repeatCount);
-        int GetRepeatCount() const;
+        KeyPressedEvent(HazelKey keycode, bool isRepeat);
+        bool IsRepeat() const;
         std::string ToString() const override;
         EVENT_CLASS_TYPE(KeyPressed)
         protected:
-        int m_RepeatCount;
+        bool m_IsRepeat;
     };
 
     class HAZEL_API KeyReleasedEvent : public KeyEvent
